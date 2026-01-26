@@ -1,15 +1,63 @@
 package com.washtrack.washtrack_api.orden.respository.impl;
 
+import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
+import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
+import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.respository.IOrdenesRepository;
+import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorSimpleJdbcCall;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Repository
 public class OrdenesRepositoryImpl implements IOrdenesRepository {
+  
+  private final InicializadorSimpleJdbcCall inicializador;
+  
+  public OrdenesRepositoryImpl(InicializadorSimpleJdbcCall inicializador) {
+    this.inicializador = inicializador;
+  }
+  
   @Override
   public List<OrdenesEntity> listarOrdenesRepository() {
-    return List.of();
+    log.info("[Inicia <listarOrdenesRepository>]");
+    
+    List<OrdenesEntity> listaOrdenes = new ArrayList<>();
+    Map<String, Object> resultado = null;
+    try {
+      // Ejecucion
+      resultado = this.inicializador.listarOrdenesCallJdbc();
+      
+      // OUT parameter seguro
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get("pa_mensaje");
+      log.info("[Mensaje BD: {}]", pamensaje);
+      
+      if ( codigobd == null ) {
+        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        codigobd = ConstantesNumericas.UNO;
+      }
+      else {
+        listaOrdenes = (List<OrdenesEntity>) resultado.get("listaordenes");
+      }
+      log.info("[Codigo BD <listarOrdenesRepository>]: {}", codigobd);
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[Error al obtener listado de productos desde la BD <listarOrdenesRepository>]", e);
+    }
+    finally {
+      log.info("[Finaliza <listarOrdenesRepository>]");
+    }
+    
+    // ResultSet
+    return listaOrdenes;
   }
+  
 }
