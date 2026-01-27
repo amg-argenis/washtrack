@@ -12,5 +12,7 @@ import java.util.List;
 public interface IOrdenesService {
   
   ServiceResult<List<OrdenesEntity>> listaOrdenesService();
-
+  
+  ServiceResult<OrdenesEntity> buscarOrdeneService(String folioOrden);
+  
 }

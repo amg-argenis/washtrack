@@ -24,9 +24,14 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     this.inicializador = inicializador;
   }
   
+  /**
+   * Listar ordenes servicio | Repository
+   *
+   * @return
+   */
   @Override
   public List<OrdenesEntity> listarOrdenesRepository() {
-    log.info("[Inicia <listarOrdenesRepository>]");
+    log.info("[Iniciando listarOrdenesRepository <Repository>]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
     Map<String, Object> resultado = null;
@@ -53,11 +58,50 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.error("[Error al obtener listado de productos desde la BD <listarOrdenesRepository>]", e);
     }
     finally {
-      log.info("[Finaliza <listarOrdenesRepository>]");
+      log.info("[Finalizando listarOrdenesRepository <Repository>]");
     }
     
     // ResultSet
     return lista;
+  }
+  
+  /**
+   * Buscar orden servicio | Repository
+   *
+   * @return
+   */
+  @Override
+  public OrdenesEntity buscarOrdeneServicioRepository(String folioOrden) {
+    log.info("[Iniciando buscarOrdene <Repository>]");
+    
+    List<OrdenesEntity> lista = new ArrayList<>();
+    Map<String, Object> resultado = null;
+    try {
+      // Ejecucion
+      resultado = this.inicializador.listarOrdenesCallJdbc();
+      
+      // OUT parameter seguro
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
+      
+      if ( codigobd == null ) {
+        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        codigobd = ConstantesNumericas.UNO;
+      }
+      else {
+        lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
+      }
+      log.info("[Codigo BD <buscarOrdeneServicioRepository>]: {}", codigobd);
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[Error al obtener listado de productos desde la BD <buscarOrdeneServicioRepository>]", e);
+    }
+    
+    log.info("[Finalizando buscarOrdene <Repository>]");
+    // ResultSet
+    return lista.getFirst();
   }
   
 }

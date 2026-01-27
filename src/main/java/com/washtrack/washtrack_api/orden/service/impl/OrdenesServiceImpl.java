@@ -20,8 +20,14 @@ public class OrdenesServiceImpl implements IOrdenesService {
     this.ordenesRepository = ordenesRepository;
   }
   
+  /**
+   * Listar Ordenes servicio | Service
+   *
+   * @return
+   */
   @Override
   public ServiceResult<List<OrdenesEntity>> listaOrdenesService() {
+    log.info("[Iniciando lista de ordenes <Service>]");
     List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesRepository();
     ServiceResult<List<OrdenesEntity>> result;
     
@@ -31,6 +37,30 @@ public class OrdenesServiceImpl implements IOrdenesService {
     else {
       result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, resultadoRepository);
     }
+    log.info("[Finaliza lista de ordenes <Service>]");
+    return result;
+  }
+  
+  /**
+   * Buscar una orden servicio | Service
+   *
+   * @return
+   */
+  @Override
+  public ServiceResult<OrdenesEntity> buscarOrdeneService(String folioOrden) {
+    log.info("[Iniciando buscarOrdene <Service>]");
+    
+    OrdenesEntity resultadoRepository = this.ordenesRepository.buscarOrdeneServicioRepository(folioOrden);
+    ServiceResult<OrdenesEntity> result;
+    
+    if ( resultadoRepository == null ) {
+      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, null);
+    }
+    else {
+      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, resultadoRepository);
+    }
+    
+    log.info("[Finaliza buscarOrdene <Service>]");
     return result;
   }
   

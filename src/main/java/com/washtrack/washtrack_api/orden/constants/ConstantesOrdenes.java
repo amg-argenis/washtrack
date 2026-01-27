@@ -7,7 +7,7 @@ public class ConstantesOrdenes {
    */
   
   public static final String OPERACION_EXITOSA = "Operacion exitosa";
-  public static final String SIN_REGISTROS = "Sin registro de ordenes";
+  public static final String SIN_REGISTROS = "Sin registro de ordenes servicio";
   
   public static final String ERROR_BD = "Hubo un error en la BD";
   public static final String ERROR_INSERT = "Error al crear la orden";
