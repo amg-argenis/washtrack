@@ -11,7 +11,7 @@ public class OrdenesMapper implements RowMapper<OrdenesEntity> {
   @Override
   public OrdenesEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     OrdenesEntity ordenesEntity = new OrdenesEntity();
-    ordenesEntity.setId(rs.getString("id"));
+    ordenesEntity.setIdOrden(rs.getString("idOrden"));
     ordenesEntity.setClienteId(rs.getString("clienteId"));
     ordenesEntity.setFolio(rs.getString("folio"));
     ordenesEntity.setFechaIngreso(String.valueOf(rs.getDate("fechaIngreso")));

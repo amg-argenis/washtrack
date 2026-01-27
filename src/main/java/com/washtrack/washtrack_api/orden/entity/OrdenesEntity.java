@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class OrdenesEntity {
   
-  private String id;
+  private String idOrden;
   private String clienteId;
   private String folio;
   private String fechaIngreso;

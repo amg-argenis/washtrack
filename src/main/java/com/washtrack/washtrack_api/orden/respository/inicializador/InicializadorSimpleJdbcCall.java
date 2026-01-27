@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class InicializadorSimpleJdbcCall {
   
-  private SimpleJdbcCall simpleJdbcCall;
+  private SimpleJdbcCall listarOrdenesCall;
   
   private final JdbcTemplate jdbcTemplate;
   
@@ -24,13 +24,13 @@ public class InicializadorSimpleJdbcCall {
   
   @PostConstruct
   public void init() {
-    this.simpleJdbcCall = new SimpleJdbcCall(this.jdbcTemplate)
+    this.listarOrdenesCall = new SimpleJdbcCall(jdbcTemplate)
         .withProcedureName(ConstantesBaseDatos.SP_LISTAR_ORDENES)
         .declareParameters(
             new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
             new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
-        .returningResultSet("listaordenes", new OrdenesMapper());
+        .returningResultSet("listaOrdenes", new OrdenesMapper());
     
     /**
      * 'listaordenes' es el identificador del result set
@@ -42,7 +42,7 @@ public class InicializadorSimpleJdbcCall {
    */
   
   public Map<String, Object> listarOrdenesCallJdbc() {
-    return this.simpleJdbcCall.execute();
+    return this.listarOrdenesCall.execute();
   }
   
 }

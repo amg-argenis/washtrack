@@ -28,7 +28,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
   public List<OrdenesEntity> listarOrdenesRepository() {
     log.info("[Inicia <listarOrdenesRepository>]");
     
-    List<OrdenesEntity> listaOrdenes = new ArrayList<>();
+    List<OrdenesEntity> lista = new ArrayList<>();
     Map<String, Object> resultado = null;
     try {
       // Ejecucion
@@ -36,15 +36,15 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get("pa_mensaje");
-      log.info("[Mensaje BD: {}]", pamensaje);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
       
       if ( codigobd == null ) {
         log.warn("El SP no devolvio pa_codigobd, se asume error.");
         codigobd = ConstantesNumericas.UNO;
       }
       else {
-        listaOrdenes = (List<OrdenesEntity>) resultado.get("listaordenes");
+        lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
       }
       log.info("[Codigo BD <listarOrdenesRepository>]: {}", codigobd);
       
@@ -57,7 +57,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     }
     
     // ResultSet
-    return listaOrdenes;
+    return lista;
   }
   
 }
