@@ -4,9 +4,9 @@ import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +34,19 @@ public class OrdenesController {
     
     log.info("[Iniciando obtencion de ordenes | Controller]");
     return this.ordenesService.listaOrdenesService();
+    
+  }
+  
+  /**
+   * Listar ordenes
+   *
+   * @return
+   */
+  @GetMapping("/ordenes/buscar")
+  public ServiceResult<OrdenesEntity> buscarOrden(@RequestBody OrdenesEntity orden) {
+    
+    log.info("[Iniciando busqueda de la orden | Controller]");
+    return this.ordenesService.buscarOrdenService(orden);
     
   }
   

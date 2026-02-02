@@ -47,10 +47,10 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<OrdenesEntity> buscarOrdeneService(String folioOrden) {
+  public ServiceResult<OrdenesEntity> buscarOrdenService(OrdenesEntity orden) {
     log.info("[Iniciando buscarOrdene <Service>]");
     
-    OrdenesEntity resultadoRepository = this.ordenesRepository.buscarOrdeneServicioRepository(folioOrden);
+    OrdenesEntity resultadoRepository = this.ordenesRepository.buscarOrdenServicioRepository(orden);
     ServiceResult<OrdenesEntity> result;
     
     if ( resultadoRepository == null ) {

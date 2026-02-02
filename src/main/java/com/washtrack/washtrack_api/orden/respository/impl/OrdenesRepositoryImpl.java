@@ -2,7 +2,6 @@ package com.washtrack.washtrack_api.orden.respository.impl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
-import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.respository.IOrdenesRepository;
 import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorSimpleJdbcCall;
@@ -71,37 +70,41 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public OrdenesEntity buscarOrdeneServicioRepository(String folioOrden) {
-    log.info("[Iniciando buscarOrdene <Repository>]");
+  public OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden) {
     
-    List<OrdenesEntity> lista = new ArrayList<>();
-    Map<String, Object> resultado = null;
+    log.info("[Iniciando buscarOrden <Repository>]");
+    
     try {
-      // Ejecucion
-      resultado = this.inicializador.listarOrdenesCallJdbc();
+      Map<String, Object> resultado =
+          inicializador.buscarOrdenCallJdbc(orden);
       
-      // OUT parameter seguro
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      Integer codigobd =
+          (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje =
+          (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
       log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
       
-      if ( codigobd == null ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
-        codigobd = ConstantesNumericas.UNO;
+      if ( codigobd != null && codigobd == 0 ) {
+        
+        List<OrdenesEntity> lista =
+            (List<OrdenesEntity>) resultado.get("ordenrecuperada");
+        
+        if ( lista != null && !lista.isEmpty() ) {
+          return lista.get(ConstantesNumericas.UNO);
+        }
       }
-      else {
-        lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
-      }
-      log.info("[Codigo BD <buscarOrdeneServicioRepository>]: {}", codigobd);
+      
+      return null;
       
     }
     catch ( DataAccessException e ) {
-      log.error("[Error al obtener listado de productos desde la BD <buscarOrdeneServicioRepository>]", e);
+      log.error("[Error al buscar orden en BD]", e);
+      return null;
     }
-    
-    log.info("[Finalizando buscarOrdene <Repository>]");
-    // ResultSet
-    return lista.getFirst();
+    finally {
+      log.info("[Finalizando buscarOrden <Repository>]");
+    }
   }
   
 }

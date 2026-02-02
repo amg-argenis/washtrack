@@ -8,6 +8,6 @@ public interface IOrdenesRepository {
   
   List<OrdenesEntity> listarOrdenesRepository();
   
-  OrdenesEntity buscarOrdeneServicioRepository(String folioOrden);
+  OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden);
   
 }

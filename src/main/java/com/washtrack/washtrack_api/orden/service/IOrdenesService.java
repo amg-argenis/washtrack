@@ -13,6 +13,6 @@ public interface IOrdenesService {
   
   ServiceResult<List<OrdenesEntity>> listaOrdenesService();
   
-  ServiceResult<OrdenesEntity> buscarOrdeneService(String folioOrden);
+  ServiceResult<OrdenesEntity> buscarOrdenService(OrdenesEntity orden);
   
 }
