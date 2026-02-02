@@ -48,7 +48,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
    */
   @Override
   public ServiceResult<OrdenesEntity> buscarOrdenService(OrdenesEntity orden) {
-    log.info("[Iniciando buscarOrdene <Service>]");
+    log.info("[Iniciando buscar orden <Service>]");
     
     OrdenesEntity resultadoRepository = this.ordenesRepository.buscarOrdenServicioRepository(orden);
     ServiceResult<OrdenesEntity> result;
@@ -60,7 +60,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
       result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, resultadoRepository);
     }
     
-    log.info("[Finaliza buscarOrdene <Service>]");
+    log.info("[Finaliza buscar orden <Service>]");
     return result;
   }
   

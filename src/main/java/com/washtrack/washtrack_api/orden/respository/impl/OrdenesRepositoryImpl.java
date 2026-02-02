@@ -91,7 +91,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
             (List<OrdenesEntity>) resultado.get("ordenrecuperada");
         
         if ( lista != null && !lista.isEmpty() ) {
-          return lista.get(ConstantesNumericas.UNO);
+          return lista.get(ConstantesNumericas.CERO);
         }
       }
       
