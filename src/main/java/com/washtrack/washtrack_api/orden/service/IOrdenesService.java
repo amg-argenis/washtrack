@@ -1,6 +1,8 @@
 package com.washtrack.washtrack_api.orden.service;
 
-import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
+import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 
 import java.util.List;
@@ -11,8 +13,10 @@ import java.util.List;
 
 public interface IOrdenesService {
   
-  ServiceResult<List<OrdenesEntity>> listaOrdenesService();
+  ServiceResult<List<OrdenesDto>> listaOrdenesService();
   
-  ServiceResult<OrdenesEntity> buscarOrdenService(OrdenesEntity orden);
+  ServiceResult<OrdenesDto> buscarOrdenService(BuscarOrdenRequest ordenDto);
+  
+  ServiceResult<Integer> guardarOrdenService(InsertarOrdenRequest ordenDto);
   
 }

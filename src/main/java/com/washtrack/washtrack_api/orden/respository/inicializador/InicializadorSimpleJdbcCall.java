@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.rowmapper.OrdenesMapper;
+import com.washtrack.washtrack_api.orden.util.MapearObjetos;
 import jakarta.annotation.PostConstruct;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -21,11 +22,14 @@ public class InicializadorSimpleJdbcCall {
   
   private SimpleJdbcCall listarOrdenesCall;
   private SimpleJdbcCall buscarOrdenCall;
+  private SimpleJdbcCall insertarOrdenCall;
   
   private final JdbcTemplate jdbcTemplate;
+  private final MapearObjetos mapearObjetos;
   
-  public InicializadorSimpleJdbcCall(JdbcTemplate jdbcTemplate) {
+  public InicializadorSimpleJdbcCall(JdbcTemplate jdbcTemplate, MapearObjetos mapearObjetos) {
     this.jdbcTemplate = jdbcTemplate;
+    this.mapearObjetos = mapearObjetos;
   }
   
   @PostConstruct
@@ -54,16 +58,43 @@ public class InicializadorSimpleJdbcCall {
         )
         .returningResultSet("ordenrecuperada", new OrdenesMapper());
     
+    this.insertarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withProcedureName("SP_INSERTAR_ORDEN")
+        .declareParameters(
+            new SqlParameter("pa_codigo", Types.VARCHAR),
+            new SqlParameter("pa_nombre", Types.VARCHAR),
+            new SqlParameter("pa_descripcion", Types.VARCHAR),
+            new SqlParameter("pa_categoriaCodigo", Types.VARCHAR),
+            new SqlParameter("pa_marcaCodigo", Types.VARCHAR),
+            new SqlParameter("pa_unidadMedida", Types.VARCHAR),
+            new SqlParameter("pa_precioCompra", Types.DECIMAL),
+            new SqlParameter("pa_precioVenta", Types.DECIMAL),
+            new SqlParameter("pa_stockMinimo", Types.INTEGER),
+            new SqlParameter("pa_stockMaximo", Types.INTEGER),
+            new SqlParameter("pa_estado", Types.TINYINT),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR),
+            new SqlOutParameter("pa_codigobd", Types.INTEGER)
+        );
+    
   }
   
-  /**
-   * Ejecuciones del SimpleJdbcCall
-   */
+  // EJECUCIONES ******************************************************************************************************
   
+  /**
+   * Listar ordenes de servicio | Inithializer
+   *
+   * @return
+   */
   public Map<String, Object> listarOrdenesCallJdbc() {
     return this.listarOrdenesCall.execute();
   }
   
+  /**
+   * Buscar una orden de servicio | Inithializer
+   *
+   * @param orden
+   * @return
+   */
   public Map<String, Object> buscarOrdenCallJdbc(OrdenesEntity orden) {
     
     Map<String, Object> params = new HashMap<>();
@@ -71,6 +102,17 @@ public class InicializadorSimpleJdbcCall {
     params.put("pa_ordenfolio", orden.getFolio());
     
     return this.buscarOrdenCall.execute(params);
+  }
+  
+  /**
+   * Guardar una nueva orden de servicio | Inithializer
+   *
+   * @param orden
+   * @return
+   */
+  public Map<String, Object> insertarOrden(OrdenesEntity orden) {
+    Map<String, Object> paramMap = this.mapearObjetos.parametrizarOrdenes(orden);
+    return this.insertarOrdenCall.execute(paramMap);
   }
   
 }

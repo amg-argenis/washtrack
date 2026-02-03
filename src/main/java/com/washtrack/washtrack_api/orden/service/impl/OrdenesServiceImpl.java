@@ -1,23 +1,31 @@
 package com.washtrack.washtrack_api.orden.service.impl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
+import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenesRepository;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
+import com.washtrack.washtrack_api.orden.util.MapearObjetos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class OrdenesServiceImpl implements IOrdenesService {
   
   private final IOrdenesRepository ordenesRepository;
+  private final MapearObjetos mapearObjetos;
   
-  public OrdenesServiceImpl(IOrdenesRepository ordenesRepository) {
+  public OrdenesServiceImpl(IOrdenesRepository ordenesRepository, MapearObjetos mapearObjetos) {
     this.ordenesRepository = ordenesRepository;
+    this.mapearObjetos = mapearObjetos;
   }
   
   /**
@@ -26,16 +34,30 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<List<OrdenesEntity>> listaOrdenesService() {
+  public ServiceResult<List<OrdenesDto>> listaOrdenesService() {
     log.info("[Iniciando lista de ordenes <Service>]");
     List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesRepository();
-    ServiceResult<List<OrdenesEntity>> result;
+    ServiceResult<List<OrdenesDto>> result;
     
     if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
       result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, List.of());
     }
     else {
-      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, resultadoRepository);
+      // Mapear a OrdenesEntity -> OrdenesDto
+      List<OrdenesDto> ordenesDtoList = new ArrayList<>();
+      OrdenesDto ordenesDto = new OrdenesDto();
+      for (OrdenesEntity ordenesEntity : resultadoRepository) {
+        ordenesDto.setIdOrden(ordenesEntity.getIdOrden());
+        ordenesDto.setClienteId(ordenesEntity.getClienteId());
+        ordenesDto.setFechaIngreso(ordenesEntity.getFechaIngreso());
+        ordenesDto.setEstado(ordenesEntity.getEstado());
+        ordenesDto.setTotalPrendas(ordenesEntity.getTotalPrendas());
+        ordenesDto.setObservaciones(ordenesEntity.getObservaciones());
+        ordenesDto.setTenantId(ordenesEntity.getTenantId());
+        
+        ordenesDtoList.add(ordenesDto);
+      }
+      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList);
     }
     log.info("[Finaliza lista de ordenes <Service>]");
     return result;
@@ -47,21 +69,71 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<OrdenesEntity> buscarOrdenService(OrdenesEntity orden) {
+  public ServiceResult<OrdenesDto> buscarOrdenService(BuscarOrdenRequest ordenRequest) {
     log.info("[Iniciando buscar orden <Service>]");
     
-    OrdenesEntity resultadoRepository = this.ordenesRepository.buscarOrdenServicioRepository(orden);
-    ServiceResult<OrdenesEntity> result;
+    // Mapear Request → Entity (solo criterios de búsqueda)
+    OrdenesEntity criterioBusqueda = mapearObjetos.mapearOrdenRequestAentity(ordenRequest);
     
-    if ( resultadoRepository == null ) {
-      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, null);
+    OrdenesEntity resultado = ordenesRepository.buscarOrdenServicioRepository(criterioBusqueda);
+    
+    if ( resultado == null ) {
+      log.info("[Orden no encontrada | Service]");
+      return new ServiceResult<>(
+          false,
+          ConstantesOrdenes.SIN_REGISTROS,
+          null
+      );
     }
-    else {
-      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, resultadoRepository);
-    }
+    
+    // Mapear Entity → DTO (respuesta)
+    OrdenesDto ordenDto = mapearObjetos.mapearOrdenAdto(resultado);
     
     log.info("[Finaliza buscar orden <Service>]");
-    return result;
+    return new ServiceResult<>(
+        true,
+        ConstantesOrdenes.OPERACION_EXITOSA,
+        ordenDto
+    );
+  }
+  
+  /**
+   * Insertar una orden servicio | Service
+   *
+   * @return
+   */
+  @Override
+  public ServiceResult<Integer> guardarOrdenService(InsertarOrdenRequest ordenDto) {
+    log.info("[Inicia guardar nueva orden <Service>]");
+    try {
+      
+      /**
+       * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
+       * Obtener el UUID -- OK
+       */
+      
+      UUID uuid = UUID.randomUUID();
+      ordenDto.setIdOrden(uuid.toString());
+      ordenDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
+      
+      // Mapear a OrdenesEntity
+      OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
+      
+      ServiceResult<Integer> serviceResult = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
+      return serviceResult;
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error al guardar nueva orden de servicio, Exception | Service]: {}", e.getMessage(), e);
+      return new ServiceResult<>(
+          false,
+          "Error inesperado en el servicio insertar nueva orden.",
+          null
+      );
+    }
+    finally {
+      log.info("[Finaliza guardar nueva orden <Service>]");
+    }
   }
   
 }
