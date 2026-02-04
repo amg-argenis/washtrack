@@ -12,7 +12,6 @@ public class OrdenesEntity {
   private String estado;
   private int totalPrendas;
   private String observaciones;
-  private String createdAt;
   private String tenantId;
   
 }

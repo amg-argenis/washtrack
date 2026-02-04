@@ -8,6 +8,7 @@ import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,7 +58,7 @@ public class OrdenesController {
    *
    * @return
    */
-  @GetMapping("/ordenes/guardar")
+  @PostMapping("/ordenes/crear")
   public ServiceResult<Integer> guardarOrden(@RequestBody InsertarOrdenRequest orden) {
     
     log.info("[Iniciando insercion de orden | Controller]");

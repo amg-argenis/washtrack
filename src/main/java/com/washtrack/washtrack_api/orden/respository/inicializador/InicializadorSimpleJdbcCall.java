@@ -59,8 +59,9 @@ public class InicializadorSimpleJdbcCall {
         .returningResultSet("ordenrecuperada", new OrdenesMapper());
     
     this.insertarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withProcedureName("SP_INSERTAR_ORDEN")
+        .withProcedureName("SP_INSERTAR_ORDENSERVICIO")
         .declareParameters(
+            // IN
             new SqlParameter("pa_codigo", Types.VARCHAR),
             new SqlParameter("pa_nombre", Types.VARCHAR),
             new SqlParameter("pa_descripcion", Types.VARCHAR),
@@ -72,8 +73,9 @@ public class InicializadorSimpleJdbcCall {
             new SqlParameter("pa_stockMinimo", Types.INTEGER),
             new SqlParameter("pa_stockMaximo", Types.INTEGER),
             new SqlParameter("pa_estado", Types.TINYINT),
-            new SqlOutParameter("pa_mensaje", Types.VARCHAR),
-            new SqlOutParameter("pa_codigobd", Types.INTEGER)
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         );
     
   }

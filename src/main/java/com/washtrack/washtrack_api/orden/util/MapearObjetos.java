@@ -15,13 +15,13 @@ public class MapearObjetos {
   public Map<String, Object> parametrizarOrdenes(OrdenesEntity orden) {
     Map<String, Object> paramMap = new HashMap<>();
     
-    paramMap.put("pa_idOrden", orden.getIdOrden());
+    paramMap.put("pa_idorden", orden.getIdOrden());
     paramMap.put("pa_clienteid", orden.getClienteId());
-    paramMap.put("pa_fechaIngreso", orden.getFechaIngreso());
+    paramMap.put("pa_fechaingreso", orden.getFechaIngreso());
     paramMap.put("pa_estado", orden.getEstado());
-    paramMap.put("pa_totalPrendas", orden.getTotalPrendas());
+    paramMap.put("pa_totalprendas", orden.getTotalPrendas());
     paramMap.put("pa_observaciones", orden.getObservaciones());
-    paramMap.put("pa_tenantId", orden.getTenantId());
+    paramMap.put("pa_tenantid", orden.getTenantId());
     
     return paramMap;
   }
