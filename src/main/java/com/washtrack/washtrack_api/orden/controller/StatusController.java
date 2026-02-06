@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.controller;
 
+import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +18,7 @@ public class StatusController {
   public ServiceResult<String> estatusServicio() {
     
     log.info("[Solicitud de estatus | StatusController | UP! ]");
-    return new ServiceResult<>(true, "Servicio disponible.", "UP!");
+    return new ServiceResult<>(true, "Servicio disponible.", ConstantesNumericas.CERO, "UP!");
   }
   
 }

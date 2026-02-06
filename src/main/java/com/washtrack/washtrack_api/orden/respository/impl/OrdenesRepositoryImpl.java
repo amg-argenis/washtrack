@@ -121,7 +121,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Inicia insertarOrden | Repository]");
     
     ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_INSERT, null);
+        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_INSERT, ConstantesNumericas.CERO, null);
     
     try {
       // Ejecucion

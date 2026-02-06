@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.service.impl;
 
+import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
@@ -40,7 +41,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     ServiceResult<List<OrdenesDto>> result;
     
     if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
-      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, List.of());
+      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, ConstantesNumericas.CERO, List.of());
     }
     else {
       // Mapear a OrdenesEntity -> OrdenesDto
@@ -48,7 +49,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
       for (OrdenesEntity ordenesEntity : resultadoRepository) {
         ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
       }
-      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList);
+      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList.size(), ordenesDtoList);
     }
     log.info("[Finaliza lista de ordenes <Service>]");
     return result;
@@ -73,6 +74,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
       return new ServiceResult<>(
           false,
           ConstantesOrdenes.SIN_REGISTROS,
+          ConstantesNumericas.CERO,
           null
       );
     }
@@ -84,6 +86,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     return new ServiceResult<>(
         true,
         ConstantesOrdenes.OPERACION_EXITOSA,
+        ConstantesNumericas.UNO,
         ordenDto
     );
   }
@@ -119,6 +122,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
       return new ServiceResult<>(
           false,
           "Error inesperado en el servicio insertar nueva orden.",
+          ConstantesNumericas.CERO,
           null
       );
     }
