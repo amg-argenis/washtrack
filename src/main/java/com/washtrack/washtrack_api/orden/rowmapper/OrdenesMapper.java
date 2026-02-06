@@ -10,17 +10,17 @@ public class OrdenesMapper implements RowMapper<OrdenesEntity> {
   
   @Override
   public OrdenesEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-    OrdenesEntity ordenesEntity = new OrdenesEntity();
-    ordenesEntity.setIdOrden(rs.getString("idOrden"));
-    ordenesEntity.setClienteId(rs.getString("clienteId"));
-    ordenesEntity.setFolio(rs.getString("folio"));
-    ordenesEntity.setFechaIngreso(String.valueOf(rs.getDate("fechaIngreso")));
-    ordenesEntity.setEstado(rs.getString("estado"));
-    ordenesEntity.setTotalPrendas(rs.getInt("totalPrendas"));
-    ordenesEntity.setObservaciones(rs.getString("observaciones"));
-    ordenesEntity.setTenantId(rs.getString("tenantId"));
     
-    return ordenesEntity;
+    return OrdenesEntity.builder()
+        .idOrden(rs.getString("idOrden"))
+        .clienteId(rs.getString("clienteId"))
+        .folio(rs.getString("folio"))
+        .fechaIngreso(String.valueOf(rs.getDate("fechaIngreso")))
+        .estado(rs.getString("estado"))
+        .totalPrendas(rs.getInt("totalPrendas"))
+        .observaciones(rs.getString("observaciones"))
+        .tenantId(rs.getString("tenantId"))
+        .build();
   }
   
 }

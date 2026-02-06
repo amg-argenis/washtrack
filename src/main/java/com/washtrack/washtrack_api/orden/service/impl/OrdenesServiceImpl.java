@@ -64,7 +64,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     log.info("[Iniciando buscar orden <Service>]");
     
     // Mapear Request → Entity (solo criterios de búsqueda)
-    OrdenesEntity criterioBusqueda = mapearObjetos.mapearOrdenRequestAentity(ordenRequest);
+    OrdenesEntity criterioBusqueda = this.mapearObjetos.mapearOrdenRequestAentity(ordenRequest);
     
     OrdenesEntity resultado = ordenesRepository.buscarOrdenServicioRepository(criterioBusqueda);
     
@@ -78,7 +78,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     }
     
     // Mapear Entity → DTO (respuesta)
-    OrdenesDto ordenDto = mapearObjetos.mapearOrdenAdto(resultado);
+    OrdenesDto ordenDto = this.mapearObjetos.mapearOrdenAdto(resultado);
     
     log.info("[Finaliza buscar orden <Service>]");
     return new ServiceResult<>(
