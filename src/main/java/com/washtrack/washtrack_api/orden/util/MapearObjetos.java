@@ -41,20 +41,19 @@ public class MapearObjetos {
    * @return
    */
   public OrdenesEntity mapearOrdenAentity(OrdenesDto orden) {
-    OrdenesEntity ordenEntity = new OrdenesEntity();
     
-    ordenEntity.setIdOrden(orden.getIdOrden());
-    ordenEntity.setClienteId(orden.getClienteId());
-    ordenEntity.setFolio(orden.getFolio());
-    ordenEntity.setFechaIngreso(orden.getFechaIngreso());
-    ordenEntity.setEstado(orden.getEstado());
-    ordenEntity.setTotalPrendas(orden.getTotalPrendas());
-    ordenEntity.setObservaciones(orden.getObservaciones());
-    
-    // Este campo por ahora es temporal desde el Front
-    ordenEntity.setTenantId(orden.getTenantId());
-    
-    return ordenEntity;
+    return OrdenesEntity.builder()
+        .idOrden(orden.getIdOrden())
+        .clienteId(orden.getClienteId())
+        .folio(orden.getFolio())
+        .fechaIngreso(orden.getFechaIngreso())
+        .estado(orden.getEstado())
+        .totalPrendas(orden.getTotalPrendas())
+        .observaciones(orden.getObservaciones())
+        
+        // Este campo por ahora es temporal desde el Front
+        .tenantId(orden.getTenantId())
+        .build();
   }
   
   /**
@@ -64,19 +63,18 @@ public class MapearObjetos {
    * @return
    */
   public OrdenesEntity mapearOrdenAentity(InsertarOrdenRequest orden) {
-    OrdenesEntity ordenEntity = new OrdenesEntity();
     
-    ordenEntity.setIdOrden(orden.getIdOrden());
-    ordenEntity.setClienteId(orden.getClienteId());
-    ordenEntity.setFechaIngreso(orden.getFechaIngreso());
-    ordenEntity.setEstado(orden.getEstado());
-    ordenEntity.setTotalPrendas(orden.getTotalPrendas());
-    ordenEntity.setObservaciones(orden.getObservaciones());
-    
-    // Este campo por ahora es temporal desde el Front
-    ordenEntity.setTenantId(orden.getTenantId());
-    
-    return ordenEntity;
+    return OrdenesEntity.builder()
+        .idOrden(orden.getIdOrden())
+        .clienteId(orden.getClienteId())
+        .fechaIngreso(orden.getFechaIngreso())
+        .estado(orden.getEstado())
+        .totalPrendas(orden.getTotalPrendas())
+        .observaciones(orden.getObservaciones())
+        
+        // Este campo por ahora es temporal desde el Front
+        .tenantId(orden.getTenantId())
+        .build();
   }
   
   /**
@@ -86,12 +84,11 @@ public class MapearObjetos {
    * @return
    */
   public OrdenesEntity mapearOrdenRequestAentity(BuscarOrdenRequest orden) {
-    OrdenesEntity ordenEntity = new OrdenesEntity();
     
-    ordenEntity.setIdOrden(orden.getIdOrden());
-    ordenEntity.setFolio(orden.getFolio());
-    
-    return ordenEntity;
+    return OrdenesEntity.builder()
+        .idOrden(orden.getIdOrden())
+        .folio(orden.getFolio())
+        .build();
   }
   
   /**
@@ -101,20 +98,19 @@ public class MapearObjetos {
    * @return
    */
   public OrdenesDto mapearOrdenAdto(OrdenesEntity orden) {
-    OrdenesDto ordenDto = new OrdenesDto();
     
-    ordenDto.setIdOrden(orden.getIdOrden());
-    ordenDto.setClienteId(orden.getClienteId());
-    ordenDto.setFolio(orden.getFolio());
-    ordenDto.setFechaIngreso(orden.getFechaIngreso());
-    ordenDto.setEstado(orden.getEstado());
-    ordenDto.setTotalPrendas(orden.getTotalPrendas());
-    ordenDto.setObservaciones(orden.getObservaciones());
-    
-    // Este campo por ahora es temporal hacia el Front
-    ordenDto.setTenantId(orden.getTenantId());
-    
-    return ordenDto;
+    return OrdenesDto.builder()
+        .idOrden(orden.getIdOrden())
+        .clienteId(orden.getClienteId())
+        .folio(orden.getFolio())
+        .fechaIngreso(orden.getFechaIngreso())
+        .estado(orden.getEstado())
+        .totalPrendas(orden.getTotalPrendas())
+        .observaciones(orden.getObservaciones())
+        
+        // Este campo por ahora es temporal hacia el Front
+        .tenantId(orden.getTenantId())
+        .build();
   }
   
 }

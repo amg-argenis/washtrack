@@ -45,17 +45,8 @@ public class OrdenesServiceImpl implements IOrdenesService {
     else {
       // Mapear a OrdenesEntity -> OrdenesDto
       List<OrdenesDto> ordenesDtoList = new ArrayList<>();
-      OrdenesDto ordenesDto = new OrdenesDto();
       for (OrdenesEntity ordenesEntity : resultadoRepository) {
-        ordenesDto.setIdOrden(ordenesEntity.getIdOrden());
-        ordenesDto.setClienteId(ordenesEntity.getClienteId());
-        ordenesDto.setFechaIngreso(ordenesEntity.getFechaIngreso());
-        ordenesDto.setEstado(ordenesEntity.getEstado());
-        ordenesDto.setTotalPrendas(ordenesEntity.getTotalPrendas());
-        ordenesDto.setObservaciones(ordenesEntity.getObservaciones());
-        ordenesDto.setTenantId(ordenesEntity.getTenantId());
-        
-        ordenesDtoList.add(ordenesDto);
+        ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
       }
       result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList);
     }

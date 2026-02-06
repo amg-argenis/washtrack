@@ -62,17 +62,13 @@ public class InicializadorSimpleJdbcCall {
         .withProcedureName("SP_INSERTAR_ORDENSERVICIO")
         .declareParameters(
             // IN
-            new SqlParameter("pa_codigo", Types.VARCHAR),
-            new SqlParameter("pa_nombre", Types.VARCHAR),
-            new SqlParameter("pa_descripcion", Types.VARCHAR),
-            new SqlParameter("pa_categoriaCodigo", Types.VARCHAR),
-            new SqlParameter("pa_marcaCodigo", Types.VARCHAR),
-            new SqlParameter("pa_unidadMedida", Types.VARCHAR),
-            new SqlParameter("pa_precioCompra", Types.DECIMAL),
-            new SqlParameter("pa_precioVenta", Types.DECIMAL),
-            new SqlParameter("pa_stockMinimo", Types.INTEGER),
-            new SqlParameter("pa_stockMaximo", Types.INTEGER),
-            new SqlParameter("pa_estado", Types.TINYINT),
+            new SqlParameter("pa_idorden", Types.VARCHAR),
+            new SqlParameter("pa_clienteid", Types.VARCHAR),
+            new SqlParameter("pa_fechaingreso", Types.VARCHAR),
+            new SqlParameter("pa_estado", Types.VARCHAR),
+            new SqlParameter("pa_totalprendas", Types.VARCHAR),
+            new SqlParameter("pa_observaciones", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)

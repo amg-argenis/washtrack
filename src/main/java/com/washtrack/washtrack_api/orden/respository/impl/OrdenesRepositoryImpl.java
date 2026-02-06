@@ -35,7 +35,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Iniciando listarOrdenesRepository | Repository]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
-    Map<String, Object> resultado = null;
+    Map<String, Object> resultado;
     try {
       // Ejecucion
       resultado = this.inicializador.listarOrdenesCallJdbc();
