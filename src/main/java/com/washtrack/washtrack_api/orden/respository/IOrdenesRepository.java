@@ -9,6 +9,8 @@ public interface IOrdenesRepository {
   
   List<OrdenesEntity> listarOrdenesRepository();
   
+  List<OrdenesEntity> listarOrdenesFechaIngresoRepository(String fechaIngreso);
+  
   OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden);
   
   ServiceResult<Integer> insertarOrdenRepository(OrdenesEntity orden);

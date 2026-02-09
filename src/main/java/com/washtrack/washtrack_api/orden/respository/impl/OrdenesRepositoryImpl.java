@@ -56,10 +56,51 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
     }
     catch ( DataAccessException e ) {
-      log.error("[Error al obtener listado de productos desde la BD <listarOrdenesRepository>]", e);
+      log.error("[Error al obtener listado de ordenes desde la BD <listarOrdenesRepository>]", e);
     }
     finally {
       log.info("[Finalizando listarOrdenesRepository | Repository]");
+    }
+    
+    // ResultSet
+    return lista;
+  }
+  
+  /**
+   * Listar ordenes servicio por fecha ingreso| Repository
+   *
+   * @return
+   */
+  @Override
+  public List<OrdenesEntity> listarOrdenesFechaIngresoRepository(String fechaIngreso) {
+    log.info("[Iniciando listar Ordenes Fecha Ingreso Repository fecha ingreso | Repository]");
+    
+    List<OrdenesEntity> lista = new ArrayList<>();
+    Map<String, Object> resultado;
+    try {
+      // Ejecucion
+      resultado = this.inicializador.listarOrdenesFechaIngresoCallJdbc(fechaIngreso);
+      
+      // OUT parameter seguro
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
+      
+      if ( codigobd == null ) {
+        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        codigobd = ConstantesNumericas.UNO;
+      }
+      else {
+        lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
+      }
+      log.info("[Codigo BD <listarOrdenesFechaIngresoRepository> fecha ingreso]: {}", codigobd);
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[Error al obtener listado de ordenes fecha ingreso desde la BD <listarOrdenesFechaIngresoRepository>]", e);
+    }
+    finally {
+      log.info("[Finalizando listar Ordenes Fecha Ingreso Repository fecha ingreso| Repository]");
     }
     
     // ResultSet

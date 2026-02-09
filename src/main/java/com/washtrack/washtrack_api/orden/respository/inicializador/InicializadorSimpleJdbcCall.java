@@ -21,6 +21,7 @@ import java.util.Map;
 public class InicializadorSimpleJdbcCall {
   
   private SimpleJdbcCall listarOrdenesCall;
+  private SimpleJdbcCall listarFechaIngresoOrdenesCall;
   private SimpleJdbcCall buscarOrdenCall;
   private SimpleJdbcCall insertarOrdenCall;
   
@@ -45,11 +46,20 @@ public class InicializadorSimpleJdbcCall {
      * 'listaordenes' es el identificador del result set
      */
     
+    this.listarFechaIngresoOrdenesCall = new SimpleJdbcCall(jdbcTemplate)
+        .withProcedureName(ConstantesBaseDatos.SP_LISTARPOR_FECHAINGRESO)
+        .declareParameters(
+            new SqlParameter("pa_fechaingreso", Types.VARCHAR),
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+        )
+        .returningResultSet("listaOrdenes", new OrdenesMapper());
+    
     /**
      * Buscar una orden de servicio
      */
     this.buscarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withProcedureName("SP_BUSCAR_ORDENSERVICIO")
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ORDENSERVICIO)
         .declareParameters(
             new SqlParameter("pa_idorden", Types.VARCHAR),
             new SqlParameter("pa_ordenfolio", Types.VARCHAR),
@@ -85,6 +95,17 @@ public class InicializadorSimpleJdbcCall {
    */
   public Map<String, Object> listarOrdenesCallJdbc() {
     return this.listarOrdenesCall.execute();
+  }
+  
+  /**
+   * Listar ordenes de servicio | Inithializer
+   *
+   * @return
+   */
+  public Map<String, Object> listarOrdenesFechaIngresoCallJdbc(String fechaIngreso) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_fechaingreso", fechaIngreso);
+    return this.listarFechaIngresoOrdenesCall.execute(params);
   }
   
   /**

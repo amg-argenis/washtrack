@@ -15,6 +15,8 @@ public interface IOrdenesService {
   
   ServiceResult<List<OrdenesDto>> listaOrdenesService();
   
+  ServiceResult<List<OrdenesDto>> listaOrdenesFechaIngresoService(String fechaIngreso);
+  
   ServiceResult<OrdenesDto> buscarOrdenService(BuscarOrdenRequest ordenDto);
   
   ServiceResult<Integer> guardarOrdenService(InsertarOrdenRequest ordenDto);

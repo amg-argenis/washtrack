@@ -6,13 +6,16 @@ import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -32,11 +35,26 @@ public class OrdenesController {
    *
    * @return
    */
-  @GetMapping("/ordenes")
+  @GetMapping("/ordenes/listar")
   public ServiceResult<List<OrdenesDto>> obtenerOrdenes() {
     
     log.info("[Iniciando obtencion de ordenes | Controller]");
     return this.ordenesService.listaOrdenesService();
+    
+  }
+  
+  /**
+   * Listar ordenes de servicio por fecha de ingreso | Controller
+   *
+   * @return
+   */
+  @GetMapping("/ordenes/fechaingreso")
+  public ServiceResult<List<OrdenesDto>> obtenerOrdenesPorFehcaIngreso(
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      String fechaIngreso) {
+    
+    log.info("[Iniciando obtencion de ordenes por fecha de ingreso| Controller]");
+    return this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
     
   }
   

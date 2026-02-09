@@ -30,7 +30,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
   }
   
   /**
-   * Listar Ordenes servicio | Service
+   * Listar ordenes servicio | Service
    *
    * @return
    */
@@ -52,6 +52,32 @@ public class OrdenesServiceImpl implements IOrdenesService {
       result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList.size(), ordenesDtoList);
     }
     log.info("[Finaliza lista de ordenes <Service>]");
+    return result;
+  }
+  
+  /**
+   * Listar ordenes servicio por fecha ingreso | Service
+   *
+   * @return
+   */
+  @Override
+  public ServiceResult<List<OrdenesDto>> listaOrdenesFechaIngresoService(String fechaIngreso) {
+    log.info("[Iniciando lista de ordenes por fecha ingreso <Service>]");
+    List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesFechaIngresoRepository(fechaIngreso);
+    ServiceResult<List<OrdenesDto>> result;
+    
+    if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
+      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, ConstantesNumericas.CERO, List.of());
+    }
+    else {
+      // Mapear a OrdenesEntity -> OrdenesDto
+      List<OrdenesDto> ordenesDtoList = new ArrayList<>();
+      for (OrdenesEntity ordenesEntity : resultadoRepository) {
+        ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
+      }
+      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList.size(), ordenesDtoList);
+    }
+    log.info("[Finaliza lista de ordenes fecha ingreso <Service>]");
     return result;
   }
   
