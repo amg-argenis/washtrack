@@ -15,5 +15,6 @@ public class OrdenesEntity {
   private int totalPrendas;
   private String observaciones;
   private String tenantId;
+  private String fechaEntrega;
   
 }

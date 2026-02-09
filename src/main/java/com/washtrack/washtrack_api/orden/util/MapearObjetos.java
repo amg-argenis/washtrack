@@ -53,6 +53,7 @@ public class MapearObjetos {
         
         // Este campo por ahora es temporal desde el Front
         .tenantId(orden.getTenantId())
+        .fechaEntrega(orden.getFechaEntrega())
         .build();
   }
   
@@ -110,6 +111,7 @@ public class MapearObjetos {
         
         // Este campo por ahora es temporal hacia el Front
         .tenantId(orden.getTenantId())
+        .fechaEntrega(orden.getFechaEntrega())
         .build();
   }
   

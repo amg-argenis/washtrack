@@ -15,5 +15,6 @@ public class OrdenesDto {
   private int totalPrendas;
   private String observaciones;
   private String tenantId; // este es temporal
+  private String fechaEntrega;
   
 }

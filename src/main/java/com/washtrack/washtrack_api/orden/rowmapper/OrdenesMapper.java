@@ -20,6 +20,7 @@ public class OrdenesMapper implements RowMapper<OrdenesEntity> {
         .totalPrendas(rs.getInt("totalPrendas"))
         .observaciones(rs.getString("observaciones"))
         .tenantId(rs.getString("tenantId"))
+        .fechaEntrega(String.valueOf(rs.getDate("fechaEntrega")))
         .build();
   }
   
