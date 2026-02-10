@@ -5,8 +5,11 @@ import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
+@Validated
 @CrossOrigin
 @RequestMapping("${base.path}")
 @RestController
@@ -50,12 +54,13 @@ public class OrdenesController {
    */
   @GetMapping("/ordenes/fechaingreso")
   public ServiceResult<List<OrdenesDto>> obtenerOrdenesPorFehcaIngreso(
-      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-      String fechaIngreso) {
+      @RequestParam
+      @NotNull(message = "La fecha de ingreso es obligatoria")
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      LocalDate fechaIngreso) {
     
-    log.info("[Iniciando obtencion de ordenes por fecha de ingreso| Controller]");
+    log.info("[Iniciando obtencion de ordenes por fecha de ingreso | Controller]");
     return this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
-    
   }
   
   /**
@@ -64,7 +69,7 @@ public class OrdenesController {
    * @return
    */
   @GetMapping("/ordenes/buscar")
-  public ServiceResult<OrdenesDto> buscarOrden(@RequestBody BuscarOrdenRequest orden) {
+  public ServiceResult<OrdenesDto> buscarOrden(@Valid @RequestBody BuscarOrdenRequest orden) {
     
     log.info("[Iniciando busqueda de la orden | Controller]");
     return this.ordenesService.buscarOrdenService(orden);
@@ -77,7 +82,20 @@ public class OrdenesController {
    * @return
    */
   @PostMapping("/ordenes/crear")
-  public ServiceResult<Integer> guardarOrden(@RequestBody InsertarOrdenRequest orden) {
+  public ServiceResult<Integer> guardarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
+    
+    log.info("[Iniciando insercion de orden | Controller]");
+    return this.ordenesService.guardarOrdenService(orden);
+    
+  }
+  
+  /**
+   * Actualizar orden de servicio | Controller
+   *
+   * @return
+   */
+  @PostMapping("/ordenes/actualizar")
+  public ServiceResult<Integer> actualizarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
     
     log.info("[Iniciando insercion de orden | Controller]");
     return this.ordenesService.guardarOrdenService(orden);

@@ -13,6 +13,7 @@ import com.washtrack.washtrack_api.orden.util.MapearObjetos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -61,7 +62,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<List<OrdenesDto>> listaOrdenesFechaIngresoService(String fechaIngreso) {
+  public ServiceResult<List<OrdenesDto>> listaOrdenesFechaIngresoService(LocalDate fechaIngreso) {
     log.info("[Iniciando lista de ordenes por fecha ingreso <Service>]");
     List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesFechaIngresoRepository(fechaIngreso);
     ServiceResult<List<OrdenesDto>> result;
@@ -154,6 +155,44 @@ public class OrdenesServiceImpl implements IOrdenesService {
     }
     finally {
       log.info("[Finaliza guardar nueva orden <Service>]");
+    }
+  }
+  
+  /**
+   * Actualizar una orden servicio | Service
+   *
+   * @return
+   */
+  @Override
+  public ServiceResult<Integer> actualizarOrdenService(InsertarOrdenRequest ordenDto) {
+    log.info("[Inicia actualizar orden de servicio <Service>]");
+    try {
+      
+      /**
+       * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
+       * Obtener el UUID -- OK
+       */
+      
+      ordenDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
+      
+      // Mapear a OrdenesEntity
+      OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
+      
+      ServiceResult<Integer> serviceResult = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
+      return serviceResult;
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error al actualizar la orden de servicio, Exception | Service]: {}", e.getMessage(), e);
+      return new ServiceResult<>(
+          false,
+          "Error inesperado en el servicio actualizar orden de servicio.",
+          ConstantesNumericas.CERO,
+          null
+      );
+    }
+    finally {
+      log.info("[Finaliza actualizar orden de servicio <Service>]");
     }
   }
   

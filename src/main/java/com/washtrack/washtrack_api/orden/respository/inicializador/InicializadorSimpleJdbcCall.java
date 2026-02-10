@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class InicializadorSimpleJdbcCall {
    *
    * @return
    */
-  public Map<String, Object> listarOrdenesFechaIngresoCallJdbc(String fechaIngreso) {
+  public Map<String, Object> listarOrdenesFechaIngresoCallJdbc(LocalDate fechaIngreso) {
     Map<String, Object> params = new HashMap<>();
     params.put("pa_fechaingreso", fechaIngreso);
     return this.listarFechaIngresoOrdenesCall.execute(params);

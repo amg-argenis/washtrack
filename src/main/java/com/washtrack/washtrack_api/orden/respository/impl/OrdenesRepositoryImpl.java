@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public List<OrdenesEntity> listarOrdenesFechaIngresoRepository(String fechaIngreso) {
+  public List<OrdenesEntity> listarOrdenesFechaIngresoRepository(LocalDate fechaIngreso) {
     log.info("[Iniciando listar Ordenes Fecha Ingreso Repository fecha ingreso | Repository]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
