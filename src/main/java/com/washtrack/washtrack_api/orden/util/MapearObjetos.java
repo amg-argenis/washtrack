@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.util;
 
+import com.washtrack.washtrack_api.orden.dto.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
@@ -22,6 +23,21 @@ public class MapearObjetos {
     paramMap.put("pa_totalprendas", orden.getTotalPrendas());
     paramMap.put("pa_observaciones", orden.getObservaciones());
     paramMap.put("pa_tenantid", orden.getTenantId());
+    
+    return paramMap;
+  }
+  
+  public Map<String, Object> parametrizarActualizarOrdenes(OrdenesEntity orden) {
+    Map<String, Object> paramMap = new HashMap<>();
+    
+    paramMap.put("pa_idorden", orden.getIdOrden());
+    paramMap.put("pa_clienteid", orden.getClienteId());
+    paramMap.put("pa_folio", orden.getFolio());
+    paramMap.put("pa_fechaingreso", orden.getFechaIngreso());
+    paramMap.put("pa_estado", orden.getEstado());
+    paramMap.put("pa_totalprendas", orden.getTotalPrendas());
+    paramMap.put("pa_observaciones", orden.getObservaciones());
+    paramMap.put("pa_fechaentrega", orden.getFechaEntrega());
     
     return paramMap;
   }
@@ -75,6 +91,26 @@ public class MapearObjetos {
         
         // Este campo por ahora es temporal desde el Front
         .tenantId(orden.getTenantId())
+        .build();
+  }
+  
+  /**
+   * Mapeo de objetos para uso interno en el BK y Actualizar
+   *
+   * @param orden
+   * @return
+   */
+  public OrdenesEntity mapearOrdenAentity(ActualizarOrdenServicioRequest orden) {
+    
+    return OrdenesEntity.builder()
+        .idOrden(orden.getIdOrden())
+        .clienteId(orden.getClienteId())
+        .folio(orden.getFolio())
+        .fechaIngreso(orden.getFechaIngreso())
+        .estado(orden.getEstado())
+        .totalPrendas(orden.getTotalPrendas())
+        .observaciones(orden.getObservaciones())
+        .fechaEntrega(orden.getFechaEntrega())
         .build();
   }
   

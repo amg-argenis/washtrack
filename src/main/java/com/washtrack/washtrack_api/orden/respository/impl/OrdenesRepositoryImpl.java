@@ -98,7 +98,8 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
     }
     catch ( DataAccessException e ) {
-      log.error("[Error al obtener listado de ordenes fecha ingreso desde la BD <listarOrdenesFechaIngresoRepository>]", e);
+      log.error("[Error al obtener listado de ordenes fecha ingreso desde la BD <listarOrdenesFechaIngresoRepository>]",
+          e);
     }
     finally {
       log.info("[Finalizando listar Ordenes Fecha Ingreso Repository fecha ingreso| Repository]");
@@ -197,6 +198,58 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     }
     finally {
       log.info("[Finaliza insertar nueva orden de servicio | Repository]");
+    }
+    
+    return serviceResult;
+    
+  }
+  
+  /**
+   * Actualizar una orde de servicio | Repository
+   *
+   * @param orden
+   * @return
+   */
+  @Override
+  public ServiceResult<Integer> actualizarOrdenRepository(OrdenesEntity orden) {
+    
+    log.info("[Inicia actualizar orden servicio | Repository]");
+    
+    ServiceResult<Integer> serviceResult =
+        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_ACTUALIZAR, ConstantesNumericas.CERO, null);
+    
+    try {
+      // Ejecucion
+      Map<String, Object> resultado = inicializador.actualizarOrden(orden);
+      
+      // OUT parameter seguro
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get("pa_mensaje");
+      log.info("[Mensaje BD: {}]", pamensaje);
+      
+      if ( codigobd == null ) {
+        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        codigobd = 1;
+      }
+      log.info("[Codigo BD Actualizar nueva orden de servicio | Repository]: {}", codigobd);
+      
+      if ( codigobd == ConstantesNumericas.CERO ) {
+        serviceResult.setSuccess(true);
+        serviceResult.setMessage(ConstantesOrdenes.OPERACION_EXITOSA);
+        serviceResult.setData(codigobd);
+      }
+      else {
+        serviceResult.setSuccess(false);
+        serviceResult.setMessage(ConstantesBaseDatos.ERROR_ACTUALIZAR);
+        serviceResult.setData(codigobd);
+      }
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error al actualizar orden de servicio en la BD | Repository]: {}", e.getMessage(), e);
+      serviceResult.setMessage(ConstantesBaseDatos.ERROR_BD);
+    }
+    finally {
+      log.info("[Finaliza actualizar orden servicio | Repository]");
     }
     
     return serviceResult;

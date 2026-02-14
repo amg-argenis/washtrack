@@ -16,4 +16,6 @@ public interface IOrdenesRepository {
   
   ServiceResult<Integer> insertarOrdenRepository(OrdenesEntity orden);
   
+  ServiceResult<Integer> actualizarOrdenRepository(OrdenesEntity orden);
+  
 }

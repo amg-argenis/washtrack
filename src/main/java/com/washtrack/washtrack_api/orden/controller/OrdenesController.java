@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.controller;
 
+import com.washtrack.washtrack_api.orden.dto.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
@@ -42,7 +43,7 @@ public class OrdenesController {
   @GetMapping("/ordenes/listar")
   public ServiceResult<List<OrdenesDto>> obtenerOrdenes() {
     
-    log.info("[Iniciando obtencion de ordenes | Controller]");
+    log.info("[Iniciando obtencion de ordenes servicio | Controller]");
     return this.ordenesService.listaOrdenesService();
     
   }
@@ -59,7 +60,7 @@ public class OrdenesController {
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate fechaIngreso) {
     
-    log.info("[Iniciando obtencion de ordenes por fecha de ingreso | Controller]");
+    log.info("[Iniciando obtencion de ordenes servicio por fecha de ingreso | Controller]");
     return this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
   }
   
@@ -71,7 +72,7 @@ public class OrdenesController {
   @GetMapping("/ordenes/buscar")
   public ServiceResult<OrdenesDto> buscarOrden(@Valid @RequestBody BuscarOrdenRequest orden) {
     
-    log.info("[Iniciando busqueda de la orden | Controller]");
+    log.info("[Iniciando busqueda de la orden servicio | Controller]");
     return this.ordenesService.buscarOrdenService(orden);
     
   }
@@ -84,7 +85,7 @@ public class OrdenesController {
   @PostMapping("/ordenes/crear")
   public ServiceResult<Integer> guardarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
     
-    log.info("[Iniciando insercion de orden | Controller]");
+    log.info("[Iniciando insercion de orden servicio | Controller]");
     return this.ordenesService.guardarOrdenService(orden);
     
   }
@@ -95,10 +96,10 @@ public class OrdenesController {
    * @return
    */
   @PostMapping("/ordenes/actualizar")
-  public ServiceResult<Integer> actualizarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
+  public ServiceResult<Integer> actualizarOrden(@Valid @RequestBody ActualizarOrdenServicioRequest orden) {
     
-    log.info("[Iniciando insercion de orden | Controller]");
-    return this.ordenesService.guardarOrdenService(orden);
+    log.info("[Iniciando actualizacion de orden servicio | Controller]");
+    return this.ordenesService.actualizarOrdenService(orden);
     
   }
   

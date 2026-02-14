@@ -6,6 +6,7 @@ import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.rowmapper.OrdenesMapper;
 import com.washtrack.washtrack_api.orden.util.MapearObjetos;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class InicializadorSimpleJdbcCall {
   
@@ -25,6 +27,7 @@ public class InicializadorSimpleJdbcCall {
   private SimpleJdbcCall listarFechaIngresoOrdenesCall;
   private SimpleJdbcCall buscarOrdenCall;
   private SimpleJdbcCall insertarOrdenCall;
+  private SimpleJdbcCall actualizarOrdenCall;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetos mapearObjetos;
@@ -85,6 +88,23 @@ public class InicializadorSimpleJdbcCall {
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         );
     
+    this.actualizarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_ORDENSERVICIO)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_idorden", Types.VARCHAR),
+            new SqlParameter("pa_clienteid", Types.VARCHAR),
+            new SqlParameter("pa_folio", Types.VARCHAR),
+            new SqlParameter("pa_fechaingreso", Types.VARCHAR),
+            new SqlParameter("pa_estado", Types.VARCHAR),
+            new SqlParameter("pa_totalprendas", Types.VARCHAR),
+            new SqlParameter("pa_observaciones", Types.VARCHAR),
+            new SqlParameter("pa_fechaentrega", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        );
+    
   }
   
   // EJECUCIONES ******************************************************************************************************
@@ -133,6 +153,18 @@ public class InicializadorSimpleJdbcCall {
   public Map<String, Object> insertarOrden(OrdenesEntity orden) {
     Map<String, Object> paramMap = this.mapearObjetos.parametrizarOrdenes(orden);
     return this.insertarOrdenCall.execute(paramMap);
+  }
+  
+  /**
+   * Guardar una nueva orden de servicio | Inithializer
+   *
+   * @param orden
+   * @return
+   */
+  public Map<String, Object> actualizarOrden(OrdenesEntity orden) {
+    Map<String, Object> paramMap = this.mapearObjetos.parametrizarActualizarOrdenes(orden);
+    log.info("[Parametros para actualizar orden servicio]: {}", paramMap);
+    return this.actualizarOrdenCall.execute(paramMap);
   }
   
 }

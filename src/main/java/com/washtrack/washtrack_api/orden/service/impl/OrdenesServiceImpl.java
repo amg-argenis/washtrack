@@ -2,6 +2,7 @@ package com.washtrack.washtrack_api.orden.service.impl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
+import com.washtrack.washtrack_api.orden.dto.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
@@ -164,21 +165,14 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<Integer> actualizarOrdenService(InsertarOrdenRequest ordenDto) {
+  public ServiceResult<Integer> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto) {
     log.info("[Inicia actualizar orden de servicio <Service>]");
     try {
-      
-      /**
-       * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
-       * Obtener el UUID -- OK
-       */
-      
-      ordenDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
       
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
       
-      ServiceResult<Integer> serviceResult = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
+      ServiceResult<Integer> serviceResult = this.ordenesRepository.actualizarOrdenRepository(ordenEntity);
       return serviceResult;
       
     }

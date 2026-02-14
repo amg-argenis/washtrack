@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.service;
 
+import com.washtrack.washtrack_api.orden.dto.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
@@ -22,6 +23,6 @@ public interface IOrdenesService {
   
   ServiceResult<Integer> guardarOrdenService(InsertarOrdenRequest ordenDto);
   
-  ServiceResult<Integer> actualizarOrdenService(InsertarOrdenRequest ordenDto);
+  ServiceResult<Integer> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto);
   
 }
