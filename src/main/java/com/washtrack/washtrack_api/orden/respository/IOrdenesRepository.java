@@ -18,4 +18,6 @@ public interface IOrdenesRepository {
   
   ServiceResult<Integer> actualizarOrdenRepository(OrdenesEntity orden);
   
+  ServiceResult<Integer> eliminarOrdenRepository(OrdenesEntity orden);
+  
 }

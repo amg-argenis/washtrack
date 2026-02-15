@@ -2,6 +2,7 @@ package com.washtrack.washtrack_api.orden.controller;
 
 import com.washtrack.washtrack_api.orden.dto.request.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.request.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.request.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.request.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
@@ -109,10 +110,10 @@ public class OrdenesController {
    * @return
    */
   @PostMapping("/ordenes/eliminar")
-  public ServiceResult<Integer> eliminarOrden(@Valid @RequestBody ActualizarOrdenServicioRequest orden) {
+  public ServiceResult<Integer> eliminarOrden(@Valid @RequestBody EliminarOrdenServicioRequest orden) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
-    return this.ordenesService.actualizarOrdenService(orden);
+    return this.ordenesService.eliminarOrdenService(orden);
     
   }
   

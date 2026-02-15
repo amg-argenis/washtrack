@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.request.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.request.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.request.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.request.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
@@ -187,6 +188,37 @@ public class OrdenesServiceImpl implements IOrdenesService {
     }
     finally {
       log.info("[Finaliza actualizar orden de servicio <Service>]");
+    }
+  }
+  
+  /**
+   * Eliminar una orden servicio | Service
+   *
+   * @return
+   */
+  @Override
+  public ServiceResult<Integer> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto) {
+    log.info("[Inicia eliminar orden de servicio <Service>]");
+    try {
+      
+      // Mapear a OrdenesEntity
+      OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
+      
+      ServiceResult<Integer> serviceResult = this.ordenesRepository.actualizarOrdenRepository(ordenEntity);
+      return serviceResult;
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error al eliminar la orden de servicio, Exception | Service]: {}", e.getMessage(), e);
+      return new ServiceResult<>(
+          false,
+          "Error inesperado en el servicio eliminar orden de servicio.",
+          ConstantesNumericas.CERO,
+          null
+      );
+    }
+    finally {
+      log.info("[Finaliza eliminar orden de servicio <Service>]");
     }
   }
   

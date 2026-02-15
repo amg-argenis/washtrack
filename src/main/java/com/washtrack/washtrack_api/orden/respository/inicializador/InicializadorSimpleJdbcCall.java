@@ -28,6 +28,7 @@ public class InicializadorSimpleJdbcCall {
   private SimpleJdbcCall buscarOrdenCall;
   private SimpleJdbcCall insertarOrdenCall;
   private SimpleJdbcCall actualizarOrdenCall;
+  private SimpleJdbcCall eliminarOrdenCall;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetos mapearObjetos;
@@ -105,6 +106,17 @@ public class InicializadorSimpleJdbcCall {
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         );
     
+    this.eliminarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_ORDENSERVICIO)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_idorden", Types.VARCHAR),
+            new SqlParameter("pa_folio", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        );
+    
   }
   
   // EJECUCIONES ******************************************************************************************************
@@ -136,7 +148,6 @@ public class InicializadorSimpleJdbcCall {
    * @return
    */
   public Map<String, Object> buscarOrdenCallJdbc(OrdenesEntity orden) {
-    
     Map<String, Object> params = new HashMap<>();
     params.put("pa_idorden", orden.getIdOrden());
     params.put("pa_ordenfolio", orden.getFolio());
@@ -156,15 +167,27 @@ public class InicializadorSimpleJdbcCall {
   }
   
   /**
-   * Guardar una nueva orden de servicio | Inithializer
+   * Actualizar una nueva orden de servicio | Inithializer
    *
    * @param orden
    * @return
    */
   public Map<String, Object> actualizarOrden(OrdenesEntity orden) {
     Map<String, Object> paramMap = this.mapearObjetos.parametrizarActualizarOrdenes(orden);
-    log.info("[Parametros para actualizar orden servicio]: {}", paramMap);
+    log.info("[Parametros para actualizar una orden de servicio]: {}", paramMap);
     return this.actualizarOrdenCall.execute(paramMap);
+  }
+  
+  /**
+   * Eliminar una nueva orden de servicio | Inithializer
+   *
+   * @param orden
+   * @return
+   */
+  public Map<String, Object> eliminarOrden(OrdenesEntity orden) {
+    Map<String, Object> paramMap = this.mapearObjetos.parametrizarActualizarOrdenes(orden);
+    log.info("[Parametros para eliminar una orden de servicio]: {}", paramMap);
+    return this.eliminarOrdenCall.execute(paramMap);
   }
   
 }

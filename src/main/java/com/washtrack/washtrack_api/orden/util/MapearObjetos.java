@@ -2,6 +2,7 @@ package com.washtrack.washtrack_api.orden.util;
 
 import com.washtrack.washtrack_api.orden.dto.request.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.request.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.request.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.request.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
@@ -111,6 +112,20 @@ public class MapearObjetos {
         .totalPrendas(orden.getTotalPrendas())
         .observaciones(orden.getObservaciones())
         .fechaEntrega(orden.getFechaEntrega())
+        .build();
+  }
+  
+  /**
+   * Mapeo de objetos para uso interno en el BK y Eliminar
+   *
+   * @param orden
+   * @return
+   */
+  public OrdenesEntity mapearOrdenAentity(EliminarOrdenServicioRequest orden) {
+    
+    return OrdenesEntity.builder()
+        .idOrden(orden.getIdOrden())
+        .folio(orden.getFolio())
         .build();
   }
   

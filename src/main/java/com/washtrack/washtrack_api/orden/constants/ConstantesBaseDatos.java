@@ -7,6 +7,7 @@ public class ConstantesBaseDatos {
   public static final String SP_LISTARPOR_FECHAINGRESO = "SP_LISTARPOR_FECHAINGRESO";
   public static final String SP_BUSCAR_ORDENSERVICIO = "SP_BUSCAR_ORDENSERVICIO";
   public static final String SP_ACTUALIZAR_ORDENSERVICIO = "SP_ACTUALIZAR_ORDENSERVICIO";
+  public static final String SP_ELIMINAR_ORDENSERVICIO = "SP_ELIMINAR_ORDENSERVICIO";
   
   public static final String CODIGOBD = "pa_codigobd";
   public static final String PAMENSAJEBD = "pa_mensaje";
@@ -16,5 +17,5 @@ public class ConstantesBaseDatos {
   public static final String ERROR_BD = "Hubo un error en la BD";
   public static final String ERROR_INSERT = "Error al crear la orden";
   public static final String ERROR_ACTUALIZAR = "Error al actualizar la orden";
-  public static final String ERROR_ELIMINAR = "Error al eliminar la orden";
+  public static final String ERROR_ELIMINAR = "Error al eliminar orden de servicio";
 }
