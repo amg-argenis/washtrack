@@ -1,7 +1,7 @@
-package com.washtrack.washtrack_api.orden.dto;
+package com.washtrack.washtrack_api.orden.dto.request;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
@@ -9,16 +9,16 @@ public class InsertarOrdenRequest {
   
   private String idOrden; // not null para actualizar
   
-  @NotNull(message = "Id cliente es obligatorio, favor de verificar")
+  @NotBlank(message = "Id cliente es obligatorio, favor de verificar")
   private String clienteId; // not null para actualizar
   
-  @NotNull(message = "Fecha de ingreso es obligatorio")
+  @NotBlank(message = "Fecha de ingreso es obligatorio")
   private String fechaIngreso; // not null para actualizar
   
-  @NotNull(message = "Estado de la orden obligatorio")
+  @NotBlank(message = "Estado de la orden obligatorio")
   private String estado; // not null para actualizar
   
-  @NotNull(message = "Total de prendas es obligatorio")
+  @NotBlank(message = "Total de prendas es obligatorio")
   @Min(value = 1, message = "Total prendas es obligatorio")
   private int totalPrendas; // not null para actualizar
   
@@ -26,7 +26,7 @@ public class InsertarOrdenRequest {
   
   private String tenantId; // este es temporal desde el FRONT, not null para actualizar
   
-  @NotNull(message = "Fecha de entrega es obligatorio")
+  @NotBlank(message = "Fecha de entrega es obligatorio")
   private String fechaEntrega; // not null para actualizar
   
 }
