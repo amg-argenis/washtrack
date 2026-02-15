@@ -120,8 +120,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Iniciando buscarOrden | Repository]");
     
     try {
-      Map<String, Object> resultado =
-          inicializador.buscarOrdenCallJdbc(orden);
+      Map<String, Object> resultado = this.inicializador.buscarOrdenCallJdbc(orden);
       
       Integer codigobd =
           (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
@@ -168,7 +167,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     
     try {
       // Ejecucion
-      Map<String, Object> resultado = inicializador.insertarOrden(orden);
+      Map<String, Object> resultado = this.inicializador.insertarOrden(orden);
       
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
@@ -220,7 +219,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     
     try {
       // Ejecucion
-      Map<String, Object> resultado = inicializador.actualizarOrden(orden);
+      Map<String, Object> resultado = this.inicializador.actualizarOrden(orden);
       
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
@@ -268,11 +267,11 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Inicia eliminar orden servicio | Repository]");
     
     ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_ACTUALIZAR, ConstantesNumericas.CERO, null);
+        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_ELIMINAR, ConstantesNumericas.CERO, null);
     
     try {
       // Ejecucion
-      Map<String, Object> resultado = inicializador.eliminarOrden(orden);
+      Map<String, Object> resultado = this.inicializador.eliminarOrden(orden);
       
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);

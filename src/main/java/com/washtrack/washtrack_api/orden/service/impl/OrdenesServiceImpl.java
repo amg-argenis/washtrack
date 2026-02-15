@@ -204,7 +204,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
       
-      ServiceResult<Integer> serviceResult = this.ordenesRepository.actualizarOrdenRepository(ordenEntity);
+      ServiceResult<Integer> serviceResult = this.ordenesRepository.eliminarOrdenRepository(ordenEntity);
       return serviceResult;
       
     }
