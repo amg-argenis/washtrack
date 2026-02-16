@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.orden.dto;
+package com.washtrack.washtrack_api.orden.dto.orden;
 
 import lombok.Builder;
 import lombok.Data;

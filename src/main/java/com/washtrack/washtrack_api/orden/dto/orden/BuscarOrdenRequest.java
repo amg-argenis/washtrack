@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.orden.dto.request;
+package com.washtrack.washtrack_api.orden.dto.orden;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

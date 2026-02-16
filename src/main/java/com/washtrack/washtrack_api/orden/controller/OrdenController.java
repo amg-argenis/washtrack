@@ -1,16 +1,17 @@
 package com.washtrack.washtrack_api.orden.controller;
 
-import com.washtrack.washtrack_api.orden.dto.request.ActualizarOrdenServicioRequest;
-import com.washtrack.washtrack_api.orden.dto.request.BuscarOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.request.EliminarOrdenServicioRequest;
-import com.washtrack.washtrack_api.orden.dto.request.InsertarOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
+import com.washtrack.washtrack_api.orden.dto.orden.ActualizarOrdenServicioRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +29,11 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("${base.path}")
 @RestController
-public class OrdenesController {
+public class OrdenController {
   
   private final IOrdenesService ordenesService;
   
-  public OrdenesController(IOrdenesService ordenesService) {
+  public OrdenController(IOrdenesService ordenesService) {
     this.ordenesService = ordenesService;
   }
   
@@ -42,10 +43,10 @@ public class OrdenesController {
    * @return
    */
   @GetMapping("/ordenes/listar")
-  public ServiceResult<List<OrdenesDto>> obtenerOrdenes() {
+  public ResponseEntity<ServiceResult<List<OrdenesDto>>> obtenerOrdenes() {
     
     log.info("[Iniciando obtencion de ordenes servicio | Controller]");
-    return this.ordenesService.listaOrdenesService();
+    return ResponseEntity.ok(this.ordenesService.listaOrdenesService());
     
   }
   
@@ -70,11 +71,11 @@ public class OrdenesController {
    *
    * @return
    */
-  @GetMapping("/ordenes/buscar")
-  public ServiceResult<OrdenesDto> buscarOrden(@Valid @RequestBody BuscarOrdenRequest orden) {
+  @PostMapping("/ordenes/buscar")
+  public ResponseEntity<ServiceResult<OrdenesDto>> buscarOrden(@Valid @RequestBody BuscarOrdenRequest orden) {
     
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
-    return this.ordenesService.buscarOrdenService(orden);
+    return ResponseEntity.ok(this.ordenesService.buscarOrdenService(orden));
     
   }
   
@@ -84,10 +85,10 @@ public class OrdenesController {
    * @return
    */
   @PostMapping("/ordenes/crear")
-  public ServiceResult<Integer> guardarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
+  public ResponseEntity<ServiceResult<Integer>> guardarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
     
     log.info("[Iniciando insercion de orden servicio | Controller]");
-    return this.ordenesService.guardarOrdenService(orden);
+    return ResponseEntity.ok(this.ordenesService.guardarOrdenService(orden));
     
   }
   
@@ -97,10 +98,11 @@ public class OrdenesController {
    * @return
    */
   @PostMapping("/ordenes/actualizar")
-  public ServiceResult<Integer> actualizarOrden(@Valid @RequestBody ActualizarOrdenServicioRequest orden) {
+  public ResponseEntity<ServiceResult<Integer>> actualizarOrden(
+      @Valid @RequestBody ActualizarOrdenServicioRequest orden) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
-    return this.ordenesService.actualizarOrdenService(orden);
+    return ResponseEntity.ok(this.ordenesService.actualizarOrdenService(orden));
     
   }
   
@@ -110,10 +112,10 @@ public class OrdenesController {
    * @return
    */
   @PostMapping("/ordenes/eliminar")
-  public ServiceResult<Integer> eliminarOrden(@Valid @RequestBody EliminarOrdenServicioRequest orden) {
+  public ResponseEntity<ServiceResult<Integer>> eliminarOrden(@Valid @RequestBody EliminarOrdenServicioRequest orden) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
-    return this.ordenesService.eliminarOrdenService(orden);
+    return ResponseEntity.ok(this.ordenesService.eliminarOrdenService(orden));
     
   }
   

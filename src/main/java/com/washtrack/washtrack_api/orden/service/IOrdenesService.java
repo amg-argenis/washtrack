@@ -1,10 +1,10 @@
 package com.washtrack.washtrack_api.orden.service;
 
-import com.washtrack.washtrack_api.orden.dto.request.ActualizarOrdenServicioRequest;
-import com.washtrack.washtrack_api.orden.dto.request.BuscarOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.request.EliminarOrdenServicioRequest;
-import com.washtrack.washtrack_api.orden.dto.request.InsertarOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.OrdenesDto;
+import com.washtrack.washtrack_api.orden.dto.orden.ActualizarOrdenServicioRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 
 import java.time.LocalDate;
