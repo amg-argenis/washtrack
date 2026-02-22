@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IOrdenDetalleService {
   
-  public ServiceResult<OrdenDetalleDto> buscarOrdenDetalle(OrdenDetalleDto detalleDto);
+  public ServiceResult<Object> buscarOrdenDetalle(OrdenDetalleDto detalleDto);
   
   public ServiceResult<List<OrdenDetalleDto>> listarOrdenDetalle();
   

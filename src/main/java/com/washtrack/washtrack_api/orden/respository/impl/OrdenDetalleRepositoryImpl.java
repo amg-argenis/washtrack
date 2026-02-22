@@ -54,6 +54,11 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
           e.getMessage(), e);
       throw e;
     }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al buscar el detalle de orden en BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
     finally {
       log.info("[Finalizando busqueda de detalle orden | Repository]");
     }

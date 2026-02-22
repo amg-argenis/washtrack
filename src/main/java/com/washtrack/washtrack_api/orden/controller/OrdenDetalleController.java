@@ -1,6 +1,7 @@
 package com.washtrack.washtrack_api.orden.controller;
 
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
+import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenDetalleService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +35,25 @@ public class OrdenDetalleController {
    * @return
    */
   @PostMapping("/ordenes/detalles/buscar")
-  public ResponseEntity<ServiceResult<OrdenDetalleDto>> ordenDetalle(@RequestBody OrdenDetalleDto ordenDetalleDto) {
+  public ResponseEntity<ServiceResult<Object>> ordenDetalle(
+      @RequestBody OrdenDetalleDto ordenDetalleDto) {
     
-    log.info("[Iniciando busqueda de ordene detalle de servicio | Controller]");
-    return ResponseEntity.ok(this.ordenDetalleService.buscarOrdenDetalle(ordenDetalleDto));
+    log.info("[Iniciando busqueda de orden detalle | Controller]");
     
+    ServiceResult<Object> resultado =
+        this.ordenDetalleService.buscarOrdenDetalle(ordenDetalleDto);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    // Caso normal (200)
+    return ResponseEntity.ok(resultado);
   }
+  
 }

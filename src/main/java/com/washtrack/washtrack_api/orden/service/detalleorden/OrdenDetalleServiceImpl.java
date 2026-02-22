@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
+import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenDetalleRepository;
 import com.washtrack.washtrack_api.orden.service.IOrdenDetalleService;
@@ -31,10 +32,10 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<OrdenDetalleDto> buscarOrdenDetalle(OrdenDetalleDto detalleDto) {
+  public ServiceResult<Object> buscarOrdenDetalle(OrdenDetalleDto detalleDto) {
     log.info("[Iniciando buscar orden <Service>]");
     
-    ServiceResult<OrdenDetalleDto> serviceResult;
+    ServiceResult<Object> serviceResult;
     
     // Mapear Request → Entity (solo criterios de busqueda)
     DetalleOrdenEntity detalleOrdenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(detalleDto);
@@ -75,7 +76,19 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
               false,
               ConstantesOrdenes.ERROR_BD,
               ConstantesNumericas.CERO,
-              null
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al buscar el detalle de orden | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultBuscarOrdenDetalle(
+              false,
+              ConstantesOrdenes.ERROR_SERVER,
+              ConstantesNumericas.CERO,
+              ApiErrorCode.ERROR_INTERNO
           );
     }
     finally {
