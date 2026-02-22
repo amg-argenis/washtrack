@@ -1,17 +1,17 @@
 package com.washtrack.washtrack_api.orden.controller;
 
-import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.orden.service.IOrdenDetalleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
 
 @Slf4j
 @Validated
@@ -20,17 +20,24 @@ import java.util.List;
 @RestController
 public class OrdenDetalleController {
   
+  private final IOrdenDetalleService ordenDetalleService;
+  
+  public OrdenDetalleController(IOrdenDetalleService ordenDetalleService) {
+    this.ordenDetalleService = ordenDetalleService;
+  }
+  
   // POST /ordenes/{ordenId}/detalles
+  
   /**
    * Listar ordenes de servicio | Controller
    *
    * @return
    */
   @PostMapping("/ordenes/{ordenId}/detalles")
-  public ResponseEntity<ServiceResult<List<OrdenesDto>>> ordenDetalle() {
+  public ResponseEntity<ServiceResult<OrdenDetalleDto>> ordenDetalle(@PathVariable String idOrden) {
     
-    log.info("[Iniciando obtencion de ordenes servicio | Controller]");
-    return ResponseEntity.ok(this.ordenesService.listaOrdenesService());
+    log.info("[Iniciando guardar de ordene detalle de servicio | Controller]");
+    return ResponseEntity.ok(this.ordenDetalleService.buscarOrdenDetalle(idOrden));
     
   }
 }
