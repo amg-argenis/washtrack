@@ -163,7 +163,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Inicia insertarOrden | Repository]");
     
     ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_INSERT, ConstantesNumericas.CERO, null);
+        new ServiceResult<>(false, ConstantesOrdenes.ERROR_INSERT, ConstantesNumericas.CERO, null);
     
     try {
       // Ejecucion
@@ -187,13 +187,13 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       }
       else {
         serviceResult.setSuccess(false);
-        serviceResult.setMessage(ConstantesBaseDatos.ERROR_INSERT);
+        serviceResult.setMessage(ConstantesOrdenes.ERROR_INSERT);
         serviceResult.setData(codigobd);
       }
     }
     catch ( Exception e ) {
       log.error("[Exception | Error al insertar orden en la BD | Repository]: {}", e.getMessage(), e);
-      serviceResult.setMessage(ConstantesBaseDatos.ERROR_BD);
+      serviceResult.setMessage(ConstantesOrdenes.ERROR_BD);
     }
     finally {
       log.info("[Finaliza insertar nueva orden de servicio | Repository]");
@@ -215,7 +215,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Inicia actualizar orden servicio | Repository]");
     
     ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_ACTUALIZAR, ConstantesNumericas.CERO, null);
+        new ServiceResult<>(false, ConstantesOrdenes.ERROR_ACTUALIZAR, ConstantesNumericas.CERO, null);
     
     try {
       // Ejecucion
@@ -239,13 +239,13 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       }
       else {
         serviceResult.setSuccess(false);
-        serviceResult.setMessage(ConstantesBaseDatos.ERROR_ACTUALIZAR);
+        serviceResult.setMessage(ConstantesOrdenes.ERROR_ACTUALIZAR);
         serviceResult.setData(codigobd);
       }
     }
     catch ( Exception e ) {
       log.error("[Exception | Error al actualizar orden de servicio en la BD | Repository]: {}", e.getMessage(), e);
-      serviceResult.setMessage(ConstantesBaseDatos.ERROR_BD);
+      serviceResult.setMessage(ConstantesOrdenes.ERROR_BD);
     }
     finally {
       log.info("[Finaliza actualizar orden servicio | Repository]");
@@ -267,7 +267,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     log.info("[Inicia eliminar orden servicio | Repository]");
     
     ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesBaseDatos.ERROR_ELIMINAR, ConstantesNumericas.CERO, null);
+        new ServiceResult<>(false, ConstantesOrdenes.ERROR_ELIMINAR, ConstantesNumericas.CERO, null);
     
     try {
       // Ejecucion
@@ -291,13 +291,13 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       }
       else {
         serviceResult.setSuccess(false);
-        serviceResult.setMessage(ConstantesBaseDatos.ERROR_ELIMINAR);
+        serviceResult.setMessage(ConstantesOrdenes.ERROR_ELIMINAR);
         serviceResult.setData(codigobd);
       }
     }
     catch ( Exception e ) {
       log.error("[Exception | Error al eliminar orden de servicio en la BD | Repository]: {}", e.getMessage(), e);
-      serviceResult.setMessage(ConstantesBaseDatos.ERROR_BD);
+      serviceResult.setMessage(ConstantesOrdenes.ERROR_BD);
     }
     finally {
       log.info("[Finaliza eliminar orden servicio | Repository]");

@@ -119,7 +119,7 @@ public class InicializadorSimpleJdbcCall {
     
   }
   
-  // EJECUCIONES ******************************************************************************************************
+  // EJECUCIONES EN BD *************************************************************************************************
   
   /**
    * Listar ordenes de servicio | Inithializer

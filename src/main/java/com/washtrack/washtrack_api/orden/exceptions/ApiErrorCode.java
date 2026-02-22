@@ -1,0 +1,40 @@
+package com.washtrack.washtrack_api.orden.exceptions;
+
+import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
+import org.springframework.http.HttpStatus;
+
+public enum ApiErrorCode {
+  
+  // 400
+  DATOS_INVALIDOS(HttpStatus.BAD_REQUEST, ConstantesOrdenes.DATOS_INVALIDOS),
+  
+  // 404
+  RECURSO_NO_ENCONTRADO(HttpStatus.NOT_FOUND, ConstantesOrdenes.SIN_REGISTROS),
+  
+  // 409
+  CONFLICTO_INTEGRIDAD(HttpStatus.CONFLICT, ConstantesOrdenes.ERROR_BD_INTEGRIDAD),
+  
+  // 503
+  BASE_DATOS_NO_DISPONIBLE(HttpStatus.SERVICE_UNAVAILABLE, ConstantesOrdenes.ERROR_BD_UNAVAILABLE),
+  
+  // 500
+  ERROR_BASE_DATOS(HttpStatus.INTERNAL_SERVER_ERROR, ConstantesOrdenes.ERROR_BD),
+  
+  ERROR_INTERNO(HttpStatus.INTERNAL_SERVER_ERROR, ConstantesOrdenes.ERROR_SERVER);
+  
+  private final HttpStatus httpStatus;
+  private final String message;
+  
+  ApiErrorCode(HttpStatus httpStatus, String message) {
+    this.httpStatus = httpStatus;
+    this.message = message;
+  }
+  
+  public HttpStatus getHttpStatus() {
+    return httpStatus;
+  }
+  
+  public String getMessage() {
+    return message;
+  }
+}

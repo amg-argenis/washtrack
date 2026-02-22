@@ -33,11 +33,11 @@ public class OrdenDetalleController {
    *
    * @return
    */
-  @PostMapping("/ordenes/{ordenId}/detalles")
-  public ResponseEntity<ServiceResult<OrdenDetalleDto>> ordenDetalle(@PathVariable String idOrden) {
+  @PostMapping("/ordenes/detalles/buscar")
+  public ResponseEntity<ServiceResult<OrdenDetalleDto>> ordenDetalle(@RequestBody OrdenDetalleDto ordenDetalleDto) {
     
-    log.info("[Iniciando guardar de ordene detalle de servicio | Controller]");
-    return ResponseEntity.ok(this.ordenDetalleService.buscarOrdenDetalle(idOrden));
+    log.info("[Iniciando busqueda de ordene detalle de servicio | Controller]");
+    return ResponseEntity.ok(this.ordenDetalleService.buscarOrdenDetalle(ordenDetalleDto));
     
   }
 }

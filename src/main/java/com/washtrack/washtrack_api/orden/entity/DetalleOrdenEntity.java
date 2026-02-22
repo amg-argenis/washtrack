@@ -1,7 +1,9 @@
 package com.washtrack.washtrack_api.orden.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class DetalleOrdenEntity {
   
