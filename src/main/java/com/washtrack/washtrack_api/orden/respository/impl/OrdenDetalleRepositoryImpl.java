@@ -3,7 +3,6 @@ package com.washtrack.washtrack_api.orden.respository.impl;
 import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
-import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.respository.IOrdenDetalleRepository;
 import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorOrdenDetallaSimpJdbcCall;
 import lombok.extern.slf4j.Slf4j;

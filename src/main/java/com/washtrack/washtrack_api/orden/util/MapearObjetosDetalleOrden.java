@@ -5,8 +5,10 @@ import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class MapearObjetosDetalleOrden {
   
@@ -17,7 +19,7 @@ public class MapearObjetosDetalleOrden {
    * @return
    */
   public DetalleOrdenEntity mapearDtoToentityDetalleOrden(OrdenDetalleDto ordenDetalleDto) {
-    
+    log.info("[Mapeando a Entity objeto orden detalle...]");
     return DetalleOrdenEntity.builder()
         .idDetalleOrden(ordenDetalleDto.getIdDetalleOrden())
         .ordenId(ordenDetalleDto.getOrdenId())
@@ -31,6 +33,7 @@ public class MapearObjetosDetalleOrden {
    * @return
    */
   public OrdenDetalleDto mapearEntityTodtoOrdenDetalle(DetalleOrdenEntity ordenEntity) {
+    log.info("[Mapeando a DTO objeto orden detalle...]");
     
     return OrdenDetalleDto.builder()
         .idDetalleOrden(ordenEntity.getIdDetalleOrden())
