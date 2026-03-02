@@ -77,13 +77,14 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
       // OUT parameter seguro
       codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
       log.info("[Mensaje BD: {}]", pamensaje);
+      log.info("[Codigo BD Insertar nuevo detalle orden de servicio | Repository]: {}", codigobd);
       
       if ( codigobd == null ) {
         log.warn("El SP no devolvio pa_codigobd, se asume error.");
         codigobd = 1;
       }
-      log.info("[Codigo BD Insertar nuevo detalle orden de servicio | Repository]: {}", codigobd);
       
     }
     catch ( DataAccessException e ) {

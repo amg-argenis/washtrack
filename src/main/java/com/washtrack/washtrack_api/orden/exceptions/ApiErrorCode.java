@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 
 public enum ApiErrorCode {
   
+  // 200
+  OPERACION_EXITOSA(HttpStatus.OK, ConstantesOrdenes.OPERACION_EXITOSA),
+  
   // 400
   DATOS_INVALIDOS(HttpStatus.BAD_REQUEST, ConstantesOrdenes.DATOS_INVALIDOS),
   

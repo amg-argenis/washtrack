@@ -33,7 +33,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    */
   @Override
   public List<OrdenesEntity> listarOrdenesRepository() {
-    log.info("[Iniciando listarOrdenesRepository | Repository]");
+    log.info("[Inicia listar ordenes de servicio | Repository]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
     Map<String, Object> resultado;
@@ -44,23 +44,30 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
-      log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null ) {
         log.warn("El SP no devolvio pa_codigobd, se asume error.");
-        codigobd = ConstantesNumericas.UNO;
       }
       else {
         lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
       }
-      log.info("[Codigo BD <listarOrdenesRepository>]: {}", codigobd);
-      
     }
     catch ( DataAccessException e ) {
-      log.error("[Error al obtener listado de ordenes desde la BD <listarOrdenesRepository>]", e);
+      log.error(
+          "[DataAccessException | Error al obtener listado de ordenes de servicio desde la BD "
+              + "| Repository | Mas detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar orden de servicio en la BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
     }
     finally {
-      log.info("[Finalizando listarOrdenesRepository | Repository]");
+      log.info("[Finaliza listar ordenes de servicio | Repository]");
     }
     
     // ResultSet
@@ -74,35 +81,40 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    */
   @Override
   public List<OrdenesEntity> listarOrdenesFechaIngresoRepository(LocalDate fechaIngreso) {
-    log.info("[Iniciando listar Ordenes Fecha Ingreso Repository fecha ingreso | Repository]");
+    log.info("[Inicia listar ordenes de servicio por fecha ingreso | Repository]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
-    Map<String, Object> resultado;
     try {
       // Ejecucion
-      resultado = this.inicializador.listarOrdenesFechaIngresoCallJdbc(fechaIngreso);
+      Map<String, Object> resultado = this.inicializador.listarOrdenesFechaIngresoCallJdbc(fechaIngreso);
       
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
-      log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
-        codigobd = ConstantesNumericas.UNO;
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
       }
       else {
         lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
       }
-      log.info("[Codigo BD <listarOrdenesFechaIngresoRepository> fecha ingreso]: {}", codigobd);
-      
     }
     catch ( DataAccessException e ) {
-      log.error("[Error al obtener listado de ordenes fecha ingreso desde la BD <listarOrdenesFechaIngresoRepository>]",
-          e);
+      log.error(
+          "[DataAccessException | Error al obtener listado de ordenes fecha ingreso desde la BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar orden de servicio por fecha ingreso en la BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
     }
     finally {
-      log.info("[Finalizando listar Ordenes Fecha Ingreso Repository fecha ingreso| Repository]");
+      log.info("[Finaliza listar ordenes de servicio por fecha ingreso | Repository]");
     }
     
     // ResultSet
@@ -117,7 +129,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
   @Override
   public OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden) {
     
-    log.info("[Iniciando buscarOrden | Repository]");
+    log.info("[Inicia buscar orden de servicio | Repository]");
     
     try {
       Map<String, Object> resultado = this.inicializador.buscarOrdenCallJdbc(orden);
@@ -127,10 +139,9 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       String pamensaje =
           (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd != null && codigobd == 0 ) {
-        
         List<OrdenesEntity> lista =
             (List<OrdenesEntity>) resultado.get("ordenrecuperada");
         
@@ -143,11 +154,16 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
     }
     catch ( DataAccessException e ) {
-      log.error("[Error al buscar orden en BD]", e);
-      return null;
+      log.error("[DataAccessException | Error al buscar orden de servicio en BD]", e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al buscar orden de servicio en la BD | Repository]: {}", e.getMessage(),
+          e);
+      throw e;
     }
     finally {
-      log.info("[Finalizando buscarOrden | Repository]");
+      log.info("[Finaliza buscar orden de servicio | Repository]");
     }
   }
   
@@ -158,48 +174,43 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public ServiceResult<Integer> insertarOrdenRepository(OrdenesEntity orden) {
+  public Integer insertarOrdenRepository(OrdenesEntity orden) {
     
-    log.info("[Inicia insertarOrden | Repository]");
+    log.info("[Inicia insertar rden servicio | Repository]");
     
-    ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesOrdenes.ERROR_INSERT, ConstantesNumericas.CERO, null);
+    Integer codigobd;
     
     try {
       // Ejecucion
       Map<String, Object> resultado = this.inicializador.insertarOrden(orden);
       
       // OUT parameter seguro
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
-      log.info("[Mensaje BD: {}]", pamensaje);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
         codigobd = 1;
       }
-      log.info("[Codigo BD Insertar nueva orden de servicio | Repository]: {}", codigobd);
-      
-      if ( codigobd == ConstantesNumericas.CERO ) {
-        serviceResult.setSuccess(true);
-        serviceResult.setMessage(ConstantesOrdenes.OPERACION_EXITOSA);
-        serviceResult.setData(codigobd);
-      }
-      else {
-        serviceResult.setSuccess(false);
-        serviceResult.setMessage(ConstantesOrdenes.ERROR_INSERT);
-        serviceResult.setData(codigobd);
-      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al insertar orden de servicio en BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error al insertar orden en la BD | Repository]: {}", e.getMessage(), e);
-      serviceResult.setMessage(ConstantesOrdenes.ERROR_BD);
+      log.error("[Exception | Error critico al insertar orden de servicio en la BD | Repository]: {}", e.getMessage(),
+          e);
+      throw e;
     }
     finally {
-      log.info("[Finaliza insertar nueva orden de servicio | Repository]");
+      log.info("[Finaliza insertar rden servicio | Repository]");
     }
     
-    return serviceResult;
+    return codigobd;
     
   }
   
@@ -210,48 +221,42 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public ServiceResult<Integer> actualizarOrdenRepository(OrdenesEntity orden) {
+  public Integer actualizarOrdenRepository(OrdenesEntity orden) {
     
     log.info("[Inicia actualizar orden servicio | Repository]");
     
-    ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesOrdenes.ERROR_ACTUALIZAR, ConstantesNumericas.CERO, null);
+    Integer codigobd;
     
     try {
       // Ejecucion
       Map<String, Object> resultado = this.inicializador.actualizarOrden(orden);
       
       // OUT parameter seguro
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
-      log.info("[Mensaje BD: {}]", pamensaje);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
         codigobd = 1;
       }
-      log.info("[Codigo BD Actualizar nueva orden de servicio | Repository]: {}", codigobd);
-      
-      if ( codigobd == ConstantesNumericas.CERO ) {
-        serviceResult.setSuccess(true);
-        serviceResult.setMessage(ConstantesOrdenes.OPERACION_EXITOSA);
-        serviceResult.setData(codigobd);
-      }
-      else {
-        serviceResult.setSuccess(false);
-        serviceResult.setMessage(ConstantesOrdenes.ERROR_ACTUALIZAR);
-        serviceResult.setData(codigobd);
-      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar la orden de servicio en BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error al actualizar orden de servicio en la BD | Repository]: {}", e.getMessage(), e);
-      serviceResult.setMessage(ConstantesOrdenes.ERROR_BD);
+      log.error("[Exception | Error al actualizar la orden de servicio en la BD | Repository]: {}", e.getMessage(), e);
+      throw e;
     }
     finally {
       log.info("[Finaliza actualizar orden servicio | Repository]");
     }
     
-    return serviceResult;
+    return codigobd;
     
   }
   
@@ -262,48 +267,42 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public ServiceResult<Integer> eliminarOrdenRepository(OrdenesEntity orden) {
+  public Integer eliminarOrdenRepository(OrdenesEntity orden) {
     
     log.info("[Inicia eliminar orden servicio | Repository]");
     
-    ServiceResult<Integer> serviceResult =
-        new ServiceResult<>(false, ConstantesOrdenes.ERROR_ELIMINAR, ConstantesNumericas.CERO, null);
+    Integer codigobd;
     
     try {
       // Ejecucion
       Map<String, Object> resultado = this.inicializador.eliminarOrden(orden);
       
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Mensaje BD: {}]", pamensaje);
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null ) {
         log.warn("El SP no devolvio pa_codigobd, se asume error.");
         codigobd = 1;
       }
-      log.info("[Codigo BD Eliminar nueva orden de servicio | Repository]: {}", codigobd);
       
-      if ( codigobd == ConstantesNumericas.CERO ) {
-        serviceResult.setSuccess(true);
-        serviceResult.setMessage(ConstantesOrdenes.OPERACION_EXITOSA);
-        serviceResult.setData(codigobd);
-      }
-      else {
-        serviceResult.setSuccess(false);
-        serviceResult.setMessage(ConstantesOrdenes.ERROR_ELIMINAR);
-        serviceResult.setData(codigobd);
-      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al eliminar la orden de servicio en BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
     }
     catch ( Exception e ) {
       log.error("[Exception | Error al eliminar orden de servicio en la BD | Repository]: {}", e.getMessage(), e);
-      serviceResult.setMessage(ConstantesOrdenes.ERROR_BD);
+      throw e;
     }
     finally {
       log.info("[Finaliza eliminar orden servicio | Repository]");
     }
     
-    return serviceResult;
+    return codigobd;
     
   }
   

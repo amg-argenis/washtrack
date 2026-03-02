@@ -8,11 +8,14 @@ import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
+import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenesRepository;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import com.washtrack.washtrack_api.orden.util.MapearObjetos;
+import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,10 +29,13 @@ public class OrdenesServiceImpl implements IOrdenesService {
   
   private final IOrdenesRepository ordenesRepository;
   private final MapearObjetos mapearObjetos;
+  private final MapearRespuestasConsultas mapearRespuestasConsultas;
   
-  public OrdenesServiceImpl(IOrdenesRepository ordenesRepository, MapearObjetos mapearObjetos) {
+  public OrdenesServiceImpl(IOrdenesRepository ordenesRepository, MapearObjetos mapearObjetos,
+      MapearRespuestasConsultas mapearRespuestasConsultas) {
     this.ordenesRepository = ordenesRepository;
     this.mapearObjetos = mapearObjetos;
+    this.mapearRespuestasConsultas = mapearRespuestasConsultas;
   }
   
   /**
@@ -38,24 +44,70 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<List<OrdenesDto>> listaOrdenesService() {
-    log.info("[Iniciando lista de ordenes <Service>]");
-    List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesRepository();
-    ServiceResult<List<OrdenesDto>> result;
+  public ServiceResult<Object> listaOrdenesService() {
+    log.info("[Inicia listar ordenes de servicio | Service]");
     
-    if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
-      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, ConstantesNumericas.CERO, List.of());
-    }
-    else {
-      // Mapear a OrdenesEntity -> OrdenesDto
-      List<OrdenesDto> ordenesDtoList = new ArrayList<>();
-      for (OrdenesEntity ordenesEntity : resultadoRepository) {
-        ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      
+      List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesRepository();
+      
+      if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.SIN_REGISTROS,
+                List.of()
+            );
       }
-      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList.size(), ordenesDtoList);
+      else {
+        // Mapear a OrdenesEntity -> OrdenesDto
+        List<OrdenesDto> ordenesDtoList = new ArrayList<>();
+        for (OrdenesEntity ordenesEntity : resultadoRepository) {
+          ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
+        }
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ordenesDtoList.size(),
+                ordenesDtoList
+            );
+      }
     }
-    log.info("[Finaliza lista de ordenes <Service>]");
-    return result;
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al obtener listado de ordenes de servicio "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar orden de servicio | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza listar ordenes de servicio | Service]");
+    }
+    
+    return serviceResult;
   }
   
   /**
@@ -64,24 +116,69 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<List<OrdenesDto>> listaOrdenesFechaIngresoService(LocalDate fechaIngreso) {
-    log.info("[Iniciando lista de ordenes por fecha ingreso <Service>]");
-    List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesFechaIngresoRepository(fechaIngreso);
-    ServiceResult<List<OrdenesDto>> result;
+  public ServiceResult<Object> listaOrdenesFechaIngresoService(LocalDate fechaIngreso) {
+    log.info("[Inicia listar ordenes de servicio por fecha ingreso | Service]");
     
-    if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
-      result = new ServiceResult<>(false, ConstantesOrdenes.SIN_REGISTROS, ConstantesNumericas.CERO, List.of());
-    }
-    else {
-      // Mapear a OrdenesEntity -> OrdenesDto
-      List<OrdenesDto> ordenesDtoList = new ArrayList<>();
-      for (OrdenesEntity ordenesEntity : resultadoRepository) {
-        ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      List<OrdenesEntity> resultadoRepository =
+          this.ordenesRepository.listarOrdenesFechaIngresoRepository(fechaIngreso);
+      
+      if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.SIN_REGISTROS,
+                List.of()
+            );
       }
-      result = new ServiceResult<>(true, ConstantesOrdenes.OPERACION_EXITOSA, ordenesDtoList.size(), ordenesDtoList);
+      else {
+        // Mapear a OrdenesEntity -> OrdenesDto
+        List<OrdenesDto> ordenesDtoList = new ArrayList<>();
+        for (OrdenesEntity ordenesEntity : resultadoRepository) {
+          ordenesDtoList.add(this.mapearObjetos.mapearOrdenAdto(ordenesEntity));
+        }
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ordenesDtoList.size(),
+                ordenesDtoList
+            );
+      }
     }
-    log.info("[Finaliza lista de ordenes fecha ingreso <Service>]");
-    return result;
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al obtener listado de ordenes de servicio por fecha ingreso "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al obtener listado de ordenes de servicio por fecha ingreso"
+              + " | Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    
+    log.info("[Finaliza listar ordenes de servicio por fecha ingreso | Service]");
+    
+    return serviceResult;
   }
   
   /**
@@ -90,34 +187,64 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<OrdenesDto> buscarOrdenService(BuscarOrdenRequest ordenRequest) {
-    log.info("[Iniciando buscar orden <Service>]");
+  public ServiceResult<Object> buscarOrdenService(BuscarOrdenRequest ordenRequest) {
+    log.info("[Inicia buscar orden de servicio | Service]");
     
-    // Mapear Request → Entity (solo criterios de búsqueda)
-    OrdenesEntity criterioBusqueda = this.mapearObjetos.mapearOrdenRequestAentity(ordenRequest);
+    ServiceResult<Object> serviceResult = null;
     
-    OrdenesEntity resultado = ordenesRepository.buscarOrdenServicioRepository(criterioBusqueda);
-    
-    if ( resultado == null ) {
-      log.info("[Orden no encontrada | Service]");
-      return new ServiceResult<>(
-          false,
-          ConstantesOrdenes.SIN_REGISTROS,
-          ConstantesNumericas.CERO,
-          null
+    try {
+      // Mapear Request → Entity (solo criterios de busqueda)
+      OrdenesEntity criterioBusqueda = this.mapearObjetos.mapearOrdenRequestAentity(ordenRequest);
+      
+      OrdenesEntity resultado = ordenesRepository.buscarOrdenServicioRepository(criterioBusqueda);
+      
+      if ( resultado == null ) {
+        log.info("[Orden no encontrada | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.RECURSO_NO_ENCONTRADO
+        );
+      }
+      
+      // Mapear Entity → DTO (respuesta)
+      OrdenesDto ordenDto = this.mapearObjetos.mapearOrdenAdto(resultado);
+      serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+          ConstantesOrdenes.OPERACION_EXITOSA,
+          ConstantesNumericas.UNO, ordenDto
       );
     }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al buscar ordene de servicio "
+              + "| Repository | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al buscar orden de servicio | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
     
-    // Mapear Entity → DTO (respuesta)
-    OrdenesDto ordenDto = this.mapearObjetos.mapearOrdenAdto(resultado);
-    
-    log.info("[Finaliza buscar orden <Service>]");
-    return new ServiceResult<>(
-        true,
-        ConstantesOrdenes.OPERACION_EXITOSA,
-        ConstantesNumericas.UNO,
-        ordenDto
-    );
+    log.info("[Finaliza buscar orden de servicio | Service]");
+    return serviceResult;
   }
   
   /**
@@ -126,10 +253,12 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<Integer> guardarOrdenService(InsertarOrdenRequest ordenDto) {
-    log.info("[Inicia guardar nueva orden <Service>]");
+  public ServiceResult<Object> guardarOrdenService(InsertarOrdenRequest ordenDto) {
+    log.info("[Inicia guardar nueva orden de servicio | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
     try {
-      
       /**
        * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
        * Obtener el UUID -- OK
@@ -142,22 +271,56 @@ public class OrdenesServiceImpl implements IOrdenesService {
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
       
-      ServiceResult<Integer> serviceResult = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
-      return serviceResult;
+      Integer resp = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
       
+      if ( resp != null && resp == ConstantesNumericas.CERO ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                // Devolver al cliente el propio objeto que se envia a la BD, sin SELECT adicional en la BD
+                ordenDto
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_INSERT,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al insertar la orden de servicio | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
     }
     catch ( Exception e ) {
-      log.error("[Error al guardar nueva orden de servicio, Exception | Service]: {}", e.getMessage(), e);
-      return new ServiceResult<>(
-          false,
-          "Error inesperado en el servicio insertar nueva orden.",
-          ConstantesNumericas.CERO,
-          null
-      );
+      log.error("[Exception | Error al guardar la nueva orden de servicio | Service]: {}", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
     }
     finally {
-      log.info("[Finaliza guardar nueva orden <Service>]");
+      log.info("[Finaliza guardar nueva orden de servicio | Service]");
     }
+    return serviceResult;
   }
   
   /**
@@ -166,29 +329,73 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<Integer> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto) {
-    log.info("[Inicia actualizar orden de servicio <Service>]");
+  public ServiceResult<Object> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto) {
+    log.info("[Inicia actualizar orden de servicio | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
     try {
-      
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
       
-      ServiceResult<Integer> serviceResult = this.ordenesRepository.actualizarOrdenRepository(ordenEntity);
-      return serviceResult;
+      Integer resp = this.ordenesRepository.actualizarOrdenRepository(ordenEntity);
       
+      if ( resp != null && resp == ConstantesNumericas.CERO ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                // Devolver al cliente el propio objeto que se envia a la BD, sin SELECT adicional en la BD
+                ordenDto
+            );
+      }
+      else if ( resp != null && resp == ConstantesNumericas.DOS ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ACTUALIZAR,
+                ApiErrorCode.RECURSO_NO_ENCONTRADO
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ACTUALIZAR,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar la orden de servicio | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
     }
     catch ( Exception e ) {
-      log.error("[Error al actualizar la orden de servicio, Exception | Service]: {}", e.getMessage(), e);
-      return new ServiceResult<>(
-          false,
-          "Error inesperado en el servicio actualizar orden de servicio.",
-          ConstantesNumericas.CERO,
-          null
-      );
+      log.error("[Exception | Error al actualizar la nueva orden de servicio | Service]: {}", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
     }
     finally {
-      log.info("[Finaliza actualizar orden de servicio <Service>]");
+      log.info("[Finaliza actualizar orden de servicio | Service]");
     }
+    
+    return serviceResult;
   }
   
   /**
@@ -197,29 +404,62 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<Integer> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto) {
-    log.info("[Inicia eliminar orden de servicio <Service>]");
+  public ServiceResult<Object> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto) {
+    log.info("[Inicia eliminar orden de servicio | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
     try {
-      
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
       
-      ServiceResult<Integer> serviceResult = this.ordenesRepository.eliminarOrdenRepository(ordenEntity);
-      return serviceResult;
-      
+      Integer resp = this.ordenesRepository.eliminarOrdenRepository(ordenEntity);
+      if ( resp != null && resp == ConstantesNumericas.CERO ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                ApiErrorCode.OPERACION_EXITOSA
+            );
+      }
+      else if ( resp != null && resp == ConstantesNumericas.DOS ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ELIMINAR,
+                ApiErrorCode.RECURSO_NO_ENCONTRADO
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ELIMINAR,
+                ApiErrorCode.ERROR_INTERNO
+            );
+      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar la orden de servicio | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
     }
     catch ( Exception e ) {
-      log.error("[Error al eliminar la orden de servicio, Exception | Service]: {}", e.getMessage(), e);
-      return new ServiceResult<>(
-          false,
-          "Error inesperado en el servicio eliminar orden de servicio.",
-          ConstantesNumericas.CERO,
-          null
-      );
+      log.error("[Exception | Error al actualizar la nueva orden de servicio | Service]: {}", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
     }
     finally {
-      log.info("[Finaliza eliminar orden de servicio <Service>]");
+      log.info("[Finaliza eliminar orden de servicio | Service]");
     }
+    
+    return serviceResult;
   }
   
 }

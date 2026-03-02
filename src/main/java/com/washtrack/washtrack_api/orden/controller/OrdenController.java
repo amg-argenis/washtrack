@@ -5,6 +5,7 @@ import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
+import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import jakarta.validation.Valid;
@@ -43,10 +44,21 @@ public class OrdenController {
    * @return
    */
   @GetMapping("/ordenes/listar")
-  public ResponseEntity<ServiceResult<List<OrdenesDto>>> obtenerOrdenes() {
+  public ResponseEntity<ServiceResult<Object>> listarOrdenesController() {
     
     log.info("[Iniciando obtencion de ordenes servicio | Controller]");
-    return ResponseEntity.ok(this.ordenesService.listaOrdenesService());
+    
+    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesService();
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
     
   }
   
@@ -56,14 +68,26 @@ public class OrdenController {
    * @return
    */
   @GetMapping("/ordenes/fechaingreso")
-  public ServiceResult<List<OrdenesDto>> obtenerOrdenesPorFehcaIngreso(
+  public ResponseEntity<ServiceResult<Object>> obtenerOrdenesPorFehcaIngresoController(
       @RequestParam
       @NotNull(message = "La fecha de ingreso es obligatoria")
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate fechaIngreso) {
     
     log.info("[Iniciando obtencion de ordenes servicio por fecha de ingreso | Controller]");
-    return this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
+    
+    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
   }
   
   /**
@@ -72,10 +96,22 @@ public class OrdenController {
    * @return
    */
   @PostMapping("/ordenes/buscar")
-  public ResponseEntity<ServiceResult<OrdenesDto>> buscarOrden(@Valid @RequestBody BuscarOrdenRequest orden) {
+  public ResponseEntity<ServiceResult<Object>> buscarOrdenController(@Valid @RequestBody BuscarOrdenRequest orden) {
     
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
-    return ResponseEntity.ok(this.ordenesService.buscarOrdenService(orden));
+    
+    ServiceResult<Object> resultado = this.ordenesService.buscarOrdenService(orden);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
     
   }
   
@@ -85,10 +121,22 @@ public class OrdenController {
    * @return
    */
   @PostMapping("/ordenes/crear")
-  public ResponseEntity<ServiceResult<Integer>> guardarOrden(@Valid @RequestBody InsertarOrdenRequest orden) {
+  public ResponseEntity<ServiceResult<Object>> guardarOrdenController(@Valid @RequestBody InsertarOrdenRequest orden) {
     
     log.info("[Iniciando insercion de orden servicio | Controller]");
-    return ResponseEntity.ok(this.ordenesService.guardarOrdenService(orden));
+    
+    ServiceResult<Object> resultado = this.ordenesService.guardarOrdenService(orden);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
     
   }
   
@@ -98,11 +146,23 @@ public class OrdenController {
    * @return
    */
   @PostMapping("/ordenes/actualizar")
-  public ResponseEntity<ServiceResult<Integer>> actualizarOrden(
+  public ResponseEntity<ServiceResult<Object>> actualizarOrdenController(
       @Valid @RequestBody ActualizarOrdenServicioRequest orden) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
-    return ResponseEntity.ok(this.ordenesService.actualizarOrdenService(orden));
+    
+    ServiceResult<Object> resultado = this.ordenesService.actualizarOrdenService(orden);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
     
   }
   
@@ -112,10 +172,23 @@ public class OrdenController {
    * @return
    */
   @PostMapping("/ordenes/eliminar")
-  public ResponseEntity<ServiceResult<Integer>> eliminarOrden(@Valid @RequestBody EliminarOrdenServicioRequest orden) {
+  public ResponseEntity<ServiceResult<Object>> eliminarOrdenController(
+      @Valid @RequestBody EliminarOrdenServicioRequest orden) {
     
-    log.info("[Iniciando actualizacion de orden servicio | Controller]");
-    return ResponseEntity.ok(this.ordenesService.eliminarOrdenService(orden));
+    log.info("[Inicia eliminar orden de servicio | Controller]");
+    
+    ServiceResult<Object> resultado = this.ordenesService.eliminarOrdenService(orden);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
     
   }
   

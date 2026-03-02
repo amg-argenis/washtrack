@@ -14,10 +14,10 @@ public interface IOrdenesRepository {
   
   OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden);
   
-  ServiceResult<Integer> insertarOrdenRepository(OrdenesEntity orden);
+  Integer insertarOrdenRepository(OrdenesEntity orden);
   
-  ServiceResult<Integer> actualizarOrdenRepository(OrdenesEntity orden);
+  Integer actualizarOrdenRepository(OrdenesEntity orden);
   
-  ServiceResult<Integer> eliminarOrdenRepository(OrdenesEntity orden);
+  Integer eliminarOrdenRepository(OrdenesEntity orden);
   
 }

@@ -4,11 +4,9 @@ import com.washtrack.washtrack_api.orden.dto.orden.ActualizarOrdenServicioReques
 import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Clase para gestionar la parte de negocio relacionada con las ordenes
@@ -16,16 +14,16 @@ import java.util.List;
 
 public interface IOrdenesService {
   
-  ServiceResult<List<OrdenesDto>> listaOrdenesService();
+  ServiceResult<Object> listaOrdenesService();
   
-  ServiceResult<List<OrdenesDto>> listaOrdenesFechaIngresoService(LocalDate fechaIngreso);
+  ServiceResult<Object> listaOrdenesFechaIngresoService(LocalDate fechaIngreso);
   
-  ServiceResult<OrdenesDto> buscarOrdenService(BuscarOrdenRequest ordenDto);
+  ServiceResult<Object> buscarOrdenService(BuscarOrdenRequest ordenDto);
   
-  ServiceResult<Integer> guardarOrdenService(InsertarOrdenRequest ordenDto);
+  ServiceResult<Object> guardarOrdenService(InsertarOrdenRequest ordenDto);
   
-  ServiceResult<Integer> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto);
+  ServiceResult<Object> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto);
   
-  ServiceResult<Integer> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto);
+  ServiceResult<Object> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto);
   
 }
