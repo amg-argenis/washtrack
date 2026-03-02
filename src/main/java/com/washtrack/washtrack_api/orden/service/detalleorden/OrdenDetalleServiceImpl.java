@@ -15,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -32,7 +33,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<Object> buscarOrdenDetalle(OrdenDetalleDto detalleDto) {
+  public ServiceResult<Object> buscarOrdenDetalleService(OrdenDetalleDto detalleDto) {
     log.info("[Iniciando buscar orden <Service>]");
     
     ServiceResult<Object> serviceResult;
@@ -47,35 +48,26 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
       if ( resultado == null ) {
         log.info("[Orden detalle no encontrada | Service]");
         serviceResult =
-            this.mapearRespuestasConsultas.mapearserviceResultBuscarOrdenDetalle(
-                false,
-                ConstantesOrdenes.SIN_REGISTROS,
-                ConstantesNumericas.CERO,
-                null
-            );
+            this.mapearRespuestasConsultas.mapearserviceResultError(ConstantesOrdenes.SIN_REGISTROS, resultado);
       }
       else {
         // Mapear Entity → DTO (respuesta)
         OrdenDetalleDto ordenDetalleDtoResp = this.mapearObjetosDetalleOrden.mapearEntityTodtoOrdenDetalle(resultado);
         serviceResult =
-            this.mapearRespuestasConsultas.mapearserviceResultBuscarOrdenDetalle(
-                true,
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
                 ConstantesNumericas.UNO,
                 ordenDetalleDtoResp
             );
       }
-      
     }
     catch ( DataAccessException e ) {
       log.error("[DataAccessException | Error al buscar el detalle de orden en BD | Service | Mas detalles: {}]",
           e.getMessage(), e);
       
       serviceResult =
-          this.mapearRespuestasConsultas.mapearserviceResultBuscarOrdenDetalle(
-              false,
+          this.mapearRespuestasConsultas.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
-              ConstantesNumericas.CERO,
               ApiErrorCode.ERROR_BASE_DATOS
           );
     }
@@ -84,10 +76,8 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
           e.getMessage(), e);
       
       serviceResult =
-          this.mapearRespuestasConsultas.mapearserviceResultBuscarOrdenDetalle(
-              false,
+          this.mapearRespuestasConsultas.mapearserviceResultError(
               ConstantesOrdenes.ERROR_SERVER,
-              ConstantesNumericas.CERO,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -100,43 +90,64 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<List<OrdenDetalleDto>> listarOrdenDetalle() {
-    return null;
+  public ServiceResult<Object> guardarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
+    log.info("[Inicia guardar detalle orden <Service>]");
+    ServiceResult<Object> serviceResult;
+    try {
+      
+      /**
+       * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
+       * Obtener el UUID -- OK
+       */
+      
+      UUID uuid = UUID.randomUUID();
+      ordenDetalleDto.setIdDetalleOrden(uuid.toString());
+      ordenDetalleDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
+      log.info("[Insert detalle orden | UUID generado: '{}']", ordenDetalleDto.getIdDetalleOrden());
+      
+      // Mapear a OrdenesEntity
+      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
+      
+      Integer resp = this.detalleRepository.insertarOrdenDetalleRepository(ordenEntity);
+      if ( resp != null && resp == ConstantesNumericas.CERO ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                resp
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_INSERT,
+                null
+            );
+      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al buscar el detalle de orden en BD | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al guardar nuevo detalle orden de servicio, Exception | Service]: {}", e.getMessage(),
+          e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_SERVER,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza guardar detalle orden <Service>]");
+    }
+    return serviceResult;
   }
   
-  @Override
-  public ServiceResult<Integer> guardarOrdenDetalle(OrdenDetalleDto ordenDetalleDto) {
-    log.info("[Inicia guardar nueva orden <Service>]");
-    //    try {
-    //
-    //      /**
-    //       * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
-    //       * Obtener el UUID -- OK
-    //       */
-    //
-    //      UUID uuid = UUID.randomUUID();
-    //      ordenDetalleDto.setIdDetalleOrden(uuid.toString());
-    //      ordenDetalleDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
-    //
-    //      // Mapear a OrdenesEntity
-    //      OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDetalleDto);
-    //
-    //      ServiceResult<Integer> serviceResult = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
-    //      return serviceResult;
-    //
-    //    }
-    //    catch ( Exception e ) {
-    //      log.error("[Error al guardar nueva orden de servicio, Exception | Service]: {}", e.getMessage(), e);
-    //      return new ServiceResult<>(
-    //          false,
-    //          "Error inesperado en el servicio insertar nueva orden.",
-    //          ConstantesNumericas.CERO,
-    //          null
-    //      );
-    //    }
-    //    finally {
-    //      log.info("[Finaliza guardar nueva orden <Service>]");
-    //    }
-    return null;
-  }
 }

@@ -1,12 +1,12 @@
 package com.washtrack.washtrack_api.orden.util;
 
-import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
-import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -23,6 +23,12 @@ public class MapearObjetosDetalleOrden {
     return DetalleOrdenEntity.builder()
         .idDetalleOrden(ordenDetalleDto.getIdDetalleOrden())
         .ordenId(ordenDetalleDto.getOrdenId())
+        .procesoId(ordenDetalleDto.getProcesoId())
+        .tipoPrenda(ordenDetalleDto.getTipoPrenda())
+        .cantidad(ordenDetalleDto.getCantidad())
+        .colorReferencia(ordenDetalleDto.getColorReferencia())
+        // temporal por pruebas
+        .tenantId(ordenDetalleDto.getTenantId())
         .build();
   }
   
@@ -45,6 +51,20 @@ public class MapearObjetosDetalleOrden {
         // momentaneo para pruebas el tenant Id
         .tenantId(ordenEntity.getTenantId())
         .build();
+  }
+  
+  public Map<String, Object> parametrizarDetalleOrdenes(DetalleOrdenEntity detalleOrden) {
+    Map<String, Object> paramMap = new HashMap<>();
+    
+    paramMap.put("pa_idordendetalle", detalleOrden.getIdDetalleOrden());
+    paramMap.put("pa_ordenid", detalleOrden.getOrdenId());
+    paramMap.put("pa_procesoid", detalleOrden.getProcesoId());
+    paramMap.put("pa_tipoprenda", detalleOrden.getTipoPrenda());
+    paramMap.put("pa_cantidad", detalleOrden.getCantidad());
+    paramMap.put("pa_colorreferencia", detalleOrden.getColorReferencia());
+    paramMap.put("pa_tenantid", detalleOrden.getTenantId());
+    
+    return paramMap;
   }
   
 }

@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +29,7 @@ public class OrdenDetalleController {
   // POST /ordenes/{ordenId}/detalles
   
   /**
-   * Listar ordenes de servicio | Controller
+   * Buscar orden detalle de servicio | Controller
    *
    * @return
    */
@@ -38,10 +37,37 @@ public class OrdenDetalleController {
   public ResponseEntity<ServiceResult<Object>> ordenDetalle(
       @RequestBody OrdenDetalleDto ordenDetalleDto) {
     
-    log.info("[Iniciando busqueda de orden detalle | Controller]");
+    log.info("[Iniciando busqueda de detalle orden | Controller]");
     
     ServiceResult<Object> resultado =
-        this.ordenDetalleService.buscarOrdenDetalle(ordenDetalleDto);
+        this.ordenDetalleService.buscarOrdenDetalleService(ordenDetalleDto);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    // Caso normal (200)
+    return ResponseEntity.ok(resultado);
+  }
+  
+  /**
+   * Buscar orden detalle de servicio | Controller
+   *
+   * @return
+   */
+  @PostMapping("/ordenes/detalles/guardar")
+  public ResponseEntity<ServiceResult<Object>> guardarDetalleOrden(
+      @RequestBody OrdenDetalleDto ordenDetalleDto) {
+    
+    log.info("[Iniciando insercion de detalle orden | Controller]");
+    
+    ServiceResult<Object> resultado =
+        this.ordenDetalleService.guardarOrdenDetalleService(ordenDetalleDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       
