@@ -8,4 +8,10 @@ public interface IOrdenDetalleService {
   ServiceResult<Object> buscarOrdenDetalleService(OrdenDetalleDto detalleDto);
   
   ServiceResult<Object> guardarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
+  
+  interface IDetalleOrdenService {
+    
+    void agregarDetalleOrden();
+    
+  }
 }

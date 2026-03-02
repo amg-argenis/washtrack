@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.orden.service.impl;
+package com.washtrack.washtrack_api.orden.service.ordenservicioimpl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;

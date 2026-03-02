@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.orden.service.detalleorden;
+package com.washtrack.washtrack_api.orden.service.detalleordenimpl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
