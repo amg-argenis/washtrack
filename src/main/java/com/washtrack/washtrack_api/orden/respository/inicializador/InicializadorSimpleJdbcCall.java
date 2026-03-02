@@ -81,12 +81,22 @@ public class InicializadorSimpleJdbcCall {
             new SqlParameter("pa_clienteid", Types.VARCHAR),
             new SqlParameter("pa_fechaingreso", Types.VARCHAR),
             new SqlParameter("pa_estado", Types.VARCHAR),
-            new SqlParameter("pa_totalprendas", Types.VARCHAR),
+            new SqlParameter("pa_totalprendas", Types.INTEGER),
             new SqlParameter("pa_observaciones", Types.VARCHAR),
             new SqlParameter("pa_tenantid", Types.VARCHAR),
-            // OUT
+            // OUT control
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
-            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR),
+            // OUT campos insertados
+            new SqlOutParameter("po_idorden", Types.VARCHAR),
+            new SqlOutParameter("po_clienteid", Types.VARCHAR),
+            new SqlOutParameter("po_fechaingreso", Types.VARCHAR),
+            new SqlOutParameter("po_estado", Types.VARCHAR),
+            new SqlOutParameter("po_totalprendas", Types.INTEGER),
+            new SqlOutParameter("po_observaciones", Types.VARCHAR),
+            new SqlOutParameter("po_createdat", Types.TIMESTAMP),
+            new SqlOutParameter("po_tenantid", Types.VARCHAR),
+            new SqlOutParameter("po_fechaentrega", Types.DATE)
         );
     
     this.actualizarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)

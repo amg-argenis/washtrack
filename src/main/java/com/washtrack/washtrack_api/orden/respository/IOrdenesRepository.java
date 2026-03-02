@@ -14,7 +14,7 @@ public interface IOrdenesRepository {
   
   OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden);
   
-  Integer insertarOrdenRepository(OrdenesEntity orden);
+  OrdenesEntity insertarOrdenRepository(OrdenesEntity orden);
   
   Integer actualizarOrdenRepository(OrdenesEntity orden);
   

@@ -271,15 +271,16 @@ public class OrdenesServiceImpl implements IOrdenesService {
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);
       
-      Integer resp = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
+      OrdenesEntity ordenesEntity = this.ordenesRepository.insertarOrdenRepository(ordenEntity);
       
-      if ( resp != null && resp == ConstantesNumericas.CERO ) {
+      if ( ordenesEntity != null ) {
+        OrdenesDto ordenRespDto = this.mapearObjetos.mapearOrdenAdto(ordenesEntity);
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
                 ConstantesNumericas.UNO,
                 // Devolver al cliente el propio objeto que se envia a la BD, sin SELECT adicional en la BD
-                ordenDto
+                ordenRespDto
             );
       }
       else {

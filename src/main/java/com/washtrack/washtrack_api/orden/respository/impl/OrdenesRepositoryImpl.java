@@ -2,15 +2,15 @@ package com.washtrack.washtrack_api.orden.respository.impl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
-import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenesRepository;
 import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorSimpleJdbcCall;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,25 +174,38 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public Integer insertarOrdenRepository(OrdenesEntity orden) {
+  public OrdenesEntity insertarOrdenRepository(OrdenesEntity orden) {
     
-    log.info("[Inicia insertar rden servicio | Repository]");
-    
-    Integer codigobd;
+    log.info("[Inicia insertar orden servicio | Repository]");
+    OrdenesEntity ordenesEntity = new OrdenesEntity();
     
     try {
       // Ejecucion
       Map<String, Object> resultado = this.inicializador.insertarOrden(orden);
       
       // OUT parameter seguro
-      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
-        codigobd = 1;
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        // Mapear OUT campos insertados a tu entidad
+        ordenesEntity.setIdOrden((String) resultado.get("po_idorden"));
+        ordenesEntity.setClienteId((String) resultado.get("po_clienteid"));
+        ordenesEntity.setFolio((String) resultado.get("po_folio"));
+        ordenesEntity.setFechaIngreso((String) resultado.get("po_fechaingreso"));
+        ordenesEntity.setEstado((String) resultado.get("po_estado"));
+        ordenesEntity.setTotalPrendas((Integer) resultado.get("po_totalprendas"));
+        ordenesEntity.setObservaciones((String) resultado.get("po_observaciones"));
+        
+        Timestamp temp = (Timestamp) resultado.get("po_createdat");
+        ordenesEntity.setCreatedAt(temp.toString());
+        
+        ordenesEntity.setTenantId((String) resultado.get("po_tenantid"));
+        
+        Date temp2 = (Date) resultado.get("po_fechaentrega");
+        ordenesEntity.setFechaEntrega(temp2.toString());
       }
     }
     catch ( DataAccessException e ) {
@@ -207,11 +220,10 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       throw e;
     }
     finally {
-      log.info("[Finaliza insertar rden servicio | Repository]");
+      log.info("[Finaliza insertar orden servicio | Repository]");
     }
     
-    return codigobd;
-    
+    return ordenesEntity;
   }
   
   /**

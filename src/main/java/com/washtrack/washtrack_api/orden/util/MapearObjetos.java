@@ -24,6 +24,7 @@ public class MapearObjetos {
     paramMap.put("pa_totalprendas", orden.getTotalPrendas());
     paramMap.put("pa_observaciones", orden.getObservaciones());
     paramMap.put("pa_tenantid", orden.getTenantId());
+    paramMap.put("pa_fechaentrega", orden.getFechaEntrega());
     
     return paramMap;
   }
@@ -89,9 +90,9 @@ public class MapearObjetos {
         .estado(orden.getEstado())
         .totalPrendas(orden.getTotalPrendas())
         .observaciones(orden.getObservaciones())
-        
         // Este campo por ahora es temporal desde el Front
         .tenantId(orden.getTenantId())
+        .fechaEntrega(orden.getFechaEntrega())
         .build();
   }
   
@@ -159,7 +160,7 @@ public class MapearObjetos {
         .estado(orden.getEstado())
         .totalPrendas(orden.getTotalPrendas())
         .observaciones(orden.getObservaciones())
-        
+        .createdAt(orden.getCreatedAt())
         // Este campo por ahora es temporal hacia el Front
         .tenantId(orden.getTenantId())
         .fechaEntrega(orden.getFechaEntrega())
