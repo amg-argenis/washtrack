@@ -26,8 +26,6 @@ public class OrdenDetalleController {
     this.ordenDetalleService = ordenDetalleService;
   }
   
-  // POST /ordenes/{ordenId}/detalles
-  
   /**
    * Buscar orden detalle de servicio | Controller
    *
