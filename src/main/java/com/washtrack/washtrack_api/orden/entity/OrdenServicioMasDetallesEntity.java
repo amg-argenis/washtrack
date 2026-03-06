@@ -1,15 +1,17 @@
-package com.washtrack.washtrack_api.orden.dto.orden;
+package com.washtrack.washtrack_api.orden.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-public class OrdenesDto {
+public class OrdenServicioMasDetallesEntity {
   
   private String idOrden;
   private String clienteId;
@@ -21,5 +23,6 @@ public class OrdenesDto {
   private String createdAt;
   private String tenantId; // este es temporal
   private String fechaEntrega;
+  private List<DetalleOrdenEntity> ordenesDetalleDto;
   
 }

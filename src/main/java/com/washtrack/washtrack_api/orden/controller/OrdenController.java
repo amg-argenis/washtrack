@@ -8,6 +8,7 @@ import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
 import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
+import com.washtrack.washtrack_api.orden.service.IOrdentesConDetalleService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +34,11 @@ import java.util.List;
 public class OrdenController {
   
   private final IOrdenesService ordenesService;
+  private final IOrdentesConDetalleService  ordentesConDetalleService;
   
-  public OrdenController(IOrdenesService ordenesService) {
+  public OrdenController(IOrdenesService ordenesService, IOrdentesConDetalleService ordentesConDetalleService) {
     this.ordenesService = ordenesService;
+    this.ordentesConDetalleService = ordentesConDetalleService;
   }
   
   /**
@@ -101,6 +104,32 @@ public class OrdenController {
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
     
     ServiceResult<Object> resultado = this.ordenesService.buscarOrdenService(orden);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Buscar una orden de servicio con ordenes detalle | Controller
+   *
+   * @return
+   */
+  @PostMapping("/ordenes/orden-detalle")
+  public ResponseEntity<ServiceResult<Object>> buscarOrdenServicioConDetallesController(
+      @Valid @RequestBody BuscarOrdenRequest orden) {
+    
+    log.info("[Iniciando busqueda de la orden servicio con ordenes detalle | Controller]");
+    
+    ServiceResult<Object> resultado = this.ordentesConDetalleService.obtenerOrdenServicioMasDetallesDto(orden);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

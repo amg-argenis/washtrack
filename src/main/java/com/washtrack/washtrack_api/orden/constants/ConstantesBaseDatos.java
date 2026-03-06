@@ -11,6 +11,7 @@ public class ConstantesBaseDatos {
   
   // SP ORDEN DETALLE SERVICIO
   public static final String SP_BUSCAR_DETALLEORDEN = "SP_BUSCAR_DETALLEORDEN";
+  public static final String SP_BUSCAR_ORDENSERVICIOCONDETALLE = "SP_BUSCAR_ORDENSERVICIOCONDETALLE";
   
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";
