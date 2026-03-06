@@ -30,7 +30,7 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
   }
   
   @Override
-  public OrdenServicioMasDetallesDto obtenerOrdenServicioMasDetallesRepository(BuscarOrdenRequest ordenRequest) {
+  public OrdenServicioMasDetallesEntity obtenerOrdenServicioMasDetallesRepository(BuscarOrdenRequest ordenRequest) {
     log.info("[Inicia buscar orden de servicio con detalles | Repository]");
     
     OrdenServicioMasDetallesEntity build = OrdenServicioMasDetallesEntity.builder()
@@ -38,8 +38,7 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
         .folio(ordenRequest.getFolio())
         .build();
     
-    OrdenServicioMasDetallesDto servicioMasDetallesDto = null;
-    
+    OrdenServicioMasDetallesEntity entidadFinal = null;
     try {
       Map<String, Object> resultado =
           this.inicializadorOrdenConDetalleSjdbcCall.buscarOrdenConDetallesCallJdbc(build);
@@ -65,24 +64,19 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
               .toList();
           
           // Construir entidad final con todos sus detalles
-          OrdenServicioMasDetallesEntity entidadFinal =
-              OrdenServicioMasDetallesEntity.builder()
-                  .idOrden(cabecera.getIdOrden())
-                  .clienteId(cabecera.getClienteId())
-                  .folio(cabecera.getFolio())
-                  .fechaIngreso(cabecera.getFechaIngreso())
-                  .estado(cabecera.getEstado())
-                  .totalPrendas(cabecera.getTotalPrendas())
-                  .observaciones(cabecera.getObservaciones())
-                  .createdAt(cabecera.getCreatedAt())
-                  .tenantId(cabecera.getTenantId())
-                  .fechaEntrega(cabecera.getFechaEntrega())
-                  .ordenesDetalleDto(todosLosDetalles)
-                  .build();
-          
-          servicioMasDetallesDto =
-              this.mapearRespuestasConsultas.mapearToOrdenServicioMasDetallesEntity(entidadFinal);
-          System.out.println("Orden servicio con detalles: [" + servicioMasDetallesDto + "]");
+          entidadFinal = OrdenServicioMasDetallesEntity.builder()
+              .idOrden(cabecera.getIdOrden())
+              .clienteId(cabecera.getClienteId())
+              .folio(cabecera.getFolio())
+              .fechaIngreso(cabecera.getFechaIngreso())
+              .estado(cabecera.getEstado())
+              .totalPrendas(cabecera.getTotalPrendas())
+              .observaciones(cabecera.getObservaciones())
+              .createdAt(cabecera.getCreatedAt())
+              .tenantId(cabecera.getTenantId())
+              .fechaEntrega(cabecera.getFechaEntrega())
+              .ordenesDetalleDto(todosLosDetalles)
+              .build();
         }
       }
     }
@@ -99,7 +93,7 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
       log.info("[Finaliza buscar orden de servicio con detalles | Repository]");
     }
     
-    return servicioMasDetallesDto;
+    return entidadFinal;
   }
   
 }

@@ -225,7 +225,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     catch ( DataAccessException e ) {
       log.error(
           "[DataAccessException | Error al buscar ordene de servicio "
-              + "| Repository | Mas detalles: {}]", e.getMessage(), e);
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
@@ -234,7 +234,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     }
     catch ( Exception e ) {
       log.error(
-          "[Exception | Error critico al buscar orden de servicio | Repository | Mas detalles: {}]",
+          "[Exception | Error critico al buscar orden de servicio | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(

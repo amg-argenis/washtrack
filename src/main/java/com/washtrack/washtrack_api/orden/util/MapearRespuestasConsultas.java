@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class MapearRespuestasConsultas {
   
-  public <T> ServiceResult<T> mapeamasDetalleerviceResultRespuestaOk(String mensaje,
+  public <T> ServiceResult<T> mapearserviceResultRespuestaOk(String mensaje,
       int registros, T datos) {
     // Setear la respuesta por default
     ServiceResult<T> serviceResult = new ServiceResult<>(
@@ -33,7 +33,7 @@ public class MapearRespuestasConsultas {
     return serviceResult;
   }
   
-  public <T> ServiceResult<T> mapeaservicioMasDetallesEntityerviceResultError(String mensaje, T datos) {
+  public <T> ServiceResult<T> mapearserviceResultError(String mensaje, T datos) {
     // Setear la respuesta por default
     ServiceResult<T> serviceResult = new ServiceResult<>(
         false,
