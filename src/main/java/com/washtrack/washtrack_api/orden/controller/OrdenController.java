@@ -33,7 +33,7 @@ import java.util.List;
 public class OrdenController {
   
   private final IOrdenesService ordenesService;
-  private final IOrdentesConDetalleService  ordentesConDetalleService;
+  private final IOrdentesConDetalleService ordentesConDetalleService;
   
   public OrdenController(IOrdenesService ordenesService, IOrdentesConDetalleService ordentesConDetalleService) {
     this.ordenesService = ordenesService;
@@ -77,6 +77,7 @@ public class OrdenController {
       LocalDate fechaIngreso) {
     
     log.info("[Iniciando obtencion de ordenes servicio por fecha de ingreso | Controller]");
+    log.info("[Request | Fecha: {}]", fechaIngreso);
     
     ServiceResult<Object> resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
     
@@ -101,6 +102,7 @@ public class OrdenController {
   public ResponseEntity<ServiceResult<Object>> buscarOrdenController(@Valid @RequestBody BuscarOrdenRequest orden) {
     
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
+    log.info("[Request: Id orden: {} | Folio: {}]", orden.getIdOrden(), orden.getFolio());
     
     ServiceResult<Object> resultado = this.ordenesService.buscarOrdenService(orden);
     
@@ -127,6 +129,7 @@ public class OrdenController {
       @Valid @RequestBody BuscarOrdenRequest orden) {
     
     log.info("[Iniciando busqueda de la orden servicio con ordenes detalle | Controller]");
+    log.info("[Request | Id orden: {} | Folio: {}]", orden.getIdOrden(), orden.getFolio());
     
     ServiceResult<Object> resultado = this.ordentesConDetalleService.obtenerOrdenServicioMasDetallesDto(orden);
     
@@ -152,6 +155,7 @@ public class OrdenController {
   public ResponseEntity<ServiceResult<Object>> guardarOrdenController(@Valid @RequestBody InsertarOrdenRequest orden) {
     
     log.info("[Iniciando insercion de orden servicio | Controller]");
+    log.info("[Request | Orden: {}]", orden);
     
     ServiceResult<Object> resultado = this.ordenesService.guardarOrdenService(orden);
     
@@ -178,6 +182,7 @@ public class OrdenController {
       @Valid @RequestBody ActualizarOrdenServicioRequest orden) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
+    log.info("[Request | Orden: {}]", orden.getIdOrden());
     
     ServiceResult<Object> resultado = this.ordenesService.actualizarOrdenService(orden);
     
@@ -204,6 +209,7 @@ public class OrdenController {
       @Valid @RequestBody EliminarOrdenServicioRequest orden) {
     
     log.info("[Inicia eliminar orden de servicio | Controller]");
+    log.info("[Request | Orden: {}]", orden.getIdOrden());
     
     ServiceResult<Object> resultado = this.ordenesService.eliminarOrdenService(orden);
     
