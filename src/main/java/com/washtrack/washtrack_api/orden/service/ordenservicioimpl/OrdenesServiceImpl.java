@@ -196,6 +196,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
       // Mapear Request → Entity (solo criterios de busqueda)
       OrdenesEntity criterioBusqueda = this.mapearObjetos.mapearOrdenRequestAentity(ordenRequest);
       
+      // Llamada al Repository
       OrdenesEntity resultado = ordenesRepository.buscarOrdenServicioRepository(criterioBusqueda);
       
       if ( resultado == null ) {
@@ -408,7 +409,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
   public ServiceResult<Object> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto) {
     log.info("[Inicia eliminar orden de servicio | Service]");
     
-    ServiceResult<Object> serviceResult;
+    ServiceResult<Object> serviceResult = null;
     
     try {
       // Mapear a OrdenesEntity
@@ -423,14 +424,14 @@ public class OrdenesServiceImpl implements IOrdenesService {
                 ApiErrorCode.OPERACION_EXITOSA
             );
       }
-      else if ( resp != null && resp == ConstantesNumericas.DOS ) {
+      if ( resp != null && resp == ConstantesNumericas.DOS ) {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.ERROR_ELIMINAR,
-                ApiErrorCode.RECURSO_NO_ENCONTRADO
+                ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
-      else {
+      if ( resp != null && resp == ConstantesNumericas.UNONEGATIVO ) {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.ERROR_ELIMINAR,

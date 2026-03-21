@@ -47,7 +47,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null ) {
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("El SP no devolvio pa_codigobd, se asume error.");
       }
       else {
@@ -94,7 +94,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null ) {
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP no devolvio pa_codigobd, se asume error]");
       }
       else {
@@ -141,7 +141,11 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd != null && codigobd == 0 ) {
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
         List<OrdenesEntity> lista =
             (List<OrdenesEntity>) resultado.get("ordenrecuperada");
         
@@ -177,7 +181,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
   public OrdenesEntity insertarOrdenRepository(OrdenesEntity orden) {
     
     log.info("[Inicia insertar orden servicio | Repository]");
-    OrdenesEntity ordenesEntity = new OrdenesEntity();
+    OrdenesEntity ordenesEntity = null;
     
     try {
       // Ejecucion
@@ -191,6 +195,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
         // Mapear OUT campos insertados a tu entidad
+        ordenesEntity = new OrdenesEntity();
         ordenesEntity.setIdOrden((String) resultado.get("po_idorden"));
         ordenesEntity.setClienteId((String) resultado.get("po_clienteid"));
         ordenesEntity.setFolio((String) resultado.get("po_folio"));
@@ -249,7 +254,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null ) {
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP no devolvio pa_codigobd, se asume error]");
         codigobd = 1;
       }
@@ -294,9 +299,8 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null ) {
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("El SP no devolvio pa_codigobd, se asume error.");
-        codigobd = 1;
       }
       
     }

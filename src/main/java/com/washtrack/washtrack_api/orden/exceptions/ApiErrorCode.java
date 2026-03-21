@@ -8,6 +8,9 @@ public enum ApiErrorCode {
   // 200
   OPERACION_EXITOSA(HttpStatus.OK, ConstantesOrdenes.OPERACION_EXITOSA),
   
+  // 204
+  SIN_INFORMACION_EN_BD(HttpStatus.NO_CONTENT, ConstantesOrdenes.DATOS_INVALIDOS),
+  
   // 400
   DATOS_INVALIDOS(HttpStatus.BAD_REQUEST, ConstantesOrdenes.DATOS_INVALIDOS),
   
