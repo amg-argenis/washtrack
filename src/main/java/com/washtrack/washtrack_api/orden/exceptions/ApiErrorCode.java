@@ -23,10 +23,10 @@ public enum ApiErrorCode {
   // 503
   BASE_DATOS_NO_DISPONIBLE(HttpStatus.SERVICE_UNAVAILABLE, ConstantesOrdenes.ERROR_BD_UNAVAILABLE),
   
-  // 500
+  // 500, mensaje Error en BD
   ERROR_BASE_DATOS(HttpStatus.INTERNAL_SERVER_ERROR, ConstantesOrdenes.ERROR_BD),
   
-  // Errir interno
+  // Error interno, 500, mensaje Server
   ERROR_INTERNO(HttpStatus.INTERNAL_SERVER_ERROR, ConstantesOrdenes.ERROR_SERVER);
   
   private final HttpStatus httpStatus;
