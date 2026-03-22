@@ -49,7 +49,8 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.SIN_REGISTROS,
-                ApiErrorCode.SIN_INFORMACION_EN_BD);
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
       }
       else {
         // Mapear Entity → DTO (respuesta)
