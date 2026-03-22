@@ -45,9 +45,11 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
       DetalleOrdenEntity resultado = this.detalleRepository.buscarOrdenDetalleRepository(detalleOrdenEntity);
       
       if ( resultado == null ) {
-        log.info("[Orden detalle no encontrada | Service]");
+        log.info("[Orden con detalle no encontrada | Service]");
         serviceResult =
-            this.mapearRespuestasConsultas.mapearserviceResultError(ConstantesOrdenes.SIN_REGISTROS, resultado);
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.SIN_REGISTROS,
+                ApiErrorCode.SIN_INFORMACION_EN_BD);
       }
       else {
         // Mapear Entity → DTO (respuesta)
