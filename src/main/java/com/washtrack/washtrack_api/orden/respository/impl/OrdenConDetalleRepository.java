@@ -21,12 +21,9 @@ import java.util.Map;
 public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
   
   private final InicializadorOrdenConDetalleSjdbcCall inicializadorOrdenConDetalleSjdbcCall;
-  private final MapearRespuestasConsultas mapearRespuestasConsultas;
   
-  public OrdenConDetalleRepository(InicializadorOrdenConDetalleSjdbcCall inicializadorOrdenConDetalleSjdbcCall,
-      MapearRespuestasConsultas mapearRespuestasConsultas) {
+  public OrdenConDetalleRepository(InicializadorOrdenConDetalleSjdbcCall inicializadorOrdenConDetalleSjdbcCall) {
     this.inicializadorOrdenConDetalleSjdbcCall = inicializadorOrdenConDetalleSjdbcCall;
-    this.mapearRespuestasConsultas = mapearRespuestasConsultas;
   }
   
   @Override

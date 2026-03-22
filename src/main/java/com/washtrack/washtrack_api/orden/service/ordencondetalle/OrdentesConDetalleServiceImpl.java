@@ -46,7 +46,7 @@ public class OrdentesConDetalleServiceImpl implements IOrdentesConDetalleService
         log.info("[Orden con detalle no encontrada | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
-            ApiErrorCode.RECURSO_NO_ENCONTRADO
+            ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
       

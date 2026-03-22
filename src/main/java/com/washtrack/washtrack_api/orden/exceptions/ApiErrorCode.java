@@ -26,6 +26,7 @@ public enum ApiErrorCode {
   // 500
   ERROR_BASE_DATOS(HttpStatus.INTERNAL_SERVER_ERROR, ConstantesOrdenes.ERROR_BD),
   
+  // Errir interno
   ERROR_INTERNO(HttpStatus.INTERNAL_SERVER_ERROR, ConstantesOrdenes.ERROR_SERVER);
   
   private final HttpStatus httpStatus;

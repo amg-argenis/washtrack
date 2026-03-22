@@ -33,7 +33,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   
   @Override
   public ServiceResult<Object> buscarOrdenDetalleService(OrdenDetalleDto detalleDto) {
-    log.info("[Iniciando buscar orden <Service>]");
+    log.info("[Iniciando buscar orden con detalle <Service>]");
     
     ServiceResult<Object> serviceResult;
     
@@ -45,7 +45,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
       DetalleOrdenEntity resultado = this.detalleRepository.buscarOrdenDetalleRepository(detalleOrdenEntity);
       
       if ( resultado == null ) {
-        log.info("[Orden con detalle no encontrada | Service]");
+        log.info("[Orden detalle no encontrada | Service]");
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.SIN_REGISTROS,
@@ -83,11 +83,10 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
           );
     }
     finally {
-      log.info("[Finaliza buscar detalle orden <Service>]");
+      log.info("[Finaliza buscar orden con detalle <Service>]");
     }
     
     return serviceResult;
-    
   }
   
   @Override
