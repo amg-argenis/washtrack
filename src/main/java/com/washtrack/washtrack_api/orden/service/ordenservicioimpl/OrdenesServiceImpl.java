@@ -57,7 +57,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.SIN_REGISTROS,
-                List.of()
+                ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
       else {
@@ -129,7 +129,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.SIN_REGISTROS,
-                List.of()
+                ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
       else {
@@ -203,7 +203,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
         log.info("[Orden no encontrada | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
-            ApiErrorCode.RECURSO_NO_ENCONTRADO
+            ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
       
@@ -355,7 +355,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
                 ConstantesOrdenes.ERROR_ACTUALIZAR,
-                ApiErrorCode.RECURSO_NO_ENCONTRADO
+                ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
       else {
