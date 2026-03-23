@@ -36,9 +36,11 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
   @PostConstruct
   public void init() {
     this.buscarOrdenDetalleCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_DETALLEORDEN)
         .declareParameters(
             // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_iddetalleorden", Types.VARCHAR),
             new SqlParameter("pa_ordenid", Types.VARCHAR),
             // OUT
@@ -48,7 +50,8 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
         .returningResultSet("detalleordenrecuperada", new OrdenDetalleMapper());
     
     this.insertarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withProcedureName("SP_INSERTAR_DETALLEORDEN")
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_DETALLEORDEN)
         .declareParameters(
             // IN
             new SqlParameter("pa_idordendetalle", Types.VARCHAR),
@@ -61,8 +64,8 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
-        );
-    
+        )
+        .returningResultSet("detalleordeninsertar", new OrdenDetalleMapper());  // 👈 agregado
   }
   
   // EJECUCIONES EN BD *************************************************************************************************
@@ -75,6 +78,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
    */
   public Map<String, Object> buscarOrdenCallJdbc(DetalleOrdenEntity detalleOrden) {
     Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
     params.put("pa_iddetalleorden", detalleOrden.getIdDetalleOrden());
     params.put("pa_ordenid", detalleOrden.getOrdenId());
     

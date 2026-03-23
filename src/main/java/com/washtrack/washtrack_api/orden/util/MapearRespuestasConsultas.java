@@ -52,7 +52,7 @@ public class MapearRespuestasConsultas {
   
   public OrdenServicioMasDetallesDto mapearToOrdenServicioMasDetallesEntity(
       OrdenServicioMasDetallesEntity masDetalles) {
-
+    
     List<OrdenDetalleDto> detalles = masDetalles.getOrdenesDetalleDto().stream()
         .map(d -> OrdenDetalleDto.builder()
             .idDetalleOrden(d.getIdDetalleOrden())
@@ -64,7 +64,7 @@ public class MapearRespuestasConsultas {
             .tenantId(d.getTenantId())
             .build())
         .toList();
-
+    
     return OrdenServicioMasDetallesDto.builder()
         .idOrden(masDetalles.getIdOrden())
         .clienteId(masDetalles.getClienteId())
@@ -77,8 +77,8 @@ public class MapearRespuestasConsultas {
         .tenantId(masDetalles.getTenantId())
         .fechaEntrega(masDetalles.getFechaEntrega())
         .ordenesDetalleDto(detalles)
+        .totalDetalle(detalles.size())
         .build();
-
   }
   
 }

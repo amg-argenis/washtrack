@@ -6,5 +6,5 @@ public interface IOrdenDetalleRepository {
   
   DetalleOrdenEntity buscarOrdenDetalleRepository(DetalleOrdenEntity ordenDetalle);
   
-  Integer insertarOrdenDetalleRepository(DetalleOrdenEntity ordenDetalle);
+  DetalleOrdenEntity insertarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle);
 }

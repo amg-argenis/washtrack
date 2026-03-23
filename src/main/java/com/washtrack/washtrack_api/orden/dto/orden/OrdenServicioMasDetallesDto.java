@@ -24,4 +24,5 @@ public class OrdenServicioMasDetallesDto {
   private String tenantId; // este es temporal
   private String fechaEntrega;
   private List<OrdenDetalleDto> ordenesDetalleDto;
+  private int totalDetalle;
 }

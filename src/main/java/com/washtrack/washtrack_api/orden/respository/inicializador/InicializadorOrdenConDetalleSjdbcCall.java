@@ -37,6 +37,7 @@ public class InicializadorOrdenConDetalleSjdbcCall {
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ORDENSERVICIOCONDETALLE)
         .declareParameters(
             // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_idorden", Types.VARCHAR),
             new SqlParameter("pa_folio", Types.VARCHAR),
             // OUT
@@ -56,6 +57,7 @@ public class InicializadorOrdenConDetalleSjdbcCall {
    */
   public Map<String, Object> buscarOrdenConDetallesCallJdbc(OrdenServicioMasDetallesEntity detalleOrden) {
     Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
     params.put("pa_idorden", detalleOrden.getIdOrden());
     params.put("pa_folio", detalleOrden.getFolio());
     

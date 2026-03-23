@@ -2,9 +2,7 @@ package com.washtrack.washtrack_api.orden.respository.impl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
-import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenDetalleRepository;
 import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorOrdenDetallaSimpJdbcCall;
 import lombok.extern.slf4j.Slf4j;
@@ -67,40 +65,43 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
   }
   
   @Override
-  public Integer insertarOrdenDetalleRepository(DetalleOrdenEntity ordenDetalle) {
-    log.info("[Inicia insertar detalle orden | Repository]");
-    Integer codigobd;
+  public DetalleOrdenEntity insertarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle) {
+    
+    log.info("[Inicia insertar detalle orden servicio | Repository]");
+    DetalleOrdenEntity detalleOrdenEntity = null;
+    
     try {
-      // Ejecucion
       Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.insertarDetalleOrden(ordenDetalle);
       
-      // OUT parameter seguro
-      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Mensaje BD: {}]", pamensaje);
-      log.info("[Codigo BD Insertar nuevo detalle orden de servicio | Repository]: {}", codigobd);
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
-        codigobd = 1;
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        List<DetalleOrdenEntity> lista =
+            (List<DetalleOrdenEntity>) resultado.get("detalleordeninsertar");
+        
+        if ( lista != null && !lista.isEmpty() ) {
+          detalleOrdenEntity = lista.get(ConstantesNumericas.CERO);
+          log.info("[Detalle Orden Insertado | Detalle: {}]", detalleOrdenEntity);
+        }
       }
-      
     }
     catch ( DataAccessException e ) {
-      log.error("[DataAccessException | Error al buscar el detalle de orden en BD | Repository | Mas detalles: {}]",
+      log.error("[DataAccessException | Error al insertar detalle orden | Repository | Mas detalles: {}]",
           e.getMessage(), e);
       throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error al insertar detalle orden en la BD | Repository]: {}", e.getMessage(), e);
+      log.error("[Exception | Error critico al insertar detalle orden | Repository]: {}", e.getMessage(), e);
       throw e;
     }
     finally {
-      log.info("[Finaliza insertar detalle orden | Repository]");
+      log.info("[Finaliza insertar detalle orden servicio | Repository]");
     }
     
-    return codigobd;
+    return detalleOrdenEntity;
   }
   
 }
