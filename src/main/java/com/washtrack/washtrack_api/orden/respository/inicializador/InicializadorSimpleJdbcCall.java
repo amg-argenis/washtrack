@@ -110,6 +110,7 @@ public class InicializadorSimpleJdbcCall {
         .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_ORDENSERVICIO)
         .declareParameters(
             // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_idorden", Types.VARCHAR),
             new SqlParameter("pa_clienteid", Types.VARCHAR),
             new SqlParameter("pa_folio", Types.VARCHAR),
