@@ -80,13 +80,13 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public List<OrdenesEntity> listarOrdenesFechaIngresoRepository(LocalDate fechaIngreso) {
+  public List<OrdenesEntity> listarOrdenesFechaIngresoRepository(String tenantId, LocalDate fechaIngreso) {
     log.info("[Inicia listar ordenes de servicio por fecha ingreso | Repository]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
     try {
       // Ejecucion
-      Map<String, Object> resultado = this.inicializador.listarOrdenesFechaIngresoCallJdbc(fechaIngreso);
+      Map<String, Object> resultado = this.inicializador.listarOrdenesFechaIngresoCallJdbc(tenantId, fechaIngreso);
       
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);

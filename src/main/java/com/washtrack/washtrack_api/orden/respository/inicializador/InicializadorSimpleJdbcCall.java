@@ -54,6 +54,7 @@ public class InicializadorSimpleJdbcCall {
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_LISTARPOR_FECHAINGRESO)
         .declareParameters(
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_fechaingreso", Types.VARCHAR),
             new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
             new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
@@ -67,6 +68,7 @@ public class InicializadorSimpleJdbcCall {
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ORDENSERVICIO)
         .declareParameters(
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_idorden", Types.VARCHAR),
             new SqlParameter("pa_ordenfolio", Types.VARCHAR),
             new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR),
@@ -153,8 +155,9 @@ public class InicializadorSimpleJdbcCall {
    *
    * @return
    */
-  public Map<String, Object> listarOrdenesFechaIngresoCallJdbc(LocalDate fechaIngreso) {
+  public Map<String, Object> listarOrdenesFechaIngresoCallJdbc(String tenantId, LocalDate fechaIngreso) {
     Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", tenantId);
     params.put("pa_fechaingreso", fechaIngreso);
     return this.listarFechaIngresoOrdenesCall.execute(params);
   }
@@ -167,6 +170,7 @@ public class InicializadorSimpleJdbcCall {
    */
   public Map<String, Object> buscarOrdenCallJdbc(OrdenesEntity orden) {
     Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
     params.put("pa_idorden", orden.getIdOrden());
     params.put("pa_ordenfolio", orden.getFolio());
     

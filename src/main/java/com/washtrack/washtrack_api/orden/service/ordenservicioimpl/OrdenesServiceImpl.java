@@ -124,7 +124,8 @@ public class OrdenesServiceImpl implements IOrdenesService {
     
     try {
       List<OrdenesEntity> resultadoRepository =
-          this.ordenesRepository.listarOrdenesFechaIngresoRepository(fechaIngreso);
+          this.ordenesRepository.listarOrdenesFechaIngresoRepository("a051a168-fa2a-11f0-aab7-e66133dbb0de",
+              fechaIngreso);
       
       if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
         serviceResult =

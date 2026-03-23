@@ -10,7 +10,7 @@ public interface IOrdenesRepository {
   
   List<OrdenesEntity> listarOrdenesRepository(String tenantId);
   
-  List<OrdenesEntity> listarOrdenesFechaIngresoRepository(LocalDate fechaIngreso);
+  List<OrdenesEntity> listarOrdenesFechaIngresoRepository(String tenantId, LocalDate fechaIngreso);
   
   OrdenesEntity buscarOrdenServicioRepository(OrdenesEntity orden);
   
