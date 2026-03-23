@@ -32,14 +32,14 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
    * @return
    */
   @Override
-  public List<OrdenesEntity> listarOrdenesRepository() {
+  public List<OrdenesEntity> listarOrdenesRepository(String tenantId) {
     log.info("[Inicia listar ordenes de servicio | Repository]");
     
     List<OrdenesEntity> lista = new ArrayList<>();
     Map<String, Object> resultado;
     try {
       // Ejecucion
-      resultado = this.inicializador.listarOrdenesCallJdbc();
+      resultado = this.inicializador.listarOrdenesCallJdbc(tenantId);
       
       // OUT parameter seguro
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
@@ -203,14 +203,9 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
         ordenesEntity.setEstado((String) resultado.get("po_estado"));
         ordenesEntity.setTotalPrendas((Integer) resultado.get("po_totalprendas"));
         ordenesEntity.setObservaciones((String) resultado.get("po_observaciones"));
-        
-        Timestamp temp = (Timestamp) resultado.get("po_createdat");
-        ordenesEntity.setCreatedAt(temp.toString());
-        
+        ordenesEntity.setCreatedAt((String) resultado.get("po_createdat"));
         ordenesEntity.setTenantId((String) resultado.get("po_tenantid"));
-        
-        Date temp2 = (Date) resultado.get("po_fechaentrega");
-        ordenesEntity.setFechaEntrega(temp2.toString());
+        ordenesEntity.setFechaEntrega((String) resultado.get("po_fechaentrega"));
       }
     }
     catch ( DataAccessException e ) {

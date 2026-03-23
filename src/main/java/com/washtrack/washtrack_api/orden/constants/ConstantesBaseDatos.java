@@ -2,6 +2,9 @@ package com.washtrack.washtrack_api.orden.constants;
 
 public class ConstantesBaseDatos {
   
+  // BASES DE DATOS
+  public static final String WASHTRACKDB = "washtrackdb";
+  
   // STORED PROCEDURES
   public static final String SP_LISTAR_ORDENES = "SP_LISTAR_ORDENES";
   public static final String SP_INSERTAR_ORDENSERVICIO = "SP_INSERTAR_ORDENSERVICIO";

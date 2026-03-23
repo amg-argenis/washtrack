@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IOrdenesRepository {
   
-  List<OrdenesEntity> listarOrdenesRepository();
+  List<OrdenesEntity> listarOrdenesRepository(String tenantId);
   
   List<OrdenesEntity> listarOrdenesFechaIngresoRepository(LocalDate fechaIngreso);
   

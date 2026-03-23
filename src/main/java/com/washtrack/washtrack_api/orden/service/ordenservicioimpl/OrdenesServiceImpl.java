@@ -51,7 +51,8 @@ public class OrdenesServiceImpl implements IOrdenesService {
     
     try {
       
-      List<OrdenesEntity> resultadoRepository = this.ordenesRepository.listarOrdenesRepository();
+      List<OrdenesEntity> resultadoRepository =
+          this.ordenesRepository.listarOrdenesRepository("a051a168-fa2a-11f0-aab7-e66133dbb0de");
       
       if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
         serviceResult =

@@ -41,17 +41,17 @@ public class InicializadorSimpleJdbcCall {
   @PostConstruct
   public void init() {
     this.listarOrdenesCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_LISTAR_ORDENES)
         .declareParameters(
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
             new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("listaOrdenes", new OrdenesMapper());
-    /**
-     * 'listaordenes' es el identificador del result set
-     */
     
     this.listarFechaIngresoOrdenesCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_LISTARPOR_FECHAINGRESO)
         .declareParameters(
             new SqlParameter("pa_fechaingreso", Types.VARCHAR),
@@ -64,6 +64,7 @@ public class InicializadorSimpleJdbcCall {
      * Buscar una orden de servicio
      */
     this.buscarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ORDENSERVICIO)
         .declareParameters(
             new SqlParameter("pa_idorden", Types.VARCHAR),
@@ -74,6 +75,7 @@ public class InicializadorSimpleJdbcCall {
         .returningResultSet("ordenrecuperada", new OrdenesMapper());
     
     this.insertarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_ORDENSERVICIO)
         .declareParameters(
             // IN
@@ -91,7 +93,7 @@ public class InicializadorSimpleJdbcCall {
             // OUT campos insertados
             new SqlOutParameter("po_idorden", Types.VARCHAR),
             new SqlOutParameter("po_clienteid", Types.VARCHAR),
-            new SqlOutParameter("po_folio", Types.VARCHAR),  // 👈 faltaba
+            new SqlOutParameter("po_folio", Types.VARCHAR),
             new SqlOutParameter("po_fechaingreso", Types.VARCHAR),
             new SqlOutParameter("po_estado", Types.VARCHAR),
             new SqlOutParameter("po_totalprendas", Types.INTEGER),
@@ -102,6 +104,7 @@ public class InicializadorSimpleJdbcCall {
         );
     
     this.actualizarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_ORDENSERVICIO)
         .declareParameters(
             // IN
@@ -119,6 +122,7 @@ public class InicializadorSimpleJdbcCall {
         );
     
     this.eliminarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_ORDENSERVICIO)
         .declareParameters(
             // IN
@@ -138,8 +142,10 @@ public class InicializadorSimpleJdbcCall {
    *
    * @return
    */
-  public Map<String, Object> listarOrdenesCallJdbc() {
-    return this.listarOrdenesCall.execute();
+  public Map<String, Object> listarOrdenesCallJdbc(String tenantId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", tenantId);
+    return this.listarOrdenesCall.execute(params);
   }
   
   /**
@@ -175,6 +181,7 @@ public class InicializadorSimpleJdbcCall {
    */
   public Map<String, Object> insertarOrden(OrdenesEntity orden) {
     Map<String, Object> paramMap = this.mapearObjetos.parametrizarOrdenes(orden);
+    log.info("[Parametros de la nueva orden a insertar | Detalle: {}]", paramMap);
     return this.insertarOrdenCall.execute(paramMap);
   }
   
