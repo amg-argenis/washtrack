@@ -46,7 +46,7 @@ public class MapearObjetos {
   
   public Map<String, Object> parametrizarEliminarOrdenes(OrdenesEntity orden) {
     Map<String, Object> paramMap = new HashMap<>();
-    paramMap.put("pa_idOrden", orden.getIdOrden());
+    paramMap.put("pa_idorden", orden.getIdOrden());
     paramMap.put("pa_folio", orden.getFolio());
     
     return paramMap;

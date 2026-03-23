@@ -74,7 +74,7 @@ public class InicializadorSimpleJdbcCall {
         .returningResultSet("ordenrecuperada", new OrdenesMapper());
     
     this.insertarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withProcedureName("SP_INSERTAR_ORDENSERVICIO")
+        .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_ORDENSERVICIO)
         .declareParameters(
             // IN
             new SqlParameter("pa_idorden", Types.VARCHAR),
@@ -83,6 +83,7 @@ public class InicializadorSimpleJdbcCall {
             new SqlParameter("pa_estado", Types.VARCHAR),
             new SqlParameter("pa_totalprendas", Types.INTEGER),
             new SqlParameter("pa_observaciones", Types.VARCHAR),
+            new SqlParameter("pa_fechaentrega", Types.VARCHAR),
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             // OUT control
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
@@ -90,13 +91,14 @@ public class InicializadorSimpleJdbcCall {
             // OUT campos insertados
             new SqlOutParameter("po_idorden", Types.VARCHAR),
             new SqlOutParameter("po_clienteid", Types.VARCHAR),
+            new SqlOutParameter("po_folio", Types.VARCHAR),  // 👈 faltaba
             new SqlOutParameter("po_fechaingreso", Types.VARCHAR),
             new SqlOutParameter("po_estado", Types.VARCHAR),
             new SqlOutParameter("po_totalprendas", Types.INTEGER),
             new SqlOutParameter("po_observaciones", Types.VARCHAR),
-            new SqlOutParameter("po_createdat", Types.TIMESTAMP),
+            new SqlOutParameter("po_createdat", Types.VARCHAR),
             new SqlOutParameter("po_tenantid", Types.VARCHAR),
-            new SqlOutParameter("po_fechaentrega", Types.DATE)
+            new SqlOutParameter("po_fechaentrega", Types.VARCHAR)
         );
     
     this.actualizarOrdenCall = new SimpleJdbcCall(this.jdbcTemplate)
@@ -195,7 +197,7 @@ public class InicializadorSimpleJdbcCall {
    * @return
    */
   public Map<String, Object> eliminarOrden(OrdenesEntity orden) {
-    Map<String, Object> paramMap = this.mapearObjetos.parametrizarActualizarOrdenes(orden);
+    Map<String, Object> paramMap = this.mapearObjetos.parametrizarEliminarOrdenes(orden);
     log.info("[Parametros para eliminar una orden de servicio]: {}", paramMap);
     return this.eliminarOrdenCall.execute(paramMap);
   }
