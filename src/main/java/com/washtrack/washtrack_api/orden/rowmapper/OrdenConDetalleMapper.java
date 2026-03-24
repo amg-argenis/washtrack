@@ -1,6 +1,5 @@
 package com.washtrack.washtrack_api.orden.rowmapper;
 
-import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
 import org.springframework.jdbc.core.RowMapper;

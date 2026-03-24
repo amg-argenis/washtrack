@@ -34,6 +34,7 @@ public class InicializadorOrdenConDetalleSjdbcCall {
   @PostConstruct
   public void init() {
     this.buscarOrdenDetalleCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ORDENSERVICIOCONDETALLE)
         .declareParameters(
             // IN
