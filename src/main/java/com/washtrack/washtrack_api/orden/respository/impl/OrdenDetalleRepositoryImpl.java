@@ -104,4 +104,41 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
     return detalleOrdenEntity;
   }
   
+  @Override
+  public Integer actualizarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle) {
+    
+    log.info("[Inicia actualizar detalle orden servicio | Repository]");
+    DetalleOrdenEntity detalleOrdenEntity = null;
+    
+    try {
+      Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.actualizarDetalleOrden(ordenDetalle);
+      
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        log.info("[Detalle Orden Actualizado | Detalle: {}]", detalleOrdenEntity);
+        return codigobd;
+      }
+    }
+    catch (
+        DataAccessException e ) {
+      log.error("[DataAccessException | Error al actualizar el detalle orden | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch (
+        Exception e ) {
+      log.error("[Exception | Error critico al actualizar el detalle orden | Repository]: {}", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza actualizar detalle orden servicio | Repository]");
+    }
+    
+    return null;
+  }
+  
 }

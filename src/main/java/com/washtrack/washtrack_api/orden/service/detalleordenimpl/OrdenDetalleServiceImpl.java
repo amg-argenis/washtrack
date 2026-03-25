@@ -128,7 +128,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
     }
     catch ( DataAccessException e ) {
       log.error(
-          "[DataAccessException | Error critico al buscar el detalle de orden en BD | Service | Mas detalles: {}]",
+          "[DataAccessException | Error critico al guardar el detalle de orden en BD | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
@@ -147,6 +147,58 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
     }
     finally {
       log.info("[Finaliza guardar detalle orden <Service>]");
+    }
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> actualizarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
+    log.info("[Inicia actualizar detalle orden <Service>]");
+    ServiceResult<Object> serviceResult;
+    try {
+      ordenDetalleDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
+      
+      // Mapear a OrdenesEntity
+      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
+      
+      Integer respRepository = this.detalleRepository.actualizarDetalleOrdenRepository(ordenEntity);
+      if ( respRepository != null ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                respRepository
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_INSERT,
+                null
+            );
+      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar el detalle de orden en BD | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al actualizar detalle orden de servicio, Exception | Service]: {}", e.getMessage(),
+          e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_SERVER,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza actualizar detalle orden <Service>]");
     }
     return serviceResult;
   }

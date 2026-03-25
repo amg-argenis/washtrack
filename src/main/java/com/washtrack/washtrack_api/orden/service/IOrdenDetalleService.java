@@ -9,9 +9,6 @@ public interface IOrdenDetalleService {
   
   ServiceResult<Object> guardarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
   
-  interface IDetalleOrdenService {
-    
-    void agregarDetalleOrden();
-    
-  }
+  ServiceResult<Object> actualizarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
+  
 }

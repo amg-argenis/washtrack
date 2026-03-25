@@ -23,6 +23,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
   
   private SimpleJdbcCall buscarOrdenDetalleCall;
   private SimpleJdbcCall insertarOrdenDetalleCall;
+  private SimpleJdbcCall actualizarOrdenDetalleCall;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetosDetalleOrden mapearObjetosDetalleOrden;
@@ -35,6 +36,8 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
   
   @PostConstruct
   public void init() {
+    
+    // Buscar un detalle de orden
     this.buscarOrdenDetalleCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_DETALLEORDEN)
@@ -49,6 +52,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
         )
         .returningResultSet("detalleordenrecuperada", new OrdenDetalleMapper());
     
+    // Guardar/Insertar un detalle orden
     this.insertarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_DETALLEORDEN)
@@ -66,6 +70,24 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
         .returningResultSet("detalleordeninsertar", new OrdenDetalleMapper());  // 👈 agregado
+    
+    // Actualizar un detalle orden
+    this.actualizarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_DETALLEORDEN)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            new SqlParameter("pa_idordendetalle", Types.VARCHAR),
+            new SqlParameter("pa_ordenid", Types.VARCHAR),
+            new SqlParameter("pa_procesoid", Types.VARCHAR),
+            new SqlParameter("pa_tipoprenda", Types.VARCHAR),
+            new SqlParameter("pa_cantidad", Types.INTEGER),
+            new SqlParameter("pa_colorreferencia", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        );
   }
   
   // EJECUCIONES EN BD *************************************************************************************************
@@ -94,5 +116,16 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
   public Map<String, Object> insertarDetalleOrden(DetalleOrdenEntity ordenDetalle) {
     Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenes(ordenDetalle);
     return this.insertarOrdenDetalleCall.execute(paramMap);
+  }
+  
+  /**
+   * Actualizar un detalle de orden servicio | Inithializer
+   *
+   * @param ordenDetalle
+   * @return
+   */
+  public Map<String, Object> actualizarDetalleOrden(DetalleOrdenEntity ordenDetalle) {
+    Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenes(ordenDetalle);
+    return this.actualizarOrdenDetalleCall.execute(paramMap);
   }
 }

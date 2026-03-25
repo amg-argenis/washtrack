@@ -80,4 +80,31 @@ public class OrdenDetalleController {
     return ResponseEntity.ok(resultado);
   }
   
+  /**
+   * Actualizar orden detalle de servicio | Controller
+   *
+   * @return
+   */
+  @PostMapping("/ordenes/detalles/actualizar")
+  public ResponseEntity<ServiceResult<Object>> actualizarDetalleOrden(
+      @RequestBody OrdenDetalleDto ordenDetalleDto) {
+    
+    log.info("[Iniciando actualizar detalle orden | Controller]");
+    
+    ServiceResult<Object> resultado =
+        this.ordenDetalleService.actualizarOrdenDetalleService(ordenDetalleDto);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    // Caso normal (200)
+    return ResponseEntity.ok(resultado);
+  }
+  
 }
