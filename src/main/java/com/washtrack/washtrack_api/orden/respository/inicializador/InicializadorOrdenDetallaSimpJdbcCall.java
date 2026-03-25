@@ -2,7 +2,6 @@ package com.washtrack.washtrack_api.orden.respository.inicializador;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
-import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.orden.rowmapper.OrdenDetalleMapper;
 import com.washtrack.washtrack_api.orden.util.MapearObjetosDetalleOrden;
 import jakarta.annotation.PostConstruct;
