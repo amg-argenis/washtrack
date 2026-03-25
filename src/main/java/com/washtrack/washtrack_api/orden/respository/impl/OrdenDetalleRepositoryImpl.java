@@ -109,19 +109,24 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
     
     log.info("[Inicia actualizar detalle orden servicio | Repository]");
     DetalleOrdenEntity detalleOrdenEntity = null;
+    Integer codigobd;
     
     try {
       Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.actualizarDetalleOrden(ordenDetalle);
       
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
-        log.info("[Detalle Orden Actualizado | Detalle: {}]", detalleOrdenEntity);
-        return codigobd;
+        log.info("[Detalle orden actualizado correctamente | Detalle: {}]", pamensaje);
       }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.DOS ) {
+        log.info("[Detalle orden No actualizado | Detalle: {}]", pamensaje);
+      }
+      
     }
     catch (
         DataAccessException e ) {
@@ -138,7 +143,7 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
       log.info("[Finaliza actualizar detalle orden servicio | Repository]");
     }
     
-    return null;
+    return codigobd;
   }
   
 }

@@ -162,7 +162,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
       DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
       
       Integer respRepository = this.detalleRepository.actualizarDetalleOrdenRepository(ordenEntity);
-      if ( respRepository != null ) {
+      if ( respRepository != null && respRepository.intValue() == ConstantesNumericas.CERO ) {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
@@ -170,10 +170,18 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
                 respRepository
             );
       }
-      else {
+      else if ( respRepository != null && respRepository.intValue() == ConstantesNumericas.DOS ) {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_INSERT,
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      else {
+        // Sea null o -1, se asume error en la ejecucion del SP
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ACTUALIZAR,
                 null
             );
       }
