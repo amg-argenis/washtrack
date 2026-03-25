@@ -108,7 +108,6 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
   public Integer actualizarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle) {
     
     log.info("[Inicia actualizar detalle orden servicio | Repository]");
-    DetalleOrdenEntity detalleOrdenEntity = null;
     Integer codigobd;
     
     try {
@@ -141,6 +140,47 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
     }
     finally {
       log.info("[Finaliza actualizar detalle orden servicio | Repository]");
+    }
+    
+    return codigobd;
+  }
+  
+  @Override
+  public Integer eliminarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle) {
+    
+    log.info("[Inicia eliminar detalle orden servicio | Repository]");
+    Integer codigobd;
+    
+    try {
+      Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.eliminarDetalleOrden(ordenDetalle);
+      
+      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        log.info("[Detalle orden eliminado correctamente | Detalle: {}]", pamensaje);
+      }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.DOS ) {
+        log.info("[Detalle orden No eliminada | Detalle: {}]", pamensaje);
+      }
+      
+    }
+    catch (
+        DataAccessException e ) {
+      log.error("[DataAccessException | Error al eliminar el detalle orden | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch (
+        Exception e ) {
+      log.error("[Exception | Error critico al eliminar el detalle orden | Repository]: {}", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza eliminar detalle orden servicio | Repository]");
     }
     
     return codigobd;

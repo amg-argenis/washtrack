@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenDetalleService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -105,6 +106,33 @@ public class OrdenDetalleController {
     
     // Caso normal (200)
     return ResponseEntity.ok(resultado);
+  }
+  
+  /**
+   * Eliminar detalle orden de servicio (actualiza estado a ELIMINADO) | Controller
+   *
+   * @return
+   */
+  @PostMapping("/ordenes/eliminar")
+  public ResponseEntity<ServiceResult<Object>> eliminarDetalleOrdenController(
+      @Valid @RequestBody OrdenDetalleDto ordenDetalle) {
+    
+    log.info("[Inicia eliminar detalle orden de servicio | Controller]");
+    log.info("[Request | Detalle orden: {}]", ordenDetalle.getIdDetalleOrden());
+    
+    ServiceResult<Object> resultado = this.ordenDetalleService.eliminarOrdenDetalleService(ordenDetalle);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    
+    return ResponseEntity.ok(resultado);
+    
   }
   
 }

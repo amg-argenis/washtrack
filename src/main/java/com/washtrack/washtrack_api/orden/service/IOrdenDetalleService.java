@@ -11,4 +11,6 @@ public interface IOrdenDetalleService {
   
   ServiceResult<Object> actualizarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
   
+  ServiceResult<Object> eliminarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
+  
 }

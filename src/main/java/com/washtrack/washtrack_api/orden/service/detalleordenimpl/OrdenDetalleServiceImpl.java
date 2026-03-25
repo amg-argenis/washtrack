@@ -100,10 +100,8 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
        * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
        * Obtener el UUID -- OK
        */
-      
       UUID uuid = UUID.randomUUID();
       ordenDetalleDto.setIdDetalleOrden(uuid.toString());
-      ordenDetalleDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
       log.info("[Insert detalle orden | UUID generado: '{}']", ordenDetalleDto.getIdDetalleOrden());
       
       // Mapear a OrdenesEntity
@@ -156,8 +154,6 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
     log.info("[Inicia actualizar detalle orden <Service>]");
     ServiceResult<Object> serviceResult;
     try {
-      ordenDetalleDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
-      
       // Mapear a OrdenesEntity
       DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
       
@@ -207,6 +203,64 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
     }
     finally {
       log.info("[Finaliza actualizar detalle orden <Service>]");
+    }
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> eliminarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
+    log.info("[Inicia eliminar detalle orden <Service>]");
+    ServiceResult<Object> serviceResult;
+    try {
+      // Mapear a OrdenesEntity
+      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
+      
+      Integer respRepository = this.detalleRepository.actualizarDetalleOrdenRepository(ordenEntity);
+      if ( respRepository != null && respRepository.intValue() == ConstantesNumericas.CERO ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                respRepository
+            );
+      }
+      else if ( respRepository != null && respRepository.intValue() == ConstantesNumericas.DOS ) {
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      else {
+        // Sea null o -1, se asume error en la ejecucion del SP
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ELIMINAR,
+                null
+            );
+      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al eliminar el detalle de orden en BD | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al eliminar detalle orden de servicio, Exception | Service]: {}", e.getMessage(),
+          e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_SERVER,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza eliminar detalle orden <Service>]");
     }
     return serviceResult;
   }

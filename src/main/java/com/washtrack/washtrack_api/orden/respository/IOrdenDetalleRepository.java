@@ -9,4 +9,6 @@ public interface IOrdenDetalleRepository {
   DetalleOrdenEntity insertarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle);
   
   Integer actualizarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle);
+  
+  Integer eliminarDetalleOrdenRepository(DetalleOrdenEntity ordenDetalle);
 }

@@ -23,6 +23,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
   private SimpleJdbcCall buscarOrdenDetalleCall;
   private SimpleJdbcCall insertarOrdenDetalleCall;
   private SimpleJdbcCall actualizarOrdenDetalleCall;
+  private SimpleJdbcCall eliminarOrdenDetalleCall;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetosDetalleOrden mapearObjetosDetalleOrden;
@@ -87,6 +88,20 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         );
+    
+    // Eliminar un detalle orden
+    this.actualizarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_DETALLEORDEN)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            new SqlParameter("pa_idordendetalle", Types.VARCHAR),
+            new SqlParameter("pa_ordenid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        );
   }
   
   // EJECUCIONES EN BD *************************************************************************************************
@@ -127,4 +142,16 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
     Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenes(ordenDetalle);
     return this.actualizarOrdenDetalleCall.execute(paramMap);
   }
+  
+  /**
+   * Actualizar un detalle de orden servicio | Inithializer
+   *
+   * @param ordenDetalle
+   * @return
+   */
+  public Map<String, Object> eliminarDetalleOrden(DetalleOrdenEntity ordenDetalle) {
+    Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenes(ordenDetalle);
+    return this.actualizarOrdenDetalleCall.execute(paramMap);
+  }
+  
 }
