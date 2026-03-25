@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.orden.constants;
 
-public class ConstantesBaseDatos {
+public class ConstantesOrdenBaseDatos {
   
   // BASES DE DATOS
   public static final String WASHTRACKDB = "washtrackdb";

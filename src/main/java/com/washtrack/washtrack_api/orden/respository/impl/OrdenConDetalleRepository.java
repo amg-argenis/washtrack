@@ -1,14 +1,12 @@
 package com.washtrack.washtrack_api.orden.respository.impl;
 
-import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
-import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
+import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.orden.OrdenServicioMasDetallesDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
 import com.washtrack.washtrack_api.orden.respository.IOrdenConDetalleRepository;
 import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorOrdenConDetalleSjdbcCall;
-import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -40,8 +38,8 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
       Map<String, Object> resultado =
           this.inicializadorOrdenConDetalleSjdbcCall.buscarOrdenConDetallesCallJdbc(build);
       
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       

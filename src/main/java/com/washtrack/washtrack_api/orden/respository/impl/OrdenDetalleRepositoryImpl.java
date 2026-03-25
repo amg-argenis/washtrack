@@ -1,7 +1,7 @@
 package com.washtrack.washtrack_api.orden.respository.impl;
 
-import com.washtrack.washtrack_api.orden.constants.ConstantesBaseDatos;
-import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
+import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import com.washtrack.washtrack_api.orden.respository.IOrdenDetalleRepository;
 import com.washtrack.washtrack_api.orden.respository.inicializador.InicializadorOrdenDetallaSimpJdbcCall;
@@ -32,9 +32,9 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
       Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.buscarOrdenCallJdbc(ordenDetalle);
       
       Integer codigobd =
-          (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+          (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
       String pamensaje =
-          (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+          (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
       
       log.info("[Respuesta BD: {} | {}]", pamensaje, codigobd);
       
@@ -73,8 +73,8 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
     try {
       Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.insertarDetalleOrden(ordenDetalle);
       
-      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
@@ -113,8 +113,8 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
     try {
       Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.actualizarDetalleOrden(ordenDetalle);
       
-      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
@@ -154,8 +154,8 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
     try {
       Map<String, Object> resultado = this.inicializadorOrdenDetallaSimpJdbcCall.eliminarDetalleOrden(ordenDetalle);
       
-      codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
+      codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       

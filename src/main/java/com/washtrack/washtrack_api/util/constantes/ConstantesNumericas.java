@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.orden.constants;
+package com.washtrack.washtrack_api.util.constantes;
 
 public class ConstantesNumericas {
   

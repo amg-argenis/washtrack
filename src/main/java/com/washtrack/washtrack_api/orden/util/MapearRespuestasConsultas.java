@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.orden.util;
 
-import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenServicioMasDetallesDto;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;

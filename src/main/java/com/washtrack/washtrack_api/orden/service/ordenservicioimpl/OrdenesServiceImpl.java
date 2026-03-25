@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.orden.service.ordenservicioimpl;
 
-import com.washtrack.washtrack_api.orden.constants.ConstantesNumericas;
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.orden.ActualizarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
@@ -8,7 +8,7 @@ import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
-import com.washtrack.washtrack_api.orden.exceptions.ApiErrorCode;
+import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenesRepository;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;

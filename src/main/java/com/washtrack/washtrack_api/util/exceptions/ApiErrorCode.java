@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.orden.exceptions;
+package com.washtrack.washtrack_api.util.exceptions;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import org.springframework.http.HttpStatus;
