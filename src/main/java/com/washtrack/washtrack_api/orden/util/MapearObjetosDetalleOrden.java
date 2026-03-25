@@ -28,7 +28,7 @@ public class MapearObjetosDetalleOrden {
         .cantidad(ordenDetalleDto.getCantidad())
         .colorReferencia(ordenDetalleDto.getColorReferencia())
         // temporal por pruebas
-        .tenantId(ordenDetalleDto.getTenantId())
+//        .tenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de")
         .build();
   }
   
@@ -38,7 +38,7 @@ public class MapearObjetosDetalleOrden {
    * @param ordenEntity
    * @return
    */
-  public OrdenDetalleDto mapearEntityTodtoOrdenDetalle(DetalleOrdenEntity ordenEntity) {
+  public OrdenDetalleDto mapearEntityToDtoOrdenDetalle(DetalleOrdenEntity ordenEntity) {
     log.info("[Mapeando a DTO objeto orden detalle...]");
     
     return OrdenDetalleDto.builder()
@@ -62,7 +62,7 @@ public class MapearObjetosDetalleOrden {
     paramMap.put("pa_tipoprenda", detalleOrden.getTipoPrenda());
     paramMap.put("pa_cantidad", detalleOrden.getCantidad());
     paramMap.put("pa_colorreferencia", detalleOrden.getColorReferencia());
-    paramMap.put("pa_tenantid", detalleOrden.getTenantId());
+    paramMap.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
     
     return paramMap;
   }
