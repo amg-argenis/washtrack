@@ -113,7 +113,7 @@ public class OrdenDetalleController {
    *
    * @return
    */
-  @PostMapping("/ordenes/eliminar")
+  @PostMapping("/ordenes/detalles/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarDetalleOrdenController(
       @Valid @RequestBody OrdenDetalleDto ordenDetalle) {
     
