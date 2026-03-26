@@ -40,7 +40,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        log.warn("El SP para listar clientes no devolvio pa_codigobd, se asume error.");
       }
       else {
         lista = (List<ClientesEntity>) resultado.get("listaclientes");
@@ -82,7 +82,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP para buscar cliente no devolvio pa_codigobd, se asume error]");
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
@@ -133,7 +133,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       }
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP para insertar cliente no devolvio pa_codigobd, se asume error]");
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.UNONEGATIVO ) {
@@ -182,7 +182,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       }
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP para actualizar cliente no devolvio pa_codigobd, se asume error]");
       }
     }
     catch ( DataAccessException e ) {
@@ -204,6 +204,44 @@ public class ClientesRepositoryImpl implements IClientesRepository {
   
   @Override
   public Integer eliminarClienteRepository(ClientesEntity cliente) {
-    return 0;
+    log.info("[Inicia eliminar cliente | Repository]");
+    
+    Integer codigobd;
+    
+    try {
+      Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.eliminarClientesCallJdbcMethod(
+          cliente.getIdCliente());
+      
+      codigobd =
+          (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje =
+          (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para eliminar cliente no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        log.info("[Cliente eliminado correctamente de la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error al eliminar el cliente de la BD | Detalles: {}]", e, e.getMessage());
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al eliminar el cliente de la BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza eliminar cliente | Repository]");
+    }
+    
+    return codigobd;
   }
+  
 }

@@ -302,6 +302,65 @@ public class ClientesServiceImpl implements IClientesService {
   
   @Override
   public ServiceResult<Object> eliminarClienteService(ClienteDto clienteDto) {
-    return null;
+    log.info("[Inicia eliminar cliente | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
+    try {
+      // Mapear Request → Entity (solo criterios de busqueda)
+      ClientesEntity criterioBusqueda = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
+      
+      // Llamada al Repository
+      Integer resultado = clientesRepository.eliminarClienteRepository(criterioBusqueda);
+      
+      if ( resultado == null && resultado.intValue() != ConstantesNumericas.CERO ) {
+        log.info("[Cliente No eliminado de la BD | Service]");
+        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      else {
+        log.info("[Cliente eliminado correctamente de la BD | Service]");
+        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.CERO,
+            null
+        );
+      }
+      
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al eliminar el cliente "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al eliminar el cliente | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    
+    log.info("[Finaliza eliminar cliente | Service]");
+    return serviceResult;
   }
 }
