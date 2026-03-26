@@ -50,7 +50,7 @@ public class ClientesServiceImpl implements IClientesService {
             );
       }
       else {
-        // Mapear a OrdenesEntity -> OrdenesDto
+        // Mapear
         List<ClienteDto> ordenesDtoList = new ArrayList<>();
         for (ClientesEntity clientesEntity : resultadoRepository) {
           ordenesDtoList.add(this.mapearObjetosCliente.mapearClienteToDto(clientesEntity));

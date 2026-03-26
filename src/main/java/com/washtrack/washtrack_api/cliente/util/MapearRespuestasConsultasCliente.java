@@ -3,7 +3,9 @@ package com.washtrack.washtrack_api.cliente.util;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MapearRespuestasConsultasCliente {
   
   public <T> ServiceResult<T> mapearserviceResultError(String mensaje, T datos) {

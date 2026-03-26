@@ -20,6 +20,5 @@ public class ClientesEntity {
   private boolean creditoHabilitado;
   private Double limiteCredito;
   private String activo;
-  private String timestamp;
   
 }

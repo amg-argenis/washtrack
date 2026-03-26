@@ -10,7 +10,7 @@ public class MapearObjetosCliente {
   /**
    * Mapeo de objetos para envio y recepcion al Front
    *
-   * @param orden
+   * @param clientesEntity
    * @return
    */
   public ClienteDto mapearClienteToDto(ClientesEntity clientesEntity) {

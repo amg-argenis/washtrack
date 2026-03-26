@@ -20,8 +20,8 @@ public class ClientesController {
   
   private final IClientesService clientesService;
   
-  public ClientesController(IClientesService clientesService, IClientesService clientesService1) {
-    this.clientesService = clientesService1;
+  public ClientesController(IClientesService clientesService) {
+    this.clientesService = clientesService;
   }
   
   /**
@@ -30,7 +30,7 @@ public class ClientesController {
    * @return
    */
   @GetMapping("/clientes/listar")
-  public ResponseEntity<ServiceResult<Object>> listarOrdenesController() {
+  public ResponseEntity<ServiceResult<Object>> listarClientesController() {
     
     log.info("[Iniciando obtencion de clientes | Controller]");
     
