@@ -3,7 +3,6 @@ package com.washtrack.washtrack_api.cliente.respository.impl;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.respository.IClientesRepository;
 import com.washtrack.washtrack_api.cliente.respository.inicializador.InicializadorClientesSimpleJdbcCall;
-import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +113,53 @@ public class ClientesRepositoryImpl implements IClientesRepository {
   
   @Override
   public ClientesEntity insertarClienteRepository(ClientesEntity cliente) {
-    return null;
+    log.info("[Inicia insertar nuevo cliente | Repository]");
+    ClientesEntity clientesEntity = null;
+    
+    try {
+      // Ejecucion
+      Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.insertarClientesCallJdbcMethod(cliente);
+      
+      // OUT parameter seguro
+      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        // Mapear OUT campos insertados a tu entidad
+        clientesEntity = new ClientesEntity();
+        clientesEntity.setIdCliente(cliente.getIdCliente());
+        clientesEntity.setTenantId(cliente.getTenantId());
+        clientesEntity.setNombre(cliente.getNombre());
+        clientesEntity.setContacto(cliente.getContacto());
+        clientesEntity.setTelefono(cliente.getTelefono());
+        clientesEntity.setEmail(cliente.getEmail());
+        clientesEntity.setCreditoHabilitado(cliente.isCreditoHabilitado());
+        clientesEntity.setLimiteCredito(cliente.getLimiteCredito());
+        clientesEntity.setActivo("1");
+      }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un problema al insertar el nuevo cliente | Repository | Mas detalles: {}]", pamensaje);
+      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al insertar el nuevo cliente en BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al insertar el nuevo cliente en la BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza insertar nuevo cliente | Repository]");
+    }
+    
+    return clientesEntity;
   }
   
   @Override

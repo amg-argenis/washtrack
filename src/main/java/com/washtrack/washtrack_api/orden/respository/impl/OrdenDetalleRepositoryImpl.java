@@ -87,6 +87,12 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
           log.info("[Detalle Orden Insertado | Detalle: {}]", detalleOrdenEntity);
         }
       }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un problema al insertar el detalle orden | Repository | Mas detalles: {}]",
+            pamensaje);
+      }
+      
     }
     catch ( DataAccessException e ) {
       log.error("[DataAccessException | Error al insertar detalle orden | Repository | Mas detalles: {}]",
@@ -94,7 +100,8 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
       throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error critico al insertar detalle orden | Repository]: {}", e.getMessage(), e);
+      log.error("[Exception | Error critico al insertar detalle orden | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
       throw e;
     }
     finally {

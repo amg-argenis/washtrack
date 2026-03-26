@@ -23,6 +23,7 @@ public class ConstantesOrdenBaseDatos {
   // SP CLIENTES
   public static final String SP_LISTAR_CLIENTES = "SP_LISTAR_CLIENTES";
   public static final String SP_BUSCAR_CLIENTE = "SP_BUSCAR_CLIENTE";
+  public static final String SP_INSERTAR_CLIENTE = "SP_INSERTAR_CLIENTE";
   
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";

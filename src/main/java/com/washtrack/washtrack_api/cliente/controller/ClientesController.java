@@ -52,7 +52,7 @@ public class ClientesController {
   }
   
   /**
-   * Listar Clientes | Controller
+   * Buscar Clientes | Controller
    *
    * @return
    */
@@ -60,9 +60,34 @@ public class ClientesController {
   public ResponseEntity<ServiceResult<Object>> buscarClientesController(
       @RequestBody ClienteDto clienteDto) {
     
-    log.info("[Iniciando  de clientes | Controller]");
+    log.info("[Iniciando de clientes | Controller]");
     
     ServiceResult<Object> resultado = this.clientesService.buscarClienteService(clienteDto);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Insertar Clientes | Controller
+   *
+   * @return
+   */
+  @PostMapping("/clientes/crear")
+  public ResponseEntity<ServiceResult<Object>> insertarClientesController(
+      @RequestBody ClienteDto clienteDto) {
+    
+    log.info("[Iniciando insercion de clientes | Controller]");
+    
+    ServiceResult<Object> resultado = this.clientesService.guardarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

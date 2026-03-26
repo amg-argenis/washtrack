@@ -205,6 +205,12 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
         ordenesEntity.setTenantId((String) resultado.get("po_tenantid"));
         ordenesEntity.setFechaEntrega((String) resultado.get("po_fechaentrega"));
       }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un problema al insertar la nueva orden de servicio | Repository | Mas detalles: {}]",
+            pamensaje);
+      }
+      
     }
     catch ( DataAccessException e ) {
       log.error(
@@ -213,8 +219,8 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error critico al insertar orden de servicio en la BD | Repository]: {}", e.getMessage(),
-          e);
+      log.error("[Exception | Error critico al insertar orden de servicio en la BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
       throw e;
     }
     finally {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -168,7 +169,68 @@ public class ClientesServiceImpl implements IClientesService {
   
   @Override
   public ServiceResult<Object> guardarClienteService(ClienteDto clienteDto) {
-    return null;
+    log.info("[Inicia insertar el nuevo cliente | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
+    try {
+      UUID uuid = UUID.randomUUID();
+      clienteDto.setIdCliente(uuid.toString());
+      
+      // Mapear a Entity
+      ClientesEntity ordenEntity = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
+      
+      ClientesEntity ordenesEntity = this.clientesRepository.insertarClienteRepository(ordenEntity);
+      
+      if ( ordenesEntity != null ) {
+        ClienteDto ordenRespDto = this.mapearObjetosCliente.mapearClienteToDto(ordenesEntity);
+        serviceResult =
+            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                // Devolver al cliente el propio objeto que se envia a la BD, sin SELECT adicional en la BD
+                ordenRespDto
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_INSERT,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al insertar el nuevo cliente | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error al insertar el nuevo cliente | Service]: {}", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza insertar el nuevo cliente | Service]");
+    }
+    return serviceResult;
   }
   
   @Override
