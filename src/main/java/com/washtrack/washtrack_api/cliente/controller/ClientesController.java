@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.cliente.controller;
 
+import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
 import com.washtrack.washtrack_api.cliente.service.IClientesService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
@@ -8,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +28,7 @@ public class ClientesController {
   }
   
   /**
-   * Listar ordenes de servicio | Controller
+   * Listar Clientes | Controller
    *
    * @return
    */
@@ -35,6 +38,31 @@ public class ClientesController {
     log.info("[Iniciando obtencion de clientes | Controller]");
     
     ServiceResult<Object> resultado = this.clientesService.listarClientesService();
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Listar Clientes | Controller
+   *
+   * @return
+   */
+  @PostMapping("/clientes/buscar")
+  public ResponseEntity<ServiceResult<Object>> buscarClientesController(
+      @RequestBody ClienteDto clienteDto) {
+    
+    log.info("[Iniciando  de clientes | Controller]");
+    
+    ServiceResult<Object> resultado = this.clientesService.buscarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

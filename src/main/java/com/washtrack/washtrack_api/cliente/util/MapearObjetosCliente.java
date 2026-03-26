@@ -28,4 +28,25 @@ public class MapearObjetosCliente {
         .build();
   }
   
+  /**
+   * Mapeo de objetos para uso interno en el BK
+   *
+   * @param clienteDto
+   * @return
+   */
+  public ClientesEntity mapearClienteDtoToEntity(ClienteDto clienteDto) {
+    
+    return ClientesEntity.builder()
+        .idCliente(clienteDto.getIdCliente())
+        .tenantId(clienteDto.getTenantId())
+        .nombre(clienteDto.getNombre())
+        .contacto(clienteDto.getContacto())
+        .telefono(clienteDto.getTelefono())
+        .email(clienteDto.getEmail())
+        .creditoHabilitado(clienteDto.isCreditoHabilitado())
+        .limiteCredito(clienteDto.getLimiteCredito())
+        .activo(clienteDto.getActivo())
+        .build();
+  }
+  
 }

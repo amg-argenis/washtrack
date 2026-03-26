@@ -3,6 +3,7 @@ package com.washtrack.washtrack_api.cliente.respository.impl;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.respository.IClientesRepository;
 import com.washtrack.washtrack_api.cliente.respository.inicializador.InicializadorClientesSimpleJdbcCall;
+import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,47 @@ public class ClientesRepositoryImpl implements IClientesRepository {
   
   @Override
   public ClientesEntity buscarClienteRepository(ClientesEntity cliente) {
-    return null;
+    log.info("[Inicia buscar cliente | Repository]");
+    
+    try {
+      Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.buscarClientesCallJdbcMethod(
+          cliente.getIdCliente(), cliente.getTenantId());
+      
+      Integer codigobd =
+          (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje =
+          (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        List<ClientesEntity> lista =
+            (List<ClientesEntity>) resultado.get("clienterecuperado");
+        
+        if ( lista != null && !lista.isEmpty() ) {
+          return lista.get(ConstantesNumericas.CERO);
+        }
+      }
+      
+      return null;
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error al buscar el cliente en BD]", e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al buscar el cliente en la BD | Repository]: {}", e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza buscar cliente | Repository]");
+    }
   }
   
   @Override
