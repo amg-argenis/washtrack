@@ -2,8 +2,6 @@ package com.washtrack.washtrack_api.cliente.service.impl;
 
 import com.washtrack.washtrack_api.cliente.util.MapearRespuestasConsultasCliente;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
-import com.washtrack.washtrack_api.orden.dto.orden.OrdenesDto;
-import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
@@ -235,7 +233,71 @@ public class ClientesServiceImpl implements IClientesService {
   
   @Override
   public ServiceResult<Object> actualizarClienteService(ClienteDto clienteDto) {
-    return null;
+    log.info("[Inicia actualizar cliente | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
+    try {
+      // Mapear a OrdenesEntity
+      ClientesEntity ordenEntity = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
+      
+      ClientesEntity respRepository = this.clientesRepository.actualizarClienteRepository(ordenEntity);
+      
+      if ( respRepository != null ) {
+        serviceResult =
+            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesNumericas.UNO,
+                this.mapearObjetosCliente.mapearClienteToDto(respRepository)
+            );
+      }
+      else if ( respRepository == null ) {
+        serviceResult =
+            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ACTUALIZAR,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      else {
+        serviceResult =
+            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_ACTUALIZAR,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar el cliente | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error al actualizar el cliente | Service]: {}", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza actualizar el cliente | Service]");
+    }
+    
+    return serviceResult;
   }
   
   @Override

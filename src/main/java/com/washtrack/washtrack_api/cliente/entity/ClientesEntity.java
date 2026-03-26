@@ -19,6 +19,6 @@ public class ClientesEntity {
   private String email;
   private boolean creditoHabilitado;
   private Double limiteCredito;
-  private String activo;
+  private boolean activo;
   
 }

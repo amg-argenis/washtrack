@@ -127,17 +127,13 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
-        // Mapear OUT campos insertados a tu entidad
-        clientesEntity = new ClientesEntity();
-        clientesEntity.setIdCliente(cliente.getIdCliente());
-        clientesEntity.setTenantId(cliente.getTenantId());
-        clientesEntity.setNombre(cliente.getNombre());
-        clientesEntity.setContacto(cliente.getContacto());
-        clientesEntity.setTelefono(cliente.getTelefono());
-        clientesEntity.setEmail(cliente.getEmail());
-        clientesEntity.setCreditoHabilitado(cliente.isCreditoHabilitado());
-        clientesEntity.setLimiteCredito(cliente.getLimiteCredito());
-        clientesEntity.setActivo("1");
+        List<ClientesEntity> entityList =
+            (List<ClientesEntity>) resultado.get("clienterecuperado");
+        clientesEntity = entityList.get(ConstantesNumericas.CERO);
+      }
+      
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.UNONEGATIVO ) {
@@ -163,8 +159,47 @@ public class ClientesRepositoryImpl implements IClientesRepository {
   }
   
   @Override
-  public Integer actualizarClienteRepository(ClientesEntity cliente) {
-    return 0;
+  public ClientesEntity actualizarClienteRepository(ClientesEntity cliente) {
+    log.info("[Inicia actualizar cliente | Repository]");
+    
+    ClientesEntity clientesEntity = null;
+    
+    try {
+      // Ejecucion
+      Map<String, Object> resultado =
+          this.inicializadorClientesSimpleJdbcCall.actualizarClientesCallJdbcMethod(cliente);
+      
+      // OUT parameter seguro
+      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
+        List<ClientesEntity> entityList =
+            (List<ClientesEntity>) resultado.get("clienterecuperado");
+        clientesEntity = entityList.getFirst();
+      }
+      
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+      }
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar el cliente en BD | Repository | Mas detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error al actualizar el cliente en BD | Repository]: {}", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza actualizar cliente | Repository]");
+    }
+    
+    return clientesEntity;
   }
   
   @Override

@@ -19,7 +19,7 @@ public class ClientesRowmapper implements RowMapper<ClientesEntity> {
         .email(rs.getString("email"))
         .creditoHabilitado(rs.getBoolean("creditoHabilitado"))
         .limiteCredito(rs.getDouble("limiteCredito"))
-        .activo(rs.getString("activo"))
+        .activo(rs.getBoolean("activo"))
         .build();
   }
 }

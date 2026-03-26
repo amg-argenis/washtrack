@@ -101,4 +101,29 @@ public class ClientesController {
     
   }
   
+  /**
+   * Actualizar Clientes | Controller
+   *
+   * @return
+   */
+  @PostMapping("/clientes/actualizar")
+  public ResponseEntity<ServiceResult<Object>> actualizarClientesController(
+      @RequestBody ClienteDto clienteDto) {
+    
+    log.info("[Iniciando actualizar cliente | Controller]");
+    
+    ServiceResult<Object> resultado = this.clientesService.actualizarClienteService(clienteDto);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
 }

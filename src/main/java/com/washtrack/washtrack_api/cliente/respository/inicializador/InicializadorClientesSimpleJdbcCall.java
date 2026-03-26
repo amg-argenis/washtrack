@@ -2,6 +2,7 @@ package com.washtrack.washtrack_api.cliente.respository.inicializador;
 
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.rowmapper.ClientesRowmapper;
+import com.washtrack.washtrack_api.cliente.util.MapearObjetosCliente;
 import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +23,14 @@ public class InicializadorClientesSimpleJdbcCall {
   private SimpleJdbcCall listarClientesSimpleJdbcCall;
   private SimpleJdbcCall buscarClientesSimpleJdbcCall;
   private SimpleJdbcCall insertarClientesSimpleJdbcCall;
+  private SimpleJdbcCall actualizarClientesSimpleJdbcCall;
   
   private final JdbcTemplate jdbcTemplate;
+  private final MapearObjetosCliente mapearObjetosCliente;
   
-  public InicializadorClientesSimpleJdbcCall(JdbcTemplate jdbcTemplate) {
+  public InicializadorClientesSimpleJdbcCall(JdbcTemplate jdbcTemplate, MapearObjetosCliente mapearObjetosCliente) {
     this.jdbcTemplate = jdbcTemplate;
+    this.mapearObjetosCliente = mapearObjetosCliente;
   }
   
   @PostConstruct
@@ -68,11 +72,31 @@ public class InicializadorClientesSimpleJdbcCall {
             new SqlParameter("pa_telefono", Types.VARCHAR),
             new SqlParameter("pa_email", Types.VARCHAR),
             new SqlParameter("pa_creditohabilitado", Types.TINYINT),
-            new SqlParameter("pa_limitecredito", Types.VARCHAR),
+            new SqlParameter("pa_limitecredito", Types.DECIMAL),
             // OUT
             new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
             new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
-        );
+        )
+        .returningResultSet("clienterecuperado", new ClientesRowmapper());
+    
+    this.actualizarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesOrdenBaseDatos.SP_ACTUALIZAR_CLIENTE)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_idcliente", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            new SqlParameter("pa_nombre", Types.VARCHAR),
+            new SqlParameter("pa_contacto", Types.VARCHAR),
+            new SqlParameter("pa_telefono", Types.VARCHAR),
+            new SqlParameter("pa_email", Types.VARCHAR),
+            new SqlParameter("pa_creditohabilitado", Types.TINYINT),
+            new SqlParameter("pa_limitecredito", Types.DECIMAL),
+            // OUT
+            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+        )
+        .returningResultSet("clienterecuperado", new ClientesRowmapper());
     
   }
   
@@ -110,17 +134,19 @@ public class InicializadorClientesSimpleJdbcCall {
    * @return
    */
   public Map<String, Object> insertarClientesCallJdbcMethod(ClientesEntity clientesEntity) {
-    Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // Temporal ******
-    params.put("pa_idcliente", clientesEntity.getIdCliente());
-    params.put("pa_nombre", clientesEntity.getNombre());
-    params.put("pa_contacto", clientesEntity.getContacto());
-    params.put("pa_telefono", clientesEntity.getTelefono());
-    params.put("pa_email", clientesEntity.getEmail());
-    params.put("pa_creditohabilitado", clientesEntity.isCreditoHabilitado());
-    params.put("pa_limitecredito", clientesEntity.getLimiteCredito());
-    
+    Map<String, Object> params = this.mapearObjetosCliente.parametrizarObjetoClienteEntity(clientesEntity);
     return this.insertarClientesSimpleJdbcCall.execute(params);
+  }
+  
+  /**
+   * Actualizar un cliente
+   *
+   * @param clientesEntity
+   * @return
+   */
+  public Map<String, Object> actualizarClientesCallJdbcMethod(ClientesEntity clientesEntity) {
+    Map<String, Object> params = this.mapearObjetosCliente.parametrizarObjetoClienteEntity(clientesEntity);
+    return this.actualizarClientesSimpleJdbcCall.execute(params);
   }
   
 }

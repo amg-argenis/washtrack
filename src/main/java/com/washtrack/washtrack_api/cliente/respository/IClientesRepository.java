@@ -12,7 +12,7 @@ public interface IClientesRepository {
   
   ClientesEntity insertarClienteRepository(ClientesEntity cliente);
   
-  Integer actualizarClienteRepository(ClientesEntity cliente);
+  ClientesEntity actualizarClienteRepository(ClientesEntity cliente);
   
   Integer eliminarClienteRepository(ClientesEntity cliente);
   
