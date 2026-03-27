@@ -60,7 +60,7 @@ public class ClientesController {
   public ResponseEntity<ServiceResult<Object>> buscarClientesController(
       @RequestBody ClienteDto clienteDto) {
     
-    log.info("[Iniciando de clientes | Controller]");
+    log.info("[Iniciando busqueda de clientes | Controller]");
     
     ServiceResult<Object> resultado = this.clientesService.buscarClienteService(clienteDto);
     
@@ -113,6 +113,31 @@ public class ClientesController {
     log.info("[Iniciando actualizar cliente | Controller]");
     
     ServiceResult<Object> resultado = this.clientesService.actualizarClienteService(clienteDto);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Buscar Clientes | Controller
+   *
+   * @return
+   */
+  @PostMapping("/clientes/eliminar")
+  public ResponseEntity<ServiceResult<Object>> eliminarClientesController(
+      @RequestBody ClienteDto clienteDto) {
+    
+    log.info("[Iniciando eliminar clientes | Controller]");
+    
+    ServiceResult<Object> resultado = this.clientesService.eliminarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

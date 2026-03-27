@@ -50,7 +50,7 @@ public class InicializadorClientesSimpleJdbcCall {
         )
         .returningResultSet("listaclientes", new ClientesRowmapper());
     
-    // Buscar cliente por Tenant Id
+    // Buscar cliente por Tenant Id y Id cliente
     this.buscarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesOrdenBaseDatos.SP_BUSCAR_CLIENTE)
@@ -84,7 +84,7 @@ public class InicializadorClientesSimpleJdbcCall {
         )
         .returningResultSet("clienterecuperado", new ClientesRowmapper());
     
-    // Actualizar cliente por Tenant Id
+    // Actualizar cliente por Tenant Id y Id cliente
     this.actualizarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesOrdenBaseDatos.SP_ACTUALIZAR_CLIENTE)
@@ -104,7 +104,7 @@ public class InicializadorClientesSimpleJdbcCall {
         )
         .returningResultSet("clienterecuperado", new ClientesRowmapper());
     
-    // Eliminar cliente por Tenant Id
+    // Eliminar cliente por Tenant Id y Id cliente
     this.eliminarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesOrdenBaseDatos.SP_ELIMINAR_CLIENTE)
@@ -178,7 +178,7 @@ public class InicializadorClientesSimpleJdbcCall {
     Map<String, Object> params = new HashMap<>();
     params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // Temporal ******
     params.put("pa_idcliente", idCliente);
-    return this.buscarClientesSimpleJdbcCall.execute(params);
+    return this.eliminarClientesSimpleJdbcCall.execute(params);
   }
   
 }

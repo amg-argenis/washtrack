@@ -114,7 +114,7 @@ public class ClientesServiceImpl implements IClientesService {
       ClientesEntity criterioBusqueda = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
       
       // Llamada al Repository
-      ClientesEntity resultado = clientesRepository.buscarClienteRepository(criterioBusqueda);
+      ClientesEntity resultado = this.clientesRepository.buscarClienteRepository(criterioBusqueda);
       
       if ( resultado == null ) {
         log.info("[Cliente no encontrado | Service]");
@@ -311,21 +311,28 @@ public class ClientesServiceImpl implements IClientesService {
       ClientesEntity criterioBusqueda = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
       
       // Llamada al Repository
-      Integer resultado = clientesRepository.eliminarClienteRepository(criterioBusqueda);
+      Integer resultado = this.clientesRepository.eliminarClienteRepository(criterioBusqueda);
       
-      if ( resultado == null && resultado.intValue() != ConstantesNumericas.CERO ) {
-        log.info("[Cliente No eliminado de la BD | Service]");
-        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
-            ConstantesOrdenes.SIN_REGISTROS,
-            ApiErrorCode.ERROR_BASE_DATOS
-        );
-      }
-      else {
+      if ( resultado != null && resultado.intValue() == ConstantesNumericas.CERO ) {
         log.info("[Cliente eliminado correctamente de la BD | Service]");
         return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
             ConstantesOrdenes.OPERACION_EXITOSA,
             ConstantesNumericas.CERO,
             null
+        );
+      }
+      else if ( resultado != null && resultado.intValue() == ConstantesNumericas.DOS ) {
+        log.info("[Cliente No encontrado en la BD | Service]");
+        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      else {
+        log.info("[Hubo un problema en la BD | Service]");
+        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_ELIMINAR,
+            ApiErrorCode.ERROR_BASE_DATOS
         );
       }
       

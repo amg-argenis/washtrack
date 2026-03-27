@@ -46,7 +46,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        log.warn("El SP listar ordenes de servicio no devolvio pa_codigobd, se asume error.");
       }
       else {
         lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
@@ -93,7 +93,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP listar ordenes por fecha no devolvio pa_codigobd, se asume error]");
       }
       else {
         lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
@@ -140,7 +140,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP buscar orden servicio no devolvio pa_codigobd, se asume error]");
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
@@ -190,6 +190,10 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
+      
+      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP insertar orden servicio no devolvio pa_codigobd, se asume error]");
+      }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
         // Mapear OUT campos insertados a tu entidad
@@ -254,7 +258,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP actualizar orden servicio no devolvio pa_codigobd, se asume error]");
         codigobd = 1;
       }
     }
@@ -299,7 +303,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("El SP no devolvio pa_codigobd, se asume error.");
+        log.warn("El SP eliminar orden servicio no devolvio pa_codigobd, se asume error.");
       }
       
     }

@@ -118,6 +118,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
     
     try {
       // Ejecucion
+      log.info("[Cliente a insertar: {}]", cliente);
       Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.insertarClientesCallJdbcMethod(cliente);
       
       // OUT parameter seguro
@@ -166,6 +167,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
     
     try {
       // Ejecucion
+      log.info("[Cliente a editar: {}]", cliente);
       Map<String, Object> resultado =
           this.inicializadorClientesSimpleJdbcCall.actualizarClientesCallJdbcMethod(cliente);
       
