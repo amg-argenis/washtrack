@@ -1,6 +1,9 @@
 package com.washtrack.washtrack_api.util.constantes;
 
-public class ConstantesMensajesGenericos {
+public final class ConstantesMensajesGenericos {
+  
+  private ConstantesMensajesGenericos() {
+  }
   
   /**
    * Texto

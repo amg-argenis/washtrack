@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.orden.respository.inicializador;
 
-import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
 import com.washtrack.washtrack_api.orden.rowmapper.OrdenConDetalleMapper;
 import com.washtrack.washtrack_api.orden.util.MapearObjetosDetalleOrden;
@@ -33,16 +33,16 @@ public class InicializadorOrdenConDetalleSjdbcCall {
   @PostConstruct
   public void init() {
     this.buscarOrdenDetalleCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_BUSCAR_ORDENSERVICIOCONDETALLE)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ORDENSERVICIOCONDETALLE)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_idorden", Types.VARCHAR),
             new SqlParameter("pa_folio", Types.VARCHAR),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("detalleconorden", new OrdenConDetalleMapper());
   }

@@ -3,7 +3,7 @@ package com.washtrack.washtrack_api.cliente.respository.inicializador;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.rowmapper.ClientesRowmapper;
 import com.washtrack.washtrack_api.cliente.util.MapearObjetosCliente;
-import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,35 +39,35 @@ public class InicializadorClientesSimpleJdbcCall {
     
     // Listar los clientes por Tenant Id
     this.listarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_LISTAR_CLIENTES)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_LISTAR_CLIENTES)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("listaclientes", new ClientesRowmapper());
     
     // Buscar cliente por Tenant Id y Id cliente
     this.buscarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_BUSCAR_CLIENTE)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_CLIENTE)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_idcliente", Types.VARCHAR),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("clienterecuperado", new ClientesRowmapper());
     
     // Insertar un nuevo cliente por Tenant Id
     this.insertarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_INSERTAR_CLIENTE)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_CLIENTE)
         .declareParameters(
             // IN
             new SqlParameter("pa_idcliente", Types.VARCHAR),
@@ -79,15 +79,15 @@ public class InicializadorClientesSimpleJdbcCall {
             new SqlParameter("pa_creditohabilitado", Types.TINYINT),
             new SqlParameter("pa_limitecredito", Types.DECIMAL),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("clienterecuperado", new ClientesRowmapper());
     
     // Actualizar cliente por Tenant Id y Id cliente
     this.actualizarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_ACTUALIZAR_CLIENTE)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_CLIENTE)
         .declareParameters(
             // IN
             new SqlParameter("pa_idcliente", Types.VARCHAR),
@@ -99,22 +99,22 @@ public class InicializadorClientesSimpleJdbcCall {
             new SqlParameter("pa_creditohabilitado", Types.TINYINT),
             new SqlParameter("pa_limitecredito", Types.DECIMAL),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("clienterecuperado", new ClientesRowmapper());
     
     // Eliminar cliente por Tenant Id y Id cliente
     this.eliminarClientesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_ELIMINAR_CLIENTE)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_CLIENTE)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_idcliente", Types.VARCHAR),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         );
     
   }

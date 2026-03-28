@@ -3,7 +3,7 @@ package com.washtrack.washtrack_api.usuarios.repository.inicializador;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
 import com.washtrack.washtrack_api.usuarios.rowmapper.UsuarioRowMapper;
 import com.washtrack.washtrack_api.usuarios.util.MapearObjetosUsuario;
-import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,21 +38,8 @@ public class InicializadorRepositoryUsuarios {
   @PostConstruct
   public void init() {
     
-    this.loginUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName("SP_LOGIN_USUARIO")
-        .declareParameters(
-            // IN
-            new SqlParameter("pa_email", Types.VARCHAR),
-            new SqlParameter("pa_password", Types.VARCHAR),
-            // OUT
-            new SqlOutParameter("pa_codigobd", Types.INTEGER),
-            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
-        )
-        .returningResultSet("usuariorecuperado", new UsuarioRowMapper());
-    
     this.buscarUsuarioPorIdSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName("SP_BUSCAR_USUARIO_ID")
         .declareParameters(
             // IN
@@ -63,8 +50,21 @@ public class InicializadorRepositoryUsuarios {
         )
         .returningResultSet("usuariorecuperado", new UsuarioRowMapper());
     
+    this.loginUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_LOGIN_USUARIO)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_email", Types.VARCHAR),
+            new SqlParameter("pa_password", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("usuariologinrec", new UsuarioRowMapper());
+    
     this.listarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName("SP_LISTAR_USUARIOS")
         .declareParameters(
             // OUT
@@ -74,7 +74,7 @@ public class InicializadorRepositoryUsuarios {
         .returningResultSet("listausuarios", new UsuarioRowMapper());
     
     this.insertarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName("SP_INSERTAR_USUARIO")
         .declareParameters(
             // IN
@@ -90,7 +90,7 @@ public class InicializadorRepositoryUsuarios {
         .returningResultSet("listausuarios", new UsuarioRowMapper());
     
     this.actualizarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName("SP_ACTUALIZAR_USUARIO")
         .declareParameters(
             // IN
@@ -107,7 +107,7 @@ public class InicializadorRepositoryUsuarios {
         .returningResultSet("listausuarios", new UsuarioRowMapper());
     
     this.eliminarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName("SP_ELIMINAR_USUARIO")
         .declareParameters(
             // IN
@@ -124,7 +124,7 @@ public class InicializadorRepositoryUsuarios {
   /**
    * Consultar usuario por email y password | Login
    */
-  public Map<String, Object> consultarUsuarioJdbcMethod(String email, String password) {
+  public Map<String, Object> logInUsuarioJdbcMethod(String email, String password) {
     Map<String, Object> params = new HashMap<>();
     params.put("pa_email", email);
     params.put("pa_password", password);

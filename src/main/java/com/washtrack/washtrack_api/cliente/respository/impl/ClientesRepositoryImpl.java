@@ -3,7 +3,7 @@ package com.washtrack.washtrack_api.cliente.respository.impl;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.respository.IClientesRepository;
 import com.washtrack.washtrack_api.cliente.respository.inicializador.InicializadorClientesSimpleJdbcCall;
-import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -34,8 +34,8 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       resultado = this.inicializadorClientesSimpleJdbcCall.listarClientesCallJdbcMethod(tenantId);
       
       // OUT parameter seguro
-      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
@@ -75,9 +75,9 @@ public class ClientesRepositoryImpl implements IClientesRepository {
           cliente.getIdCliente(), cliente.getTenantId());
       
       Integer codigobd =
-          (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+          (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje =
-          (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+          (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
@@ -93,12 +93,9 @@ public class ClientesRepositoryImpl implements IClientesRepository {
           return lista.get(ConstantesNumericas.CERO);
         }
       }
-      
-      return null;
-      
     }
     catch ( DataAccessException e ) {
-      log.error("[DataAccessException | Error al buscar el cliente en BD]", e);
+      log.error("[DataAccessException | Error critico al buscar el cliente en BD | Repository]", e);
       throw e;
     }
     catch ( Exception e ) {
@@ -109,6 +106,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
     finally {
       log.info("[Finaliza buscar cliente | Repository]");
     }
+    return null;
   }
   
   @Override
@@ -122,8 +120,8 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.insertarClientesCallJdbcMethod(cliente);
       
       // OUT parameter seguro
-      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
@@ -172,8 +170,8 @@ public class ClientesRepositoryImpl implements IClientesRepository {
           this.inicializadorClientesSimpleJdbcCall.actualizarClientesCallJdbcMethod(cliente);
       
       // OUT parameter seguro
-      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
@@ -215,9 +213,9 @@ public class ClientesRepositoryImpl implements IClientesRepository {
           cliente.getIdCliente());
       
       codigobd =
-          (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
+          (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje =
-          (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+          (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       

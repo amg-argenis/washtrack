@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.cliente.service.impl;
 
-import com.washtrack.washtrack_api.cliente.util.MapearRespuestasConsultasCliente;
+import com.washtrack.washtrack_api.util.response.MapearRespuestasConsultasUtil;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
@@ -24,14 +24,14 @@ import java.util.UUID;
 public class ClientesServiceImpl implements IClientesService {
   
   private final IClientesRepository clientesRepository;
-  private final MapearRespuestasConsultasCliente mapearRespuestasConsultasClienteCliente;
+  private final MapearRespuestasConsultasUtil mapearRespuestasConsultasUtilCliente;
   private final MapearObjetosCliente mapearObjetosCliente;
   
   public ClientesServiceImpl(IClientesRepository clientesRepository,
-      MapearRespuestasConsultasCliente mapearRespuestasConsultasClienteCliente,
+      MapearRespuestasConsultasUtil mapearRespuestasConsultasUtilCliente,
       MapearObjetosCliente mapearObjetosCliente) {
     this.clientesRepository = clientesRepository;
-    this.mapearRespuestasConsultasClienteCliente = mapearRespuestasConsultasClienteCliente;
+    this.mapearRespuestasConsultasUtilCliente = mapearRespuestasConsultasUtilCliente;
     this.mapearObjetosCliente = mapearObjetosCliente;
   }
   
@@ -48,7 +48,7 @@ public class ClientesServiceImpl implements IClientesService {
       
       if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
                 ConstantesMensajesGenericos.SIN_REGISTROS,
                 ApiErrorCode.SIN_INFORMACION_EN_BD
             );
@@ -60,7 +60,7 @@ public class ClientesServiceImpl implements IClientesService {
           ordenesDtoList.add(this.mapearObjetosCliente.mapearClienteToDto(clientesEntity));
         }
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultRespuestaOk(
                 ConstantesMensajesGenericos.OPERACION_EXITOSA,
                 ordenesDtoList.size(),
                 ordenesDtoList
@@ -71,7 +71,7 @@ public class ClientesServiceImpl implements IClientesService {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -81,7 +81,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[DataAccessException | Error al obtener listado de ordenes de servicio "
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
@@ -91,7 +91,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[Exception | Error critico al listar orden de servicio | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -118,7 +118,7 @@ public class ClientesServiceImpl implements IClientesService {
       
       if ( resultado == null ) {
         log.info("[Cliente no encontrado | Service]");
-        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+        return this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
@@ -126,7 +126,7 @@ public class ClientesServiceImpl implements IClientesService {
       
       // Mapear Entity → DTO (respuesta)
       ClienteDto ordenDto = this.mapearObjetosCliente.mapearClienteToDto(resultado);
-      serviceResult = this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+      serviceResult = this.mapearRespuestasConsultasUtilCliente.mapearserviceResultRespuestaOk(
           ConstantesOrdenes.OPERACION_EXITOSA,
           ConstantesNumericas.UNO, ordenDto
       );
@@ -135,7 +135,7 @@ public class ClientesServiceImpl implements IClientesService {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -145,7 +145,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[DataAccessException | Error al buscar el cliente "
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
@@ -155,7 +155,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[Exception | Error critico al buscar el cliente | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -183,7 +183,7 @@ public class ClientesServiceImpl implements IClientesService {
       if ( ordenesEntity != null ) {
         ClienteDto ordenRespDto = this.mapearObjetosCliente.mapearClienteToDto(ordenesEntity);
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
                 ConstantesNumericas.UNO,
                 // Devolver al cliente el propio objeto que se envia a la BD, sin SELECT adicional en la BD
@@ -192,7 +192,7 @@ public class ClientesServiceImpl implements IClientesService {
       }
       else {
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
                 ConstantesOrdenes.ERROR_INSERT,
                 ApiErrorCode.ERROR_BASE_DATOS
             );
@@ -202,7 +202,7 @@ public class ClientesServiceImpl implements IClientesService {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -212,7 +212,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[DataAccessException | Error critico al insertar el nuevo cliente | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
@@ -220,7 +220,7 @@ public class ClientesServiceImpl implements IClientesService {
     catch ( Exception e ) {
       log.error("[Exception | Error al insertar el nuevo cliente | Service]: {}", e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -245,7 +245,7 @@ public class ClientesServiceImpl implements IClientesService {
       
       if ( respRepository != null ) {
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
                 ConstantesNumericas.UNO,
                 this.mapearObjetosCliente.mapearClienteToDto(respRepository)
@@ -253,14 +253,14 @@ public class ClientesServiceImpl implements IClientesService {
       }
       else if ( respRepository == null ) {
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
                 ConstantesOrdenes.ERROR_ACTUALIZAR,
                 ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
       else {
         serviceResult =
-            this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+            this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
                 ConstantesOrdenes.ERROR_ACTUALIZAR,
                 ApiErrorCode.ERROR_BASE_DATOS
             );
@@ -270,7 +270,7 @@ public class ClientesServiceImpl implements IClientesService {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -280,7 +280,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[DataAccessException | Error critico al actualizar el cliente | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
@@ -288,7 +288,7 @@ public class ClientesServiceImpl implements IClientesService {
     catch ( Exception e ) {
       log.error("[Exception | Error al actualizar el cliente | Service]: {}", e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -315,7 +315,7 @@ public class ClientesServiceImpl implements IClientesService {
       
       if ( resultado != null && resultado.intValue() == ConstantesNumericas.CERO ) {
         log.info("[Cliente eliminado correctamente de la BD | Service]");
-        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultRespuestaOk(
+        return this.mapearRespuestasConsultasUtilCliente.mapearserviceResultRespuestaOk(
             ConstantesOrdenes.OPERACION_EXITOSA,
             ConstantesNumericas.CERO,
             null
@@ -323,14 +323,14 @@ public class ClientesServiceImpl implements IClientesService {
       }
       else if ( resultado != null && resultado.intValue() == ConstantesNumericas.DOS ) {
         log.info("[Cliente No encontrado en la BD | Service]");
-        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+        return this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
       else {
         log.info("[Hubo un problema en la BD | Service]");
-        return this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+        return this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
             ConstantesOrdenes.ERROR_ELIMINAR,
             ApiErrorCode.ERROR_BASE_DATOS
         );
@@ -341,7 +341,7 @@ public class ClientesServiceImpl implements IClientesService {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
@@ -351,7 +351,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[DataAccessException | Error al eliminar el cliente "
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
@@ -361,7 +361,7 @@ public class ClientesServiceImpl implements IClientesService {
           "[Exception | Error critico al eliminar el cliente | Service | Mas detalles: {}]",
           e.getMessage(), e);
       serviceResult =
-          this.mapearRespuestasConsultasClienteCliente.mapearserviceResultError(
+          this.mapearRespuestasConsultasUtilCliente.mapearserviceResultError(
               ConstantesOrdenes.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );

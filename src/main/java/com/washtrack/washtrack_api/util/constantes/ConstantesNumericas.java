@@ -1,6 +1,9 @@
 package com.washtrack.washtrack_api.util.constantes;
 
-public class ConstantesNumericas {
+public final class ConstantesNumericas {
+  
+  private ConstantesNumericas() {
+  }
   
   /**
    * Numericos

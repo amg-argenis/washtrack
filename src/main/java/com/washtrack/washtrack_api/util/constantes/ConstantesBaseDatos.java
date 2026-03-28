@@ -1,6 +1,9 @@
 package com.washtrack.washtrack_api.util.constantes;
 
-public class ConstantesOrdenBaseDatos {
+public final class ConstantesBaseDatos {
+  
+  private ConstantesBaseDatos() {
+  }
   
   // BASES DE DATOS
   public static final String WASHTRACKDB = "washtrackdb";
@@ -26,6 +29,9 @@ public class ConstantesOrdenBaseDatos {
   public static final String SP_INSERTAR_CLIENTE = "SP_INSERTAR_CLIENTE";
   public static final String SP_ACTUALIZAR_CLIENTE = "SP_ACTUALIZAR_CLIENTE";
   public static final String SP_ELIMINAR_CLIENTE = "SP_ELIMINAR_CLIENTE";
+  
+  // SP USUARIOS
+  public static final String SP_LOGIN_USUARIO = "SP_LOGIN_USUARIO";
   
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";

@@ -1,5 +1,8 @@
 package com.washtrack.washtrack_api.usuarios.util;
 
+import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
+import com.washtrack.washtrack_api.usuarios.dto.LoginResponse;
+import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +37,17 @@ public class MapearObjetosUsuario {
     params.put("pa_tenantId", usuarioInsertEntity.getTenantId());
     
     return params;
+  }
+  
+  public LoginResponse toDtoLoginUsuarioMapper(UsuarioEntity usuarioEntity) {
+    return LoginResponse.builder()
+        .idUsuario(usuarioEntity.getIdUsuario())
+        .tenantId(usuarioEntity.getTenantId())
+        .nombre(usuarioEntity.getNombre())
+        .email(usuarioEntity.getEmail())
+        .rol(usuarioEntity.getRol())
+        .activo(usuarioEntity.isActivo())
+        .build();
   }
   
 }

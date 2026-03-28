@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.orden.respository.impl;
 
-import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
@@ -38,8 +38,8 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
       Map<String, Object> resultado =
           this.inicializadorOrdenConDetalleSjdbcCall.buscarOrdenConDetallesCallJdbc(build);
       
-      Integer codigobd = (Integer) resultado.get(ConstantesOrdenBaseDatos.CODIGOBD);
-      String pamensaje = (String) resultado.get(ConstantesOrdenBaseDatos.PAMENSAJEBD);
+      Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
+      String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       

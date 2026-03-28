@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.orden.respository.inicializador;
 
-import com.washtrack.washtrack_api.util.constantes.ConstantesOrdenBaseDatos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import com.washtrack.washtrack_api.orden.rowmapper.OrdenDetalleMapper;
 import com.washtrack.washtrack_api.orden.util.MapearObjetosDetalleOrden;
@@ -39,23 +39,23 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
     
     // Buscar un detalle de orden
     this.buscarOrdenDetalleCall = new SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_BUSCAR_DETALLEORDEN)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_DETALLEORDEN)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_iddetalleorden", Types.VARCHAR),
             new SqlParameter("pa_ordenid", Types.VARCHAR),
             // OUT
-            new SqlOutParameter(ConstantesOrdenBaseDatos.CODIGOBD, Types.INTEGER),
-            new SqlOutParameter(ConstantesOrdenBaseDatos.PAMENSAJEBD, Types.VARCHAR)
+            new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
+            new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
         .returningResultSet("detalleordenrecuperada", new OrdenDetalleMapper());
     
     // Guardar/Insertar un detalle orden
     this.insertarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_INSERTAR_DETALLEORDEN)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_DETALLEORDEN)
         .declareParameters(
             // IN
             new SqlParameter("pa_idordendetalle", Types.VARCHAR),
@@ -73,8 +73,8 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
     
     // Actualizar un detalle orden
     this.actualizarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_ACTUALIZAR_DETALLEORDEN)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_DETALLEORDEN)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),
@@ -91,8 +91,8 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
     
     // Eliminar un detalle orden
     this.actualizarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
-        .withCatalogName(ConstantesOrdenBaseDatos.WASHTRACKDB)
-        .withProcedureName(ConstantesOrdenBaseDatos.SP_ELIMINAR_DETALLEORDEN)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_DETALLEORDEN)
         .declareParameters(
             // IN
             new SqlParameter("pa_tenantid", Types.VARCHAR),

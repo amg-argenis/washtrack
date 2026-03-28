@@ -1,6 +1,9 @@
 package com.washtrack.washtrack_api.orden.constants;
 
-public class ConstantesOrdenes {
+public final class ConstantesOrdenes {
+  
+  private ConstantesOrdenes() {
+  }
   
   /**
    * Texto
