@@ -25,7 +25,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   @Override
   public UsuarioEntity consultarUsuarioLogInRepository(String email, String password) {
     
-    log.info("[Inicia consulta de usuario | Repository]");
+    log.info("[Inicia login de usuario | Repository]");
     
     UsuarioEntity loginResponse = null;
     
@@ -38,7 +38,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
-      if ( codigobd == null && codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP para login usuario no devolvio pa_codigobd, se asume error]");
       }
       
@@ -62,7 +62,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       throw e;
     }
     finally {
-      log.info("[Finaliza consulta de usuario | Repository]");
+      log.info("[Finaliza login de usuario | Repository]");
     }
     
     return loginResponse;
@@ -70,7 +70,48 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   
   @Override
   public UsuarioEntity buscarUsuarioPorIdRepository(String idUsuario) {
-    return null;
+    log.info("[Inicia consulta de usuario | Repository]");
+    
+    UsuarioEntity loginResponse = null;
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.buscarUsuarioPorIdJdbcMethod(idUsuario);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para busqueda de usuario no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<UsuarioEntity> usuarioEntity = (List<UsuarioEntity>) respuesta.get("usuariorecuperado");
+        log.info("[Usuario encontrado: {}]", usuarioEntity.get(ConstantesNumericas.CERO));
+        loginResponse = usuarioEntity.get(ConstantesNumericas.CERO);
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Usuario no encontrado en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al consultar usuarioen BD | Repository]", e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al consultar usuario en BD | Repository]: {}", e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza consulta de usuario | Repository]");
+    }
+    
+    return loginResponse;
   }
   
   @Override

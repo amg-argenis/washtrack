@@ -94,7 +94,64 @@ public class UsuarioServiceImpl implements IUsuarioService {
   
   @Override
   public ServiceResult<Object> buscarUsuarioPorIdService(String idUsuario) {
-    return null;
+    log.info("[Inicia buscar usuario | Service]");
+    
+    log.info("[Usuario a buscar: ({}) | Service]", idUsuario);
+    
+    ServiceResult<Object> serviceResult;
+    
+    try {
+      // Llamada al Repository
+      UsuarioEntity resultado =
+          this.usuarioRepository.buscarUsuarioPorIdRepository(idUsuario);
+      
+      if ( resultado == null ) {
+        log.info("[Usuario no encontrado | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      // Mapear Entity → DTO (respuesta)
+      LoginResponse loginResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
+      serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+          ConstantesOrdenes.OPERACION_EXITOSA,
+          ConstantesNumericas.UNO, loginResponse
+      );
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al buscar el usuario "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al buscar el usuario | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    
+    log.info("[Finaliza buscar usuario | Service]");
+    return serviceResult;
   }
   
   @Override

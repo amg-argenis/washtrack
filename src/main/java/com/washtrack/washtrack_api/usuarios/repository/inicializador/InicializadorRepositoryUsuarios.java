@@ -40,7 +40,7 @@ public class InicializadorRepositoryUsuarios {
     
     this.buscarUsuarioPorIdSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
-        .withProcedureName("SP_BUSCAR_USUARIO_ID")
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_USUARIO_ID)
         .declareParameters(
             // IN
             new SqlParameter("pa_idusuario", Types.VARCHAR),
@@ -134,10 +134,10 @@ public class InicializadorRepositoryUsuarios {
   /**
    * Consultar usuario por Id Usuario | Login
    */
-  public Map<String, Object> buscarUsuarioPorIdJdbcMethod(String iDUsuario, String tenantId) {
+  public Map<String, Object> buscarUsuarioPorIdJdbcMethod(String iDUsuario) {
+    log.info("[Valor de idUsuario recibido en inicializador]: '{}'", iDUsuario);
     Map<String, Object> params = new HashMap<>();
     params.put("pa_idusuario", iDUsuario);
-    params.put("pa_tenantid", tenantId);
     return this.buscarUsuarioPorIdSimpleJdbcCall.execute(params);
   }
   
