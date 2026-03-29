@@ -3,6 +3,7 @@ package com.washtrack.washtrack_api.usuarios.controller;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -91,11 +93,36 @@ public class UsuariosController {
    * @return
    */
   @GetMapping("/usuarios/listar")
-  public ResponseEntity<ServiceResult<Object>> listarUsuariosPrivateController() {
+  public ResponseEntity<ServiceResult<Object>> listarUsuariosController() {
     
     log.info("[Iniciando listar usuarios | Controller]");
     
     ServiceResult<Object> resultado = this.usuarioService.listarUsuariosService();
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Insertar usuarios | Controller
+   *
+   * @return
+   */
+  @PostMapping("/usuarios/insertar")
+  public ResponseEntity<ServiceResult<Object>> insertarUsuariosController(
+      @Validated @RequestBody UsuarioInsertDto usuario) {
+    
+    log.info("[Iniciando insertar usuarios | Controller]");
+    
+    ServiceResult<Object> resultado = this.usuarioService.insertarUsuarioService(usuario);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

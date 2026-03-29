@@ -1,6 +1,9 @@
 package com.washtrack.washtrack_api.usuarios.repository.impl;
 
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
+import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
 import com.washtrack.washtrack_api.usuarios.repository.IUsuarioRepository;
 import com.washtrack.washtrack_api.usuarios.repository.inicializador.InicializadorRepositoryUsuarios;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
@@ -110,15 +113,63 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       throw e;
     }
     finally {
-      log.info("[Finaliza usuario | Repository]");
+      log.info("[Finaliza buscar usuario | Repository]");
     }
     
     return loginResponse;
   }
   
   @Override
-  public UsuarioEntity insertarUsuarioRepository(UsuarioEntity usuario) {
-    return null;
+  public UsuarioResponseRepository insertarUsuarioRepository(UsuarioInsertEntity usuarioInsert) {
+    log.info("[Inicia insertar usuario | Repository]");
+    
+    UsuarioResponseRepository responseRepository = new UsuarioResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.insertarUsuarioPorIdJdbcMethod(usuarioInsert);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<UsuarioEntity> usuarioEntityList = (List<UsuarioEntity>) respuesta.get("usuarioinsertado");
+        UsuarioEntity usuarioEntity = usuarioEntityList.get(ConstantesNumericas.CERO);
+        responseRepository.setUsuarioEntity(usuarioEntity);
+        responseRepository.setCodigobd(codigobd);
+        log.info("[Usuario insertado correctamente en la BD: {}]", usuarioEntity);
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para insert de usuario no devolvio pa_codigobd, se asume error]");
+        responseRepository.setCodigobd(codigobd);
+        responseRepository.setUsuarioEntity(null);
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[El usuario a insertar ya existe en la BD | Repository]");
+        responseRepository.setCodigobd(codigobd);
+        responseRepository.setUsuarioEntity(null);
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al insertar usuario en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al insertar usuario en BD | Repository | Detalles: {}]", e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza insertar usuario | Repository]");
+    }
+    
+    return responseRepository;
   }
   
   @Override

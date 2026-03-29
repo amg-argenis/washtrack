@@ -5,7 +5,10 @@ import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginResponse;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
+import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
 import com.washtrack.washtrack_api.usuarios.repository.IUsuarioRepository;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
 import com.washtrack.washtrack_api.usuarios.util.MapearObjetosUsuario;
@@ -16,6 +19,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -157,8 +161,86 @@ public class UsuarioServiceImpl implements IUsuarioService {
   }
   
   @Override
-  public ServiceResult<Object> insertarUsuarioService(UsuarioEntity usuario) {
-    return null;
+  public ServiceResult<Object> insertarUsuarioService(UsuarioInsertDto usuarioInsertDto) {
+    log.info("[Inicia insertar usuario | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Mapear DTO → Entity (request)
+      UsuarioInsertEntity usuarioEntity = this.mapearObjetosUsuario.fromDtoToEntityUsuarioMapper(usuarioInsertDto);
+      
+      // UUID para idUsuario
+      UUID uuid = UUID.randomUUID();
+      usuarioEntity.setIdUsuario(uuid.toString());
+      log.info("[Usuario a insertar: ({}) | Service]", usuarioEntity);
+      
+      // Llamada al Repository
+      UsuarioResponseRepository resultado =
+          this.usuarioRepository.insertarUsuarioRepository(usuarioEntity);
+      
+      // Mapear Entity → DTO (response)
+      if ( resultado.getUsuarioEntity() != null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        LoginResponse loginResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, loginResponse
+        );
+      }
+      
+      if ( resultado.getUsuarioEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Usuario no insertado en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_INSERT,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getUsuarioEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[El usuario ya existe en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_INSERT,
+            ApiErrorCode.CONFLICTO_INTEGRIDAD
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al insertar el usuario "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al insertar el usuario | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza insertar usuario | Service]");
+    }
+    
+    return serviceResult;
   }
   
   @Override

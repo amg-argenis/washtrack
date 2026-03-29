@@ -34,6 +34,7 @@ public final class ConstantesBaseDatos {
   public static final String SP_LOGIN_USUARIO = "SP_LOGIN_USUARIO";
   public static final String SP_BUSCAR_USUARIO_ID = "SP_BUSCAR_USUARIO_ID";
   public static final String SP_LISTAR_USUARIOS = "SP_LISTAR_USUARIOS";
+  public static final String SP_INSERTAR_USUARIO = "SP_INSERTAR_USUARIO";
   
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";

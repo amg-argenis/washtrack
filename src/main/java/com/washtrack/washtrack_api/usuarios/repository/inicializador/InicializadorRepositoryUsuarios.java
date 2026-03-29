@@ -75,19 +75,20 @@ public class InicializadorRepositoryUsuarios {
     
     this.insertarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
-        .withProcedureName("SP_INSERTAR_USUARIO")
+        .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_USUARIO)
         .declareParameters(
             // IN
+            new SqlParameter("pa_idusuario", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             new SqlParameter("pa_nombre", Types.VARCHAR),
             new SqlParameter("pa_email", Types.VARCHAR),
             new SqlParameter("pa_password", Types.VARCHAR),
             new SqlParameter("pa_rol", Types.VARCHAR),
-            new SqlParameter("pa_tenantId", Types.VARCHAR),
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
-        .returningResultSet("listausuarios", new UsuarioRowMapper());
+        .returningResultSet("usuarioinsertado", new UsuarioRowMapper());
     
     this.actualizarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)

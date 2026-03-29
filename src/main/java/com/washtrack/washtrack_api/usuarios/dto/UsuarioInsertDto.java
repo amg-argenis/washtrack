@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.usuarios.entity;
+package com.washtrack.washtrack_api.usuarios.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UsuarioInsertEntity {
-  private String idUsuario;
+public class UsuarioInsertDto {
   private String tenantId;
   private String nombre;
   private String email;
