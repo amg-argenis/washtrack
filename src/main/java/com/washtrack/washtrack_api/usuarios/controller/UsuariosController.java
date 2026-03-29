@@ -58,7 +58,7 @@ public class UsuariosController {
   /**
    * Buscar usuarios | Controller
    *
-   * Este recurso es unicamente para mi, como duenio del sistema, puedo consultar todos los usuarios que existen.
+   * Este recurso es unicamente para AMG, como duenio del sistema, puedo consultar todos los usuarios que existen.
    *
    * @return
    */
@@ -69,6 +69,33 @@ public class UsuariosController {
     log.info("[Iniciando busqueda privada de usuarios | Controller]");
     
     ServiceResult<Object> resultado = this.usuarioService.buscarUsuarioPorIdService(idUsuario.getIdUsuario());
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Listar usuarios | Controller
+   *
+   * Este recurso funciona para el Admin de cada empresa, para ver la lista de usuarios en su sistema. Y tambien para
+   * AMG como creador de WashTrack.
+   *
+   * @return
+   */
+  @GetMapping("/usuarios/listar")
+  public ResponseEntity<ServiceResult<Object>> listarUsuariosPrivateController() {
+    
+    log.info("[Iniciando listar usuarios | Controller]");
+    
+    ServiceResult<Object> resultado = this.usuarioService.listarUsuariosService();
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

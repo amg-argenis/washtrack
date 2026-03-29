@@ -65,7 +65,7 @@ public class InicializadorRepositoryUsuarios {
     
     this.listarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
-        .withProcedureName("SP_LISTAR_USUARIOS")
+        .withProcedureName(ConstantesBaseDatos.SP_LISTAR_USUARIOS)
         .declareParameters(
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),

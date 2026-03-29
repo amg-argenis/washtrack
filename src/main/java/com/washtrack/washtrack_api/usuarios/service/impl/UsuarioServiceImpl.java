@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
@@ -166,7 +168,61 @@ public class UsuarioServiceImpl implements IUsuarioService {
   
   @Override
   public ServiceResult<Object> listarUsuariosService() {
-    return null;
+    log.info("[Inicia listar usuarios | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
+    try {
+      // Llamada al Repository
+      List<UsuarioEntity> resultado =
+          this.usuarioRepository.listarUsuariosRepository();
+      
+      if ( resultado == null || resultado.isEmpty() ) {
+        log.info("[No hay registro de usuarios en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      // Mapear Entity → DTO (respuesta)
+      serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+          ConstantesOrdenes.OPERACION_EXITOSA,
+          resultado.size(), resultado
+      );
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al listar usuarios "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar usuarios | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    
+    log.info("[Finaliza listar usuarios | Service]");
+    return serviceResult;
   }
   
   @Override

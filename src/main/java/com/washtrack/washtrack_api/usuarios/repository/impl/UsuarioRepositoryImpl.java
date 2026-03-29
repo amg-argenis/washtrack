@@ -53,12 +53,13 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
     }
     catch ( DataAccessException e ) {
-      log.error("[DataAccessException | Error critico al consultar usuario para login en BD | Repository]", e);
+      log.error("[DataAccessException | Error critico al consultar usuario para login en BD | Repository"
+          + " | Detalles: {}]", e.getMessage(), e);
       throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error critico al consultar usuario para login en BD | Repository]: {}", e.getMessage(),
-          e);
+      log.error("[Exception | Error critico al consultar usuario para login en BD | Repository "
+          + " | Detalles: {}]", e.getMessage(), e);
       throw e;
     }
     finally {
@@ -70,7 +71,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   
   @Override
   public UsuarioEntity buscarUsuarioPorIdRepository(String idUsuario) {
-    log.info("[Inicia consulta de usuario | Repository]");
+    log.info("[Inicia buscar usuario | Repository]");
     
     UsuarioEntity loginResponse = null;
     
@@ -99,16 +100,17 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
     }
     catch ( DataAccessException e ) {
-      log.error("[DataAccessException | Error critico al consultar usuarioen BD | Repository]", e);
+      log.error("[DataAccessException | Error critico al consultar usuarioen BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
       throw e;
     }
     catch ( Exception e ) {
-      log.error("[Exception | Error critico al consultar usuario en BD | Repository]: {}", e.getMessage(),
+      log.error("[Exception | Error critico al consultar usuario en BD | Repository | Detalles: {}]", e.getMessage(),
           e);
       throw e;
     }
     finally {
-      log.info("[Finaliza consulta de usuario | Repository]");
+      log.info("[Finaliza usuario | Repository]");
     }
     
     return loginResponse;
@@ -126,7 +128,47 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   
   @Override
   public List<UsuarioEntity> listarUsuariosRepository() {
-    return List.of();
+    log.info("[Inicia listar usuarios | Repository]");
+    
+    List<UsuarioEntity> entityList = null;
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.listarUsuariosJdbcMethod();
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para listar usuarios no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        entityList = (List<UsuarioEntity>) respuesta.get("listausuarios");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[No hay registros de usuarios aun en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al consultar usuarios en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al consultar usuarios en BD | Repository | Detalles: {}]", e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza listar usuarios | Repository]");
+    }
+    
+    return entityList;
   }
   
   @Override
