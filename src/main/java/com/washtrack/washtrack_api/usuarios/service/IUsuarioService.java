@@ -2,6 +2,7 @@ package com.washtrack.washtrack_api.usuarios.service;
 
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 
@@ -15,7 +16,7 @@ public interface IUsuarioService {
   
   ServiceResult<Object> insertarUsuarioService(UsuarioInsertDto usuarioInsertDto);
   
-  ServiceResult<Object> eliminarUsuarioService(UsuarioEntity usuario);
+  ServiceResult<Object> eliminarUsuarioService(UsuarioEliminarReactivarDto usuario);
   
   ServiceResult<Object> listarUsuariosService();
   

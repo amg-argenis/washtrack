@@ -3,6 +3,7 @@ package com.washtrack.washtrack_api.usuarios.controller;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
@@ -123,6 +124,31 @@ public class UsuariosController {
     log.info("[Iniciando insertar usuarios | Controller]");
     
     ServiceResult<Object> resultado = this.usuarioService.insertarUsuarioService(usuario);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Eliminar usuarios | Controller
+   *
+   * @return
+   */
+  @PostMapping("/usuarios/eliminar")
+  public ResponseEntity<ServiceResult<Object>> eliminarUsuariosController(
+      @Validated @RequestBody UsuarioEliminarReactivarDto usuario) {
+    
+    log.info("[Iniciando eliminar usuarios | Controller]");
+    
+    ServiceResult<Object> resultado = this.usuarioService.eliminarUsuarioService(usuario);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

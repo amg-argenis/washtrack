@@ -5,6 +5,7 @@ import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginResponse;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
@@ -93,8 +94,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
               ApiErrorCode.ERROR_INTERNO
           );
     }
+    finally {
+      log.info("[Finaliza buscar usuario login | Service]");
+    }
     
-    log.info("[Finaliza buscar usuario login | Service]");
     return serviceResult;
   }
   
@@ -155,8 +158,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
               ApiErrorCode.ERROR_INTERNO
           );
     }
+    finally {
+      log.info("[Finaliza buscar usuario | Service]");
+    }
     
-    log.info("[Finaliza buscar usuario | Service]");
     return serviceResult;
   }
   
@@ -244,8 +249,74 @@ public class UsuarioServiceImpl implements IUsuarioService {
   }
   
   @Override
-  public ServiceResult<Object> eliminarUsuarioService(UsuarioEntity usuario) {
-    return null;
+  public ServiceResult<Object> eliminarUsuarioService(UsuarioEliminarReactivarDto usuario) {
+    log.info("[Inicia eliminar usuario | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      Integer resultado =
+          this.usuarioRepository.eliminarUsuarioRepository(usuario.getIdUsuario(), usuario.getEmail(),
+              usuario.getTenantId());
+      
+      if ( resultado == null || resultado == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un problema al eliminar el usuario de la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_ELIMINAR,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado == ConstantesNumericas.DOS ) {
+        log.info("[No existe el usuario a eliminar o esta inactivo en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_ELIMINAR,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( resultado == ConstantesNumericas.CERO ) {
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.CERO, resultado
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al eliminar usuario "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al eliminar usuario | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza eliminar usuario | Service]");
+    }
+    
+    return serviceResult;
   }
   
   @Override
@@ -302,8 +373,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
               ApiErrorCode.ERROR_INTERNO
           );
     }
+    finally {
+      log.info("[Finaliza listar usuarios | Service]");
+    }
     
-    log.info("[Finaliza listar usuarios | Service]");
     return serviceResult;
   }
   

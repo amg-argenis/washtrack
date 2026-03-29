@@ -173,8 +173,52 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   }
   
   @Override
-  public Integer eliminarUsuarioRepository(UsuarioEntity usuario) {
-    return 0;
+  public Integer eliminarUsuarioRepository(String idUsuario, String email, String tenantId) {
+    log.info("[Inicia eliminar usuario | Repository]");
+    
+    Integer codigobd;
+    
+    log.info("[Usuario a eliminar de la BD: (Id: {} | Email: {} | TenantId: {})]", idUsuario, email,
+        tenantId);
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.eliminarUsuarioJdbcMethod(idUsuario, email, tenantId);
+      
+      codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        log.info("[Usuario eliminado correctamente de la BD");
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para eliminar el usuario fallo, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[El usuario a eliminar no existe o esta inactivo en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al eliminar el usuario de la BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al eliminar el usuario de la BD | Repository | Detalles: {}]",
+          e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza eliminar usuario | Repository]");
+    }
+    
+    return codigobd;
   }
   
   @Override

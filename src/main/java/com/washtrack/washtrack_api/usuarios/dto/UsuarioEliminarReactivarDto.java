@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BuscarUsuarioRequest {
+public class UsuarioEliminarReactivarDto {
   private String idUsuario;
-  private String nombre;
   private String email;
+  private String tenantId;
 }

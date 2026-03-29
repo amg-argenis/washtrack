@@ -109,10 +109,11 @@ public class InicializadorRepositoryUsuarios {
     
     this.eliminarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
-        .withProcedureName("SP_ELIMINAR_USUARIO")
+        .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_USUARIO)
         .declareParameters(
             // IN
             new SqlParameter("pa_idusuario", Types.VARCHAR),
+            new SqlParameter("pa_email", Types.VARCHAR),
             new SqlParameter("pa_tenantid", Types.VARCHAR),
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
@@ -158,7 +159,7 @@ public class InicializadorRepositoryUsuarios {
   }
   
   /**
-   * Insertar usuario por Id Usuario | Login
+   * Actualizar datos usuario por Id Usuario | Login
    */
   public Map<String, Object> actualizarUsuarioPorIdJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
     Map<String, Object> params = this.mapearObjetosUsuario.actualizarUsuarioMapper(usuarioInsertEntity);
@@ -166,11 +167,12 @@ public class InicializadorRepositoryUsuarios {
   }
   
   /**
-   * Consultar usuario por Id Usuario | Login
+   * Eliminar usuario por Id Usuario | Login
    */
-  public Map<String, Object> eliminarUsuarioJdbcMethod(String iDUsuario, String tenantId) {
+  public Map<String, Object> eliminarUsuarioJdbcMethod(String idUsuario, String email, String tenantId) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_idusuario", iDUsuario);
+    params.put("pa_idusuario", idUsuario);
+    params.put("pa_email", email);
     params.put("pa_tenantid", tenantId);
     return this.eliminarUsuarioSimpleJdbcCall.execute(params);
   }

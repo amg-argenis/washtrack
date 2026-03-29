@@ -15,7 +15,7 @@ public interface IUsuarioRepository {
   
   UsuarioResponseRepository insertarUsuarioRepository(UsuarioInsertEntity usuarioInsert);
   
-  Integer eliminarUsuarioRepository(UsuarioEntity usuario);
+  Integer eliminarUsuarioRepository(String idUsuario, String email, String tenantId);
   
   List<UsuarioEntity> listarUsuariosRepository();
   
