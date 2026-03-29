@@ -26,6 +26,7 @@ public class InicializadorRepositoryUsuarios {
   private SimpleJdbcCall insertarUsuarioSimpleJdbcCall;
   private SimpleJdbcCall actualizarUsuarioSimpleJdbcCall;
   private SimpleJdbcCall eliminarUsuarioSimpleJdbcCall;
+  private SimpleJdbcCall reactivarUsuarioSimpleJdbcCall;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetosUsuario mapearObjetosUsuario;
@@ -119,6 +120,19 @@ public class InicializadorRepositoryUsuarios {
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         );
+    
+    this.reactivarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_REACTIVAR_USUARIO)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_email", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("usuarioreactivado", new UsuarioRowMapper());
   }
   
   // EJECUCIONES EN BD ************************************************************************************************
@@ -175,6 +189,16 @@ public class InicializadorRepositoryUsuarios {
     params.put("pa_email", email);
     params.put("pa_tenantid", tenantId);
     return this.eliminarUsuarioSimpleJdbcCall.execute(params);
+  }
+  
+  /**
+   * Reactivar usuario por email y tenant Id | Login
+   */
+  public Map<String, Object> reactivarUsuarioJdbcMethod(String email, String tenantId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_email", email);
+    params.put("pa_tenantid", tenantId);
+    return this.reactivarUsuarioSimpleJdbcCall.execute(params);
   }
   
 }

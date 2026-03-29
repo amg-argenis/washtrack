@@ -3,8 +3,8 @@ package com.washtrack.washtrack_api.usuarios.service.impl;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
-import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
-import com.washtrack.washtrack_api.usuarios.dto.LoginResponse;
+import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
+import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
@@ -38,17 +38,18 @@ public class UsuarioServiceImpl implements IUsuarioService {
   }
   
   @Override
-  public ServiceResult<Object> consultarUsuarioLogInService(LoginRequest loginRequest) {
+  public ServiceResult<Object> consultarUsuarioLogInService(LoginUsuarioRequest loginUsuarioRequest) {
     log.info("[Inicia buscar usuario login | Service]");
     
-    log.info("[Login request: ({}|{}) | Service]", loginRequest.getEmail(), loginRequest.getPassword());
+    log.info("[Login request: ({}|{}) | Service]", loginUsuarioRequest.getEmail(), loginUsuarioRequest.getPassword());
     
     ServiceResult<Object> serviceResult;
     
     try {
       // Llamada al Repository
       UsuarioEntity resultado =
-          this.usuarioRepository.consultarUsuarioLogInRepository(loginRequest.getEmail(), loginRequest.getPassword());
+          this.usuarioRepository.consultarUsuarioLogInRepository(loginUsuarioRequest.getEmail(),
+              loginUsuarioRequest.getPassword());
       
       if ( resultado == null ) {
         log.info("[Usuario para login no encontrado | Service]");
@@ -59,10 +60,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
       }
       
       // Mapear Entity → DTO (respuesta)
-      LoginResponse loginResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
+      LoginUsuarioResponse loginUsuarioResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
       serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
           ConstantesOrdenes.OPERACION_EXITOSA,
-          ConstantesNumericas.UNO, loginResponse
+          ConstantesNumericas.UNO, loginUsuarioResponse
       );
     }
     catch ( NullPointerException e ) {
@@ -123,10 +124,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
       }
       
       // Mapear Entity → DTO (respuesta)
-      LoginResponse loginResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
+      LoginUsuarioResponse loginUsuarioResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
       serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
           ConstantesOrdenes.OPERACION_EXITOSA,
-          ConstantesNumericas.UNO, loginResponse
+          ConstantesNumericas.UNO, loginUsuarioResponse
       );
     }
     catch ( NullPointerException e ) {
@@ -187,10 +188,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
       // Mapear Entity → DTO (response)
       if ( resultado.getUsuarioEntity() != null
           && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
-        LoginResponse loginResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
+        LoginUsuarioResponse loginUsuarioResponse =
+            this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
             ConstantesOrdenes.OPERACION_EXITOSA,
-            ConstantesNumericas.UNO, loginResponse
+            ConstantesNumericas.UNO, loginUsuarioResponse
         );
       }
       
@@ -314,6 +316,78 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
     finally {
       log.info("[Finaliza eliminar usuario | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> reactivarUsuarioService(UsuarioEliminarReactivarDto usuario) {
+    log.info("[Inicia eliminar usuario | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      UsuarioResponseRepository resultado =
+          this.usuarioRepository.reactivarUsuarioRepository(usuario.getEmail(), usuario.getTenantId());
+      
+      if ( resultado == null || resultado.getCodigobd() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un problema al reactivar el usuario de la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_ELIMINAR,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getCodigobd() == ConstantesNumericas.DOS ) {
+        log.info("[No existe el usuario a eliminar o esta inactivo en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_ELIMINAR,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( resultado.getCodigobd() == ConstantesNumericas.CERO ) {
+        LoginUsuarioResponse loginUsuarioResponse =
+            this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.CERO, loginUsuarioResponse
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al reactivar usuario "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al reactivar usuario | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza reactivar usuario | Service]");
     }
     
     return serviceResult;

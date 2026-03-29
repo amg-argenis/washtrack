@@ -17,6 +17,8 @@ public interface IUsuarioRepository {
   
   Integer eliminarUsuarioRepository(String idUsuario, String email, String tenantId);
   
+  UsuarioResponseRepository reactivarUsuarioRepository(String email, String tenantId);
+  
   List<UsuarioEntity> listarUsuariosRepository();
   
   Integer actualizarUsuarioRepository(UsuarioEntity usuario);

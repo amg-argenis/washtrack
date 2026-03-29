@@ -1,7 +1,6 @@
 package com.washtrack.washtrack_api.usuarios.util;
 
-import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
-import com.washtrack.washtrack_api.usuarios.dto.LoginResponse;
+import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
@@ -41,8 +40,8 @@ public class MapearObjetosUsuario {
     return params;
   }
   
-  public LoginResponse toDtoLoginUsuarioMapper(UsuarioEntity usuarioEntity) {
-    return LoginResponse.builder()
+  public LoginUsuarioResponse toDtoLoginUsuarioMapper(UsuarioEntity usuarioEntity) {
+    return LoginUsuarioResponse.builder()
         .idUsuario(usuarioEntity.getIdUsuario())
         .tenantId(usuarioEntity.getTenantId())
         .nombre(usuarioEntity.getNombre())

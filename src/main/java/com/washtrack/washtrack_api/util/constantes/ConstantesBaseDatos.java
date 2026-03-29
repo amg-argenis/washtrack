@@ -36,6 +36,7 @@ public final class ConstantesBaseDatos {
   public static final String SP_LISTAR_USUARIOS = "SP_LISTAR_USUARIOS";
   public static final String SP_INSERTAR_USUARIO = "SP_INSERTAR_USUARIO";
   public static final String SP_ELIMINAR_USUARIO = "SP_ELIMINAR_USUARIO";
+  public static final String SP_REACTIVAR_USUARIO = "SP_REACTIVAR_USUARIO";
   
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";

@@ -134,6 +134,9 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setUsuarioEntity(null);
+      
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
         List<UsuarioEntity> usuarioEntityList = (List<UsuarioEntity>) respuesta.get("usuarioinsertado");
         UsuarioEntity usuarioEntity = usuarioEntityList.get(ConstantesNumericas.CERO);
@@ -144,14 +147,10 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP para insert de usuario no devolvio pa_codigobd, se asume error]");
-        responseRepository.setCodigobd(codigobd);
-        responseRepository.setUsuarioEntity(null);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
         log.warn("[El usuario a insertar ya existe en la BD | Repository]");
-        responseRepository.setCodigobd(codigobd);
-        responseRepository.setUsuarioEntity(null);
       }
       
     }
@@ -219,6 +218,59 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
     }
     
     return codigobd;
+  }
+  
+  @Override
+  public UsuarioResponseRepository reactivarUsuarioRepository(String email, String tenantId) {
+    log.info("[Inicia reactivar usuario | Repository]");
+    
+    UsuarioResponseRepository usuarioEntity = new UsuarioResponseRepository();
+    
+    log.info("[Usuario a reactivar en la BD: (Email: {} | TenantId: {})]", email, tenantId);
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.reactivarUsuarioJdbcMethod(email, tenantId);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      usuarioEntity.setUsuarioEntity(null);
+      usuarioEntity.setCodigobd(codigobd);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        log.info("[Usuario reactivado correctamente en la BD");
+        List<UsuarioEntity> usuarioEntityList = (List<UsuarioEntity>) respuesta.get("usuarioreactivado");
+        usuarioEntity.setUsuarioEntity(usuarioEntityList.get(ConstantesNumericas.CERO));
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para reactivar el usuario fallo, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[El usuario a reactivar no existe en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al reactivar el usuario de la BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al reactivar el usuario de la BD | Repository | Detalles: {}]",
+          e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza reactivar usuario | Repository]");
+    }
+    
+    return usuarioEntity;
   }
   
   @Override

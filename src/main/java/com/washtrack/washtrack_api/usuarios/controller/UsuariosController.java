@@ -2,7 +2,7 @@ package com.washtrack.washtrack_api.usuarios.controller;
 
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
-import com.washtrack.washtrack_api.usuarios.dto.LoginRequest;
+import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
@@ -40,11 +40,11 @@ public class UsuariosController {
    */
   @GetMapping("/usuarios/login")
   public ResponseEntity<ServiceResult<Object>> loginUsuariosController(
-      @Validated @RequestBody LoginRequest loginRequest) {
+      @Validated @RequestBody LoginUsuarioRequest loginUsuarioRequest) {
     
     log.info("[Iniciando login de usuario | Controller]");
     
-    ServiceResult<Object> resultado = this.usuarioService.consultarUsuarioLogInService(loginRequest);
+    ServiceResult<Object> resultado = this.usuarioService.consultarUsuarioLogInService(loginUsuarioRequest);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       
@@ -149,6 +149,31 @@ public class UsuariosController {
     log.info("[Iniciando eliminar usuarios | Controller]");
     
     ServiceResult<Object> resultado = this.usuarioService.eliminarUsuarioService(usuario);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Eliminar usuarios | Controller
+   *
+   * @return
+   */
+  @PostMapping("/usuarios/reactivar")
+  public ResponseEntity<ServiceResult<Object>> reactivarUsuariosController(
+      @Validated @RequestBody UsuarioEliminarReactivarDto usuario) {
+    
+    log.info("[Iniciando reactivar usuarios | Controller]");
+    
+    ServiceResult<Object> resultado = this.usuarioService.reactivarUsuarioService(usuario);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class LoginRequest {
+public class LoginUsuarioRequest {
   
   @NotBlank(message = "El email de usuario es requerido para ingresar a la plataforma")
   private String email;
