@@ -73,10 +73,10 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   }
   
   @Override
-  public UsuarioEntity buscarUsuarioPorIdRepository(String idUsuario) {
+  public UsuarioResponseRepository buscarUsuarioPorIdRepository(String idUsuario) {
     log.info("[Inicia buscar usuario | Repository]");
     
-    UsuarioEntity loginResponse = null;
+    UsuarioResponseRepository responseRepository = new UsuarioResponseRepository();
     
     try {
       Map<String, Object> respuesta =
@@ -87,14 +87,19 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
+      responseRepository.setUsuarioEntity(null);
+      responseRepository.setCodigobd(codigobd);
+      
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP para busqueda de usuario no devolvio pa_codigobd, se asume error]");
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<UsuarioEntity> usuarioEntity = (List<UsuarioEntity>) respuesta.get("usuariorecuperado");
-        log.info("[Usuario encontrado: {}]", usuarioEntity.get(ConstantesNumericas.CERO));
-        loginResponse = usuarioEntity.get(ConstantesNumericas.CERO);
+        List<UsuarioEntity> usuarioEntityList = (List<UsuarioEntity>) respuesta.get("usuariorecuperado");
+        UsuarioEntity usuarioEntity = usuarioEntityList.get(ConstantesNumericas.CERO);
+        log.info("[Usuario encontrado: {}]", usuarioEntity);
+        responseRepository.setUsuarioEntity(usuarioEntity);
+        responseRepository.setCodigobd(codigobd);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
@@ -116,7 +121,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       log.info("[Finaliza buscar usuario | Repository]");
     }
     
-    return loginResponse;
+    return responseRepository;
   }
   
   @Override
@@ -319,8 +324,55 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   }
   
   @Override
-  public Integer actualizarUsuarioRepository(UsuarioEntity usuario) {
-    return 0;
+  public UsuarioResponseRepository actualizarUsuarioRepository(UsuarioInsertEntity usuario) {
+    log.info("[Inicia actualizar usuario | Repository]");
+    
+    UsuarioResponseRepository responseRepository = new UsuarioResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.actualizarUsuarioJdbcMethod(usuario);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setUsuarioEntity(null);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<UsuarioEntity> usuarioEntityList = (List<UsuarioEntity>) respuesta.get("usuarioactualizado");
+        UsuarioEntity usuarioEntity = usuarioEntityList.get(ConstantesNumericas.CERO);
+        responseRepository.setUsuarioEntity(usuarioEntity);
+        responseRepository.setCodigobd(codigobd);
+        log.info("[Usuario actualizado correctamente en la BD: {}]", usuarioEntity);
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para actualizar el usuario fallo, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[El usuario a actualziar no existe en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al actualizar usuario en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al actualizar usuario en BD | Repository | Detalles: {}]", e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza actualizar usuario | Repository]");
+    }
+    
+    return responseRepository;
   }
   
 }

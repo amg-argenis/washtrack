@@ -6,6 +6,7 @@ import com.washtrack.washtrack_api.usuarios.util.MapearObjetosUsuario;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
@@ -93,7 +94,7 @@ public class InicializadorRepositoryUsuarios {
     
     this.actualizarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
-        .withProcedureName("SP_ACTUALIZAR_USUARIO")
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_USUARIO)
         .declareParameters(
             // IN
             new SqlParameter("pa_idusuario", Types.VARCHAR),
@@ -101,12 +102,12 @@ public class InicializadorRepositoryUsuarios {
             new SqlParameter("pa_email", Types.VARCHAR),
             new SqlParameter("pa_password", Types.VARCHAR),
             new SqlParameter("pa_rol", Types.VARCHAR),
-            new SqlParameter("pa_tenantId", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
-        .returningResultSet("listausuarios", new UsuarioRowMapper());
+        .returningResultSet("usuarioactualizado", new UsuarioRowMapper());
     
     this.eliminarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
@@ -168,15 +169,15 @@ public class InicializadorRepositoryUsuarios {
    * Insertar usuario por Id Usuario | Login
    */
   public Map<String, Object> insertarUsuarioPorIdJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
-    Map<String, Object> params = this.mapearObjetosUsuario.insertarUsuarioMapper(usuarioInsertEntity);
+    Map<String, Object> params = this.mapearObjetosUsuario.insertarUsuarioParams(usuarioInsertEntity);
     return this.insertarUsuarioSimpleJdbcCall.execute(params);
   }
   
   /**
    * Actualizar datos usuario por Id Usuario | Login
    */
-  public Map<String, Object> actualizarUsuarioPorIdJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
-    Map<String, Object> params = this.mapearObjetosUsuario.actualizarUsuarioMapper(usuarioInsertEntity);
+  public Map<String, Object> actualizarUsuarioJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
+    Map<String, Object> params = this.mapearObjetosUsuario.actualizarUsuarioParameters(usuarioInsertEntity);
     return this.actualizarUsuarioSimpleJdbcCall.execute(params);
   }
   

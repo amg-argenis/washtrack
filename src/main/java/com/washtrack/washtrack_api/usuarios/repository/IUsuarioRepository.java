@@ -11,7 +11,7 @@ public interface IUsuarioRepository {
   com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity consultarUsuarioLogInRepository(String email,
       String password);
   
-  UsuarioEntity buscarUsuarioPorIdRepository(String idUsuario);
+  UsuarioResponseRepository buscarUsuarioPorIdRepository(String idUsuario);
   
   UsuarioResponseRepository insertarUsuarioRepository(UsuarioInsertEntity usuarioInsert);
   
@@ -21,6 +21,6 @@ public interface IUsuarioRepository {
   
   List<UsuarioEntity> listarUsuariosRepository();
   
-  Integer actualizarUsuarioRepository(UsuarioEntity usuario);
+  UsuarioResponseRepository actualizarUsuarioRepository(UsuarioInsertEntity usuario);
   
 }

@@ -5,6 +5,7 @@ import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
@@ -108,27 +109,38 @@ public class UsuarioServiceImpl implements IUsuarioService {
     
     log.info("[Usuario a buscar: ({}) | Service]", idUsuario);
     
-    ServiceResult<Object> serviceResult;
+    ServiceResult<Object> serviceResult = null;
     
     try {
       // Llamada al Repository
-      UsuarioEntity resultado =
+      UsuarioResponseRepository resultado =
           this.usuarioRepository.buscarUsuarioPorIdRepository(idUsuario);
       
-      if ( resultado == null ) {
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.info("[Usuario no encontrado | Service]");
-        return this.mapearRespuestasConsultas.mapearserviceResultError(
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[Usuario no encontrado | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
       
       // Mapear Entity → DTO (respuesta)
-      LoginUsuarioResponse loginUsuarioResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
-      serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-          ConstantesOrdenes.OPERACION_EXITOSA,
-          ConstantesNumericas.UNO, loginUsuarioResponse
-      );
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNO ) {
+        LoginUsuarioResponse loginUsuarioResponse =
+            this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, loginUsuarioResponse
+        );
+      }
     }
     catch ( NullPointerException e ) {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
@@ -174,7 +186,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     
     try {
       // Mapear DTO → Entity (request)
-      UsuarioInsertEntity usuarioEntity = this.mapearObjetosUsuario.fromDtoToEntityUsuarioMapper(usuarioInsertDto);
+      UsuarioInsertEntity usuarioEntity = this.mapearObjetosUsuario.insertarUsuarioMapper(usuarioInsertDto);
       
       // UUID para idUsuario
       UUID uuid = UUID.randomUUID();
@@ -455,8 +467,84 @@ public class UsuarioServiceImpl implements IUsuarioService {
   }
   
   @Override
-  public ServiceResult<Object> actualizarUsuarioService(UsuarioEntity usuario) {
-    return null;
+  public ServiceResult<Object> actualizarUsuarioService(UsuarioActualizarDto usuario) {
+    log.info("[Inicia actualizar usuario | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Mapear DTO → Entity (request)
+      UsuarioInsertEntity usuarioEntity = this.mapearObjetosUsuario.actualizarUsuarioMapper(usuario);
+      
+      log.info("[Usuario para actualizar: ({}) | Service]", usuarioEntity);
+      
+      // Llamada al Repository
+      UsuarioResponseRepository resultado =
+          this.usuarioRepository.actualizarUsuarioRepository(usuarioEntity);
+      
+      // Mapear Entity → DTO (response)
+      if ( resultado.getUsuarioEntity() != null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        LoginUsuarioResponse loginUsuarioResponse =
+            this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, loginUsuarioResponse
+        );
+      }
+      
+      if ( resultado.getUsuarioEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Usuario no insertado en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_INSERT,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getUsuarioEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[El usuario ya existe en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_INSERT,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al actualizar el usuario "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al actualizar el usuario | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza actualizar usuario | Service]");
+    }
+    
+    return serviceResult;
   }
   
 }

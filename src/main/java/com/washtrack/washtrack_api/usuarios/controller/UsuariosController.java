@@ -3,6 +3,7 @@ package com.washtrack.washtrack_api.usuarios.controller;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
+import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
@@ -174,6 +175,31 @@ public class UsuariosController {
     log.info("[Iniciando reactivar usuarios | Controller]");
     
     ServiceResult<Object> resultado = this.usuarioService.reactivarUsuarioService(usuario);
+    
+    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      
+      ApiErrorCode error = (ApiErrorCode) resultado.getData();
+      
+      return ResponseEntity
+          .status(error.getHttpStatus())
+          .body(resultado);
+    }
+    return ResponseEntity.ok(resultado);
+    
+  }
+  
+  /**
+   * Actualizar usuarios | Controller
+   *
+   * @return
+   */
+  @PostMapping("/usuarios/actualizar")
+  public ResponseEntity<ServiceResult<Object>> actualizarUsuariosController(
+      @Validated @RequestBody UsuarioActualizarDto usuario) {
+    
+    log.info("[Iniciando actualizar usuarios | Controller]");
+    
+    ServiceResult<Object> resultado = this.usuarioService.actualizarUsuarioService(usuario);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
       
