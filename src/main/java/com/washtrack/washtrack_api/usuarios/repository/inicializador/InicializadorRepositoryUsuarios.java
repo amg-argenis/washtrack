@@ -22,8 +22,10 @@ import java.util.Map;
 public class InicializadorRepositoryUsuarios {
   
   private SimpleJdbcCall buscarUsuarioPorIdSimpleJdbcCall;
+  private SimpleJdbcCall buscarUsuarioPorEmailSimpleJdbcCall;
   private SimpleJdbcCall loginUsuarioSimpleJdbcCall;
   private SimpleJdbcCall listarUsuarioSimpleJdbcCall;
+  private SimpleJdbcCall listarUsuarioPorTenantIdSimpleJdbcCall;
   private SimpleJdbcCall insertarUsuarioSimpleJdbcCall;
   private SimpleJdbcCall actualizarUsuarioSimpleJdbcCall;
   private SimpleJdbcCall eliminarUsuarioSimpleJdbcCall;
@@ -52,6 +54,19 @@ public class InicializadorRepositoryUsuarios {
         )
         .returningResultSet("usuariorecuperado", new UsuarioRowMapper());
     
+    this.buscarUsuarioPorEmailSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_USUARIO_EMAIL)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_email", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("usuariorecuperado", new UsuarioRowMapper());
+    
     this.loginUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_LOGIN_USUARIO)
@@ -69,6 +84,18 @@ public class InicializadorRepositoryUsuarios {
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_LISTAR_USUARIOS)
         .declareParameters(
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("listausuarios", new UsuarioRowMapper());
+    
+    this.listarUsuarioPorTenantIdSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_LISTAR_USUARIOS)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
@@ -152,10 +179,19 @@ public class InicializadorRepositoryUsuarios {
    * Consultar usuario por Id Usuario | Login
    */
   public Map<String, Object> buscarUsuarioPorIdJdbcMethod(String iDUsuario) {
-    log.info("[Valor de idUsuario recibido en inicializador]: '{}'", iDUsuario);
     Map<String, Object> params = new HashMap<>();
     params.put("pa_idusuario", iDUsuario);
     return this.buscarUsuarioPorIdSimpleJdbcCall.execute(params);
+  }
+  
+  /**
+   * Buscar usuario por Email y Tenant Id | Login
+   */
+  public Map<String, Object> buscarUsuarioPorEmailJdbcMethod(String email, String tenantId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_email", email);
+    params.put("pa_tenantid", tenantId);
+    return this.buscarUsuarioPorEmailSimpleJdbcCall.execute(params);
   }
   
   /**
@@ -166,9 +202,18 @@ public class InicializadorRepositoryUsuarios {
   }
   
   /**
+   * Listar usuarios | Login
+   */
+  public Map<String, Object> listarUsuariosPorTenantIdJdbcMethod(String tenantId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", tenantId);
+    return this.listarUsuarioPorTenantIdSimpleJdbcCall.execute();
+  }
+  
+  /**
    * Insertar usuario por Id Usuario | Login
    */
-  public Map<String, Object> insertarUsuarioPorIdJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
+  public Map<String, Object> insertarUsuarioJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
     Map<String, Object> params = this.mapearObjetosUsuario.insertarUsuarioParams(usuarioInsertEntity);
     return this.insertarUsuarioSimpleJdbcCall.execute(params);
   }

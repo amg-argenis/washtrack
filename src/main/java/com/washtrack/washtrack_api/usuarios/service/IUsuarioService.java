@@ -1,6 +1,7 @@
 package com.washtrack.washtrack_api.usuarios.service;
 
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
@@ -12,6 +13,8 @@ public interface IUsuarioService {
   
   ServiceResult<Object> buscarUsuarioPorIdService(String idUsuario);
   
+  ServiceResult<Object> buscarUsuarioPorEmailService(BuscarUsuarioRequest buscarUsuarioRequest);
+  
   ServiceResult<Object> insertarUsuarioService(UsuarioInsertDto usuarioInsertDto);
   
   ServiceResult<Object> eliminarUsuarioService(UsuarioEliminarReactivarDto usuario);
@@ -19,6 +22,8 @@ public interface IUsuarioService {
   ServiceResult<Object> reactivarUsuarioService(UsuarioEliminarReactivarDto usuario);
   
   ServiceResult<Object> listarUsuariosService();
+  
+  ServiceResult<Object> listarUsuariosPorTenantIdService(String tenantId);
   
   ServiceResult<Object> actualizarUsuarioService(UsuarioActualizarDto usuario);
 }

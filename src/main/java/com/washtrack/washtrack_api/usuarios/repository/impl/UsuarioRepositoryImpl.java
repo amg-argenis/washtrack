@@ -108,7 +108,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
     }
     catch ( DataAccessException e ) {
-      log.error("[DataAccessException | Error critico al consultar usuarioen BD | Repository | Detalles: {}]",
+      log.error("[DataAccessException | Error critico al consultar usuario en BD | Repository | Detalles: {}]",
           e.getMessage(), e);
       throw e;
     }
@@ -125,6 +125,60 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   }
   
   @Override
+  public UsuarioResponseRepository buscarUsuarioPorEmailRepository(String email, String tenantId) {
+    log.info("[Inicia buscar usuario por email | Repository]");
+    
+    UsuarioResponseRepository responseRepository = new UsuarioResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.buscarUsuarioPorEmailJdbcMethod(email, tenantId);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setUsuarioEntity(null);
+      responseRepository.setCodigobd(codigobd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para busqueda de usuario por email no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<UsuarioEntity> usuarioEntityList = (List<UsuarioEntity>) respuesta.get("usuariorecuperado");
+        UsuarioEntity usuarioEntity = usuarioEntityList.get(ConstantesNumericas.CERO);
+        log.info("[Usuario encontrado por email: {}]", usuarioEntity);
+        responseRepository.setUsuarioEntity(usuarioEntity);
+        responseRepository.setCodigobd(codigobd);
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Usuario no encontrado por email en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al consultar usuario por email en la BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al consultar usuario por email en BD | Repository | Detalles: {}]",
+          e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza buscar usuario por email | Repository]");
+    }
+    
+    return responseRepository;
+  }
+  
+  @Override
   public UsuarioResponseRepository insertarUsuarioRepository(UsuarioInsertEntity usuarioInsert) {
     log.info("[Inicia insertar usuario | Repository]");
     
@@ -132,7 +186,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
     
     try {
       Map<String, Object> respuesta =
-          this.inicializadorRepositoryUsuarios.insertarUsuarioPorIdJdbcMethod(usuarioInsert);
+          this.inicializadorRepositoryUsuarios.insertarUsuarioJdbcMethod(usuarioInsert);
       
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
@@ -318,6 +372,53 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
     }
     finally {
       log.info("[Finaliza listar usuarios | Repository]");
+    }
+    
+    return entityList;
+  }
+  
+  @Override
+  public List<UsuarioEntity> listarUsuariosPorTenantIdRepository(String tenantId) {
+    log.info("[Inicia listar usuarios por tenant Id | Repository]");
+    
+    List<UsuarioEntity> entityList = null;
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorRepositoryUsuarios.listarUsuariosJdbcMethod();
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para listar usuarios por tenant Id no devolvio pa_codigobd, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        entityList = (List<UsuarioEntity>) respuesta.get("listausuarios");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[No hay registros de usuarios por tenant Id en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al consultar usuarios por tenant Id en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al consultar usuarios por tenant Id en BD | Repository | Detalles: {}]",
+          e.getMessage(),
+          e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza listar usuarios por tenant Id | Repository]");
     }
     
     return entityList;

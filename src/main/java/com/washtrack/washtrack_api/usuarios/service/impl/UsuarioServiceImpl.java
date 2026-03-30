@@ -3,6 +3,7 @@ package com.washtrack.washtrack_api.usuarios.service.impl;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
+import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
@@ -117,7 +118,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
           this.usuarioRepository.buscarUsuarioPorIdRepository(idUsuario);
       
       if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
-        log.info("[Usuario no encontrado | Service]");
+        log.info("[Hubo un problema en la BD al buscar el usuario solicitado | Service]");
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
@@ -125,7 +126,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
       }
       
       if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
-        log.info("[Usuario no encontrado | Service]");
+        log.info("[Usuario no encontrado en la BD | Service]");
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
@@ -133,7 +134,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
       }
       
       // Mapear Entity → DTO (respuesta)
-      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNO ) {
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
         LoginUsuarioResponse loginUsuarioResponse =
             this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
@@ -173,6 +174,83 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
     finally {
       log.info("[Finaliza buscar usuario | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> buscarUsuarioPorEmailService(BuscarUsuarioRequest buscarUsuarioRequest) {
+    log.info("[Inicia buscar usuario por email | Service]");
+    
+    log.info("[Usuario a buscar por email: (Email: {} | Tenant Id: {}) | Service]", buscarUsuarioRequest.getEmail(),
+        buscarUsuarioRequest.getTenantId());
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      UsuarioResponseRepository resultado =
+          this.usuarioRepository.buscarUsuarioPorEmailRepository(buscarUsuarioRequest.getEmail(),
+              buscarUsuarioRequest.getTenantId());
+      
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un problema en la BD al buscar el usuario por email | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[Usuario no encontrado en la BD por email | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      // Mapear Entity → DTO (respuesta)
+      if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        LoginUsuarioResponse loginUsuarioResponse =
+            this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado.getUsuarioEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, loginUsuarioResponse
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al buscar el usuario por email "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al buscar el usuario por email | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza buscar usuario por email | Service]");
     }
     
     return serviceResult;
@@ -461,6 +539,69 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
     finally {
       log.info("[Finaliza listar usuarios | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> listarUsuariosPorTenantIdService(String tenantId) {
+    log.info("[Inicia listar usuarios por tenant Id | Service]");
+    
+    ServiceResult<Object> serviceResult;
+    
+    log.info("[Listar usuarios para el Tenant: {}]", tenantId);
+    
+    try {
+      // Llamada al Repository
+      List<UsuarioEntity> resultado =
+          this.usuarioRepository.listarUsuariosRepository();
+      
+      if ( resultado == null || resultado.isEmpty() ) {
+        log.info("[No hay registro de usuarios por tenant Id en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      // Mapear Entity → DTO (respuesta)
+      serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+          ConstantesOrdenes.OPERACION_EXITOSA,
+          resultado.size(), resultado
+      );
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al listar usuarios por tenant Id "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar usuarios por tenant Id | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza listar usuarios por tenant Id | Service]");
     }
     
     return serviceResult;

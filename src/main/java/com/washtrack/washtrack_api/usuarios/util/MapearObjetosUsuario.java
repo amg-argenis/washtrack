@@ -17,7 +17,7 @@ public class MapearObjetosUsuario {
   
   public Map<String, Object> insertarUsuarioParams(UsuarioInsertEntity usuarioInsertEntity) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_idusuario", usuarioInsertEntity.getTenantId());
+    params.put("pa_idusuario", usuarioInsertEntity.getIdUsuario());
     params.put("pa_tenantid", usuarioInsertEntity.getTenantId());
     params.put("pa_nombre", usuarioInsertEntity.getNombre());
     params.put("pa_email", usuarioInsertEntity.getEmail());

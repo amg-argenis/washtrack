@@ -13,6 +13,8 @@ public interface IUsuarioRepository {
   
   UsuarioResponseRepository buscarUsuarioPorIdRepository(String idUsuario);
   
+  UsuarioResponseRepository buscarUsuarioPorEmailRepository(String email, String tenantId);
+  
   UsuarioResponseRepository insertarUsuarioRepository(UsuarioInsertEntity usuarioInsert);
   
   Integer eliminarUsuarioRepository(String idUsuario, String email, String tenantId);
@@ -20,6 +22,8 @@ public interface IUsuarioRepository {
   UsuarioResponseRepository reactivarUsuarioRepository(String email, String tenantId);
   
   List<UsuarioEntity> listarUsuariosRepository();
+  
+  List<UsuarioEntity> listarUsuariosPorTenantIdRepository(String tenantId);
   
   UsuarioResponseRepository actualizarUsuarioRepository(UsuarioInsertEntity usuario);
   

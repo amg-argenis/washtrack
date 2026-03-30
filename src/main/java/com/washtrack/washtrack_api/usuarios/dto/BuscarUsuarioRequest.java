@@ -13,4 +13,5 @@ public class BuscarUsuarioRequest {
   private String idUsuario;
   private String nombre;
   private String email;
+  private String tenantId;
 }
