@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenDetalleService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,112 +28,84 @@ public class OrdenDetalleController {
     this.ordenDetalleService = ordenDetalleService;
   }
   
-  /**
-   * Buscar orden detalle de servicio | Controller
-   *
-   * @return
-   */
+  private String obtenerTenantId(HttpServletRequest request) {
+    return (String) request.getAttribute("tenantId");
+  }
+  
   @PostMapping("/ordenes/detalles/buscar")
   public ResponseEntity<ServiceResult<Object>> ordenDetalle(
-      @RequestBody OrdenDetalleDto ordenDetalleDto) {
+      @RequestBody OrdenDetalleDto ordenDetalleDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de detalle orden | Controller]");
     
-    ServiceResult<Object> resultado =
-        this.ordenDetalleService.buscarOrdenDetalleService(ordenDetalleDto);
+    String tenantId = obtenerTenantId(request);
+    ordenDetalleDto.setTenantId(tenantId);
+    
+    ServiceResult<Object> resultado = this.ordenDetalleService.buscarOrdenDetalleService(ordenDetalleDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
-    // Caso normal (200)
     return ResponseEntity.ok(resultado);
   }
   
-  /**
-   * Buscar orden detalle de servicio | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/detalles/guardar")
   public ResponseEntity<ServiceResult<Object>> guardarDetalleOrden(
-      @RequestBody OrdenDetalleDto ordenDetalleDto) {
+      @RequestBody OrdenDetalleDto ordenDetalleDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando insercion de detalle orden | Controller]");
     
-    ServiceResult<Object> resultado =
-        this.ordenDetalleService.guardarOrdenDetalleService(ordenDetalleDto);
+    String tenantId = obtenerTenantId(request);
+    ordenDetalleDto.setTenantId(tenantId);
+    
+    ServiceResult<Object> resultado = this.ordenDetalleService.guardarOrdenDetalleService(ordenDetalleDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
-    // Caso normal (200)
     return ResponseEntity.ok(resultado);
   }
   
-  /**
-   * Actualizar orden detalle de servicio | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/detalles/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarDetalleOrden(
-      @RequestBody OrdenDetalleDto ordenDetalleDto) {
+      @RequestBody OrdenDetalleDto ordenDetalleDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando actualizar detalle orden | Controller]");
     
-    ServiceResult<Object> resultado =
-        this.ordenDetalleService.actualizarOrdenDetalleService(ordenDetalleDto);
+    String tenantId = obtenerTenantId(request);
+    ordenDetalleDto.setTenantId(tenantId);
+    
+    ServiceResult<Object> resultado = this.ordenDetalleService.actualizarOrdenDetalleService(ordenDetalleDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
-    // Caso normal (200)
     return ResponseEntity.ok(resultado);
   }
   
-  /**
-   * Eliminar detalle orden de servicio (actualiza estado a ELIMINADO) | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/detalles/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarDetalleOrdenController(
-      @Valid @RequestBody OrdenDetalleDto ordenDetalle) {
+      @Valid @RequestBody OrdenDetalleDto ordenDetalle,
+      HttpServletRequest request) {
     
     log.info("[Inicia eliminar detalle orden de servicio | Controller]");
     log.info("[Request | Detalle orden: {}]", ordenDetalle.getIdDetalleOrden());
     
+    String tenantId = obtenerTenantId(request);
+    ordenDetalle.setTenantId(tenantId);
+    
     ServiceResult<Object> resultado = this.ordenDetalleService.eliminarOrdenDetalleService(ordenDetalle);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
-    
   }
-  
 }

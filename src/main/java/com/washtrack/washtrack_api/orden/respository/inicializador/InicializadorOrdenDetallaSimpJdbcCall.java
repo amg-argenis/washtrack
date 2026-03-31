@@ -90,7 +90,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
         );
     
     // Eliminar un detalle orden
-    this.actualizarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
+    this.eliminarOrdenDetalleCall = new SimpleJdbcCall(this.jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_DETALLEORDEN)
         .declareParameters(
@@ -114,7 +114,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
    */
   public Map<String, Object> buscarOrdenCallJdbc(DetalleOrdenEntity detalleOrden) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
+    params.put("pa_tenantid", detalleOrden.getTenantId());
     params.put("pa_iddetalleorden", detalleOrden.getIdDetalleOrden());
     params.put("pa_ordenid", detalleOrden.getOrdenId());
     
@@ -151,7 +151,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
    */
   public Map<String, Object> eliminarDetalleOrden(DetalleOrdenEntity ordenDetalle) {
     Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenes(ordenDetalle);
-    return this.actualizarOrdenDetalleCall.execute(paramMap);
+    return this.eliminarOrdenDetalleCall.execute(paramMap);
   }
   
 }

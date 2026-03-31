@@ -215,7 +215,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
       // Mapear a OrdenesEntity
       DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
       
-      Integer respRepository = this.detalleRepository.actualizarDetalleOrdenRepository(ordenEntity);
+      Integer respRepository = this.detalleRepository.eliminarDetalleOrdenRepository(ordenEntity);
       if ( respRepository != null && respRepository.intValue() == ConstantesNumericas.CERO ) {
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
