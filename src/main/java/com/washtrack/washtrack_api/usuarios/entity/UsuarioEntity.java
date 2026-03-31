@@ -17,4 +17,5 @@ public class UsuarioEntity {
   private String rol;
   private boolean activo;
   private String createdAt;
+  private String token;
 }

@@ -3,6 +3,7 @@ package com.washtrack.washtrack_api.usuarios.service.impl;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
+import com.washtrack.washtrack_api.security.JwtUtil;
 import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
@@ -31,12 +32,14 @@ public class UsuarioServiceImpl implements IUsuarioService {
   private final IUsuarioRepository usuarioRepository;
   private final MapearRespuestasConsultas mapearRespuestasConsultas;
   private final MapearObjetosUsuario mapearObjetosUsuario;
+  private final JwtUtil jwtUtil;
   
   public UsuarioServiceImpl(IUsuarioRepository usuarioRepository, MapearRespuestasConsultas mapearRespuestasConsultas,
-      MapearObjetosUsuario mapearObjetosUsuario) {
+      MapearObjetosUsuario mapearObjetosUsuario, JwtUtil jwtUtil) {
     this.usuarioRepository = usuarioRepository;
     this.mapearRespuestasConsultas = mapearRespuestasConsultas;
     this.mapearObjetosUsuario = mapearObjetosUsuario;
+    this.jwtUtil = jwtUtil;
   }
   
   @Override
@@ -45,15 +48,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
     
     log.info("[Login request: ({}|{}) | Service]", loginUsuarioRequest.getEmail(), loginUsuarioRequest.getPassword());
     
-    ServiceResult<Object> serviceResult;
+    ServiceResult<Object> serviceResult = null;
     
     try {
       // Llamada al Repository
-      UsuarioEntity resultado =
-          this.usuarioRepository.consultarUsuarioLogInRepository(loginUsuarioRequest.getEmail(),
-              loginUsuarioRequest.getPassword());
+      UsuarioResponseRepository respuesta = this.usuarioRepository.consultarUsuarioLogInRepository(
+          loginUsuarioRequest.getEmail(),
+          loginUsuarioRequest.getPassword()
+      );
       
-      if ( resultado == null ) {
+      if ( respuesta == null ) {
         log.info("[Usuario para login no encontrado | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
@@ -61,12 +65,45 @@ public class UsuarioServiceImpl implements IUsuarioService {
         );
       }
       
-      // Mapear Entity → DTO (respuesta)
-      LoginUsuarioResponse loginUsuarioResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(resultado);
-      serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-          ConstantesOrdenes.OPERACION_EXITOSA,
-          ConstantesNumericas.UNO, loginUsuarioResponse
-      );
+      if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        UsuarioEntity usuarioEntity = respuesta.getUsuarioEntity();
+        // Generar JWT
+        String token = this.jwtUtil.generarToken(
+            usuarioEntity.getIdUsuario(),
+            usuarioEntity.getTenantId(),
+            usuarioEntity.getEmail(),
+            usuarioEntity.getRol()
+        );
+        
+        // Agregar token al Entity
+        usuarioEntity.setToken(token);
+        
+        // Mapear Entity → DTO (respuesta)
+        LoginUsuarioResponse loginUsuarioResponse = this.mapearObjetosUsuario.toDtoLoginUsuarioMapper(usuarioEntity);
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, loginUsuarioResponse
+        );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un error en la BD al consultar el usuario Login | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[No existe el usuario en la BD para Login | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      
     }
     catch ( NullPointerException e ) {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",

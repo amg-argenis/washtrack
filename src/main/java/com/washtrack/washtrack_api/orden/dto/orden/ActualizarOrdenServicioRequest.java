@@ -30,4 +30,6 @@ public class ActualizarOrdenServicioRequest {
   @NotBlank(message = "Fecha de entrega es obligatorio")
   private String fechaEntrega; // not null para actualizar
   
+  private String tenantId;
+  
 }

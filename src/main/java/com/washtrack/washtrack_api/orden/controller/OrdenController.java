@@ -8,10 +8,12 @@ import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
 import com.washtrack.washtrack_api.orden.service.IOrdentesConDetalleService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -39,190 +41,146 @@ public class OrdenController {
     this.ordentesConDetalleService = ordentesConDetalleService;
   }
   
-  /**
-   * Listar ordenes de servicio | Controller
-   *
-   * @return
-   */
+  private String obtenerTenantId(HttpServletRequest request) {
+    return (String) request.getAttribute("tenantId");
+  }
+  
   @GetMapping("/ordenes/listar")
-  public ResponseEntity<ServiceResult<Object>> listarOrdenesController() {
+  public ResponseEntity<ServiceResult<Object>> listarOrdenesController(HttpServletRequest request) {
     
     log.info("[Iniciando obtencion de ordenes servicio | Controller]");
     
-    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesService();
+    String tenantId = obtenerTenantId(request);
+    log.info("[TenantId extraido del token: {}]", tenantId);
+    
+    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesService(tenantId);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Listar ordenes de servicio por fecha de ingreso | Controller
-   *
-   * @return
-   */
   @GetMapping("/ordenes/fechaingreso")
-  public ResponseEntity<ServiceResult<Object>> obtenerOrdenesPorFehcaIngresoController(
+  public ResponseEntity<ServiceResult<Object>> obtenerOrdenesPorFechaIngresoController(
       @RequestParam
       @NotNull(message = "La fecha de ingreso es obligatoria")
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-      LocalDate fechaIngreso) {
+      LocalDate fechaIngreso,
+      HttpServletRequest request) {
     
     log.info("[Iniciando obtencion de ordenes servicio por fecha de ingreso | Controller]");
     log.info("[Request | Fecha: {}]", fechaIngreso);
     
-    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso);
+    String tenantId = obtenerTenantId(request);
+    
+    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso, tenantId);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
   }
   
-  /**
-   * Buscar una orden de servicio | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/buscar")
-  public ResponseEntity<ServiceResult<Object>> buscarOrdenController(@Valid @RequestBody BuscarOrdenRequest orden) {
+  public ResponseEntity<ServiceResult<Object>> buscarOrdenController(
+      @Valid @RequestBody BuscarOrdenRequest orden,
+      HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
     log.info("[Request: Id orden: {} | Folio: {}]", orden.getIdOrden(), orden.getFolio());
     
+    String tenantId = obtenerTenantId(request);
+    orden.setTenantId(tenantId);
+    
     ServiceResult<Object> resultado = this.ordenesService.buscarOrdenService(orden);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Buscar una orden de servicio con ordenes detalle | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/orden-detalle")
   public ResponseEntity<ServiceResult<Object>> buscarOrdenServicioConDetallesController(
-      @Valid @RequestBody BuscarOrdenRequest orden) {
+      @Valid @RequestBody BuscarOrdenRequest orden,
+      HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de la orden servicio con ordenes detalle | Controller]");
     log.info("[Request | Id orden: {} | Folio: {}]", orden.getIdOrden(), orden.getFolio());
     
+    String tenantId = obtenerTenantId(request);
+    orden.setTenantId(tenantId);
+    
     ServiceResult<Object> resultado = this.ordentesConDetalleService.obtenerOrdenServicioMasDetallesDto(orden);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Insertar orden de servicio | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/crear")
-  public ResponseEntity<ServiceResult<Object>> guardarOrdenController(@Valid @RequestBody InsertarOrdenRequest orden) {
+  public ResponseEntity<ServiceResult<Object>> guardarOrdenController(
+      @Valid @RequestBody InsertarOrdenRequest orden,
+      HttpServletRequest request) {
     
     log.info("[Iniciando insercion de orden servicio | Controller]");
     log.info("[Request | Orden: {}]", orden);
     
+    String tenantId = obtenerTenantId(request);
+    orden.setTenantId(tenantId);
+    
     ServiceResult<Object> resultado = this.ordenesService.guardarOrdenService(orden);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Actualizar orden de servicio | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarOrdenController(
-      @Valid @RequestBody ActualizarOrdenServicioRequest orden) {
+      @Valid @RequestBody ActualizarOrdenServicioRequest orden,
+      HttpServletRequest request) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
     log.info("[Request | Orden: {}]", orden.getIdOrden());
     
+    String tenantId = obtenerTenantId(request);
+    orden.setTenantId(tenantId);
+    
     ServiceResult<Object> resultado = this.ordenesService.actualizarOrdenService(orden);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Eliminar orden de servicio (actualiza estado a ELIMINADO) | Controller
-   *
-   * @return
-   */
   @PostMapping("/ordenes/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarOrdenController(
-      @Valid @RequestBody EliminarOrdenServicioRequest orden) {
+      @Valid @RequestBody EliminarOrdenServicioRequest orden,
+      HttpServletRequest request) {
     
     log.info("[Inicia eliminar orden de servicio | Controller]");
     log.info("[Request | Orden: {}]", orden.getIdOrden());
     
+    String tenantId = obtenerTenantId(request);
+    orden.setTenantId(tenantId);
+    
     ServiceResult<Object> resultado = this.ordenesService.eliminarOrdenService(orden);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
-    
     return ResponseEntity.ok(resultado);
-    
   }
-  
 }

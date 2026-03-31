@@ -8,6 +8,7 @@ import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +35,12 @@ public class UsuariosController {
   
   @GetMapping("/usuarios/login")
   public ResponseEntity<ServiceResult<Object>> loginUsuariosController(
-      @Validated @RequestBody LoginUsuarioRequest loginUsuarioRequest) {
+      @Validated @RequestBody LoginUsuarioRequest loginUsuarioRequest, HttpServletRequest request) {
     
     log.info("[Iniciando login de usuario | Controller]");
+    
+    // Recuperar tenantId
+    String tenantId = obtenerTenantId(request);
     
     try {
       ServiceResult<Object> resultado = this.usuarioService.consultarUsuarioLogInService(loginUsuarioRequest);
@@ -274,4 +278,10 @@ public class UsuariosController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  
+  // Recuperar tenantId por token
+  private String obtenerTenantId(HttpServletRequest request) {
+    return (String) request.getAttribute("tenantId");
+  }
+  
 }

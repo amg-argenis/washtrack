@@ -1,6 +1,5 @@
 package com.washtrack.washtrack_api.usuarios.repository.impl;
 
-import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
@@ -26,11 +25,11 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
   }
   
   @Override
-  public UsuarioEntity consultarUsuarioLogInRepository(String email, String password) {
+  public UsuarioResponseRepository consultarUsuarioLogInRepository(String email, String password) {
     
     log.info("[Inicia login de usuario | Repository]");
     
-    UsuarioEntity loginResponse = null;
+    UsuarioResponseRepository loginResponse = new UsuarioResponseRepository();
     
     try {
       Map<String, Object> respuesta =
@@ -41,13 +40,17 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
+      loginResponse.setUsuarioEntity(null);
+      loginResponse.setCodigobd(codigobd);
+      
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP para login usuario no devolvio pa_codigobd, se asume error]");
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
         List<UsuarioEntity> usuarioEntity = (List<UsuarioEntity>) respuesta.get("usuariologinrec");
-        loginResponse = usuarioEntity.get(ConstantesNumericas.CERO);
+        loginResponse.setUsuarioEntity(usuarioEntity.get(ConstantesNumericas.CERO));
+        loginResponse.setCodigobd(codigobd);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {

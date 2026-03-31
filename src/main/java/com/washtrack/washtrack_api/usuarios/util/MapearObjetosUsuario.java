@@ -52,16 +52,7 @@ public class MapearObjetosUsuario {
         .email(usuarioEntity.getEmail())
         .rol(usuarioEntity.getRol())
         .activo(usuarioEntity.isActivo())
-        .build();
-  }
-  
-  public UsuarioInsertEntity fromDtoToEntityUsuarioMapper(UsuarioInsertDto usuarioInsertDto) {
-    return UsuarioInsertEntity.builder()
-        .tenantId(usuarioInsertDto.getTenantId())
-        .nombre(usuarioInsertDto.getNombre())
-        .email(usuarioInsertDto.getEmail())
-        .password(usuarioInsertDto.getPassword())
-        .rol(usuarioInsertDto.getRol())
+        .token(usuarioEntity.getToken())
         .build();
   }
   

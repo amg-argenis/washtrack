@@ -14,9 +14,9 @@ import java.time.LocalDate;
 
 public interface IOrdenesService {
   
-  ServiceResult<Object> listaOrdenesService();
+  ServiceResult<Object> listaOrdenesService(String tenantId);
   
-  ServiceResult<Object> listaOrdenesFechaIngresoService(LocalDate fechaIngreso);
+  ServiceResult<Object> listaOrdenesFechaIngresoService(LocalDate fechaIngreso, String tenantId);
   
   ServiceResult<Object> buscarOrdenService(BuscarOrdenRequest ordenDto);
   

@@ -11,4 +11,6 @@ public class EliminarOrdenServicioRequest {
   
   @NotBlank(message = "Folio orden servicio es obligatorio")
   private String folio;
+  
+  private String tenantId;
 }

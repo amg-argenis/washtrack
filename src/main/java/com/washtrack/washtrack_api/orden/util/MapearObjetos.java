@@ -91,7 +91,6 @@ public class MapearObjetos {
         .estado(orden.getEstado())
         .totalPrendas(orden.getTotalPrendas())
         .observaciones(orden.getObservaciones())
-        // Este campo por ahora es temporal desde el Front
         .tenantId(orden.getTenantId())
         .fechaEntrega(orden.getFechaEntrega())
         .build();

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IUsuarioRepository {
   
-  com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity consultarUsuarioLogInRepository(String email,
+  UsuarioResponseRepository consultarUsuarioLogInRepository(String email,
       String password);
   
   UsuarioResponseRepository buscarUsuarioPorIdRepository(String idUsuario);

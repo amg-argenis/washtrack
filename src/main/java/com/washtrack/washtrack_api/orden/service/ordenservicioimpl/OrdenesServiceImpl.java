@@ -44,7 +44,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<Object> listaOrdenesService() {
+  public ServiceResult<Object> listaOrdenesService(String tenantId) {
     log.info("[Inicia listar ordenes de servicio | Service]");
     
     ServiceResult<Object> serviceResult = null;
@@ -52,7 +52,7 @@ public class OrdenesServiceImpl implements IOrdenesService {
     try {
       
       List<OrdenesEntity> resultadoRepository =
-          this.ordenesRepository.listarOrdenesRepository("a051a168-fa2a-11f0-aab7-e66133dbb0de");
+          this.ordenesRepository.listarOrdenesRepository(tenantId);
       
       if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
         serviceResult =
@@ -117,15 +117,14 @@ public class OrdenesServiceImpl implements IOrdenesService {
    * @return
    */
   @Override
-  public ServiceResult<Object> listaOrdenesFechaIngresoService(LocalDate fechaIngreso) {
+  public ServiceResult<Object> listaOrdenesFechaIngresoService(LocalDate fechaIngreso, String tenantId) {
     log.info("[Inicia listar ordenes de servicio por fecha ingreso | Service]");
     
     ServiceResult<Object> serviceResult = null;
     
     try {
       List<OrdenesEntity> resultadoRepository =
-          this.ordenesRepository.listarOrdenesFechaIngresoRepository("a051a168-fa2a-11f0-aab7-e66133dbb0de",
-              fechaIngreso);
+          this.ordenesRepository.listarOrdenesFechaIngresoRepository(tenantId, fechaIngreso);
       
       if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
         serviceResult =
@@ -263,13 +262,12 @@ public class OrdenesServiceImpl implements IOrdenesService {
     
     try {
       /**
-       * Obtener el Tenant -- "a051a168-fa2a-11f0-aab7-e66133dbb0de" para pruebas
+       *
        * Obtener el UUID -- OK
        */
       
       UUID uuid = UUID.randomUUID();
       ordenDto.setIdOrden(uuid.toString());
-      ordenDto.setTenantId("a051a168-fa2a-11f0-aab7-e66133dbb0de");
       
       // Mapear a OrdenesEntity
       OrdenesEntity ordenEntity = this.mapearObjetos.mapearOrdenAentity(ordenDto);

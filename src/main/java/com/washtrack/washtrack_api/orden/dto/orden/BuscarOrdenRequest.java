@@ -13,4 +13,6 @@ public class BuscarOrdenRequest {
   @NotNull(message = "El folio de la orden es obligatorio para la busqueda")
   private String folio;
   
+  private String tenantId;
+  
 }
