@@ -210,7 +210,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
     
     try {
       Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.eliminarClientesCallJdbcMethod(
-          cliente.getIdCliente());
+          cliente.getIdCliente(), cliente.getTenantId());
       
       codigobd =
           (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);

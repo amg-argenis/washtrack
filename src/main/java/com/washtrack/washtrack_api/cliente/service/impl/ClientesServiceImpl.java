@@ -36,7 +36,7 @@ public class ClientesServiceImpl implements IClientesService {
   }
   
   @Override
-  public ServiceResult<Object> listarClientesService() {
+  public ServiceResult<Object> listarClientesService(String tenantId) {
     log.info("[Inicia listar ordenes de servicio | Service]");
     
     ServiceResult<Object> serviceResult = null;
@@ -44,7 +44,7 @@ public class ClientesServiceImpl implements IClientesService {
     try {
       
       List<ClientesEntity> resultadoRepository =
-          this.clientesRepository.listarClientesRepository("a051a168-fa2a-11f0-aab7-e66133dbb0de");
+          this.clientesRepository.listarClientesRepository(tenantId);
       
       if ( resultadoRepository == null || resultadoRepository.isEmpty() ) {
         serviceResult =

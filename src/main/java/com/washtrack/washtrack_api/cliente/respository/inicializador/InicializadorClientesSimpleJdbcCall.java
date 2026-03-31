@@ -141,7 +141,7 @@ public class InicializadorClientesSimpleJdbcCall {
    */
   public Map<String, Object> buscarClientesCallJdbcMethod(String idCliente, String tenantId) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // Temporal ******
+    params.put("pa_tenantid", tenantId);
     params.put("pa_idcliente", idCliente);
     return this.buscarClientesSimpleJdbcCall.execute(params);
   }
@@ -174,9 +174,9 @@ public class InicializadorClientesSimpleJdbcCall {
    * @param idCliente
    * @return
    */
-  public Map<String, Object> eliminarClientesCallJdbcMethod(String idCliente) {
+  public Map<String, Object> eliminarClientesCallJdbcMethod(String idCliente, String tenantId) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // Temporal ******
+    params.put("pa_tenantid", tenantId);
     params.put("pa_idcliente", idCliente);
     return this.eliminarClientesSimpleJdbcCall.execute(params);
   }

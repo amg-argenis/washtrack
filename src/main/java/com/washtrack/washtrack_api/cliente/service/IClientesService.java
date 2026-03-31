@@ -5,7 +5,7 @@ import com.washtrack.washtrack_api.orden.response.ServiceResult;
 
 public interface IClientesService {
   
-  ServiceResult<Object> listarClientesService();
+  ServiceResult<Object> listarClientesService(String tenantId);
   
   ServiceResult<Object> buscarClienteService(ClienteDto clienteDto);
   

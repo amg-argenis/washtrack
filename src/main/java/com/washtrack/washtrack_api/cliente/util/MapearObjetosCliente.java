@@ -54,7 +54,7 @@ public class MapearObjetosCliente {
   
   public Map<String, Object> parametrizarObjetoClienteEntity(ClientesEntity clientesEntity) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // Temporal ******
+    params.put("pa_tenantid", clientesEntity.getTenantId());
     params.put("pa_idcliente", clientesEntity.getIdCliente());
     params.put("pa_nombre", clientesEntity.getNombre());
     params.put("pa_contacto", clientesEntity.getContacto());

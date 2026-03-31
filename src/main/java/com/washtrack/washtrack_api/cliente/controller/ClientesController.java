@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
 import com.washtrack.washtrack_api.cliente.service.IClientesService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,128 +28,100 @@ public class ClientesController {
     this.clientesService = clientesService;
   }
   
-  /**
-   * Listar Clientes | Controller
-   *
-   * @return
-   */
+  private String obtenerTenantId(HttpServletRequest request) {
+    log.info("[Obteniendo tenantid | Controller]");
+    return (String) request.getAttribute("tenantId");
+  }
+  
   @GetMapping("/clientes/listar")
-  public ResponseEntity<ServiceResult<Object>> listarClientesController() {
+  public ResponseEntity<ServiceResult<Object>> listarClientesController(HttpServletRequest request) {
     
     log.info("[Iniciando obtencion de clientes | Controller]");
     
-    ServiceResult<Object> resultado = this.clientesService.listarClientesService();
+    String tenantId = obtenerTenantId(request);
+    
+    ServiceResult<Object> resultado = this.clientesService.listarClientesService(tenantId);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Buscar Clientes | Controller
-   *
-   * @return
-   */
   @PostMapping("/clientes/buscar")
   public ResponseEntity<ServiceResult<Object>> buscarClientesController(
-      @RequestBody ClienteDto clienteDto) {
+      @RequestBody ClienteDto clienteDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de clientes | Controller]");
+    
+    String tenantId = obtenerTenantId(request);
+    clienteDto.setTenantId(tenantId);
     
     ServiceResult<Object> resultado = this.clientesService.buscarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Insertar Clientes | Controller
-   *
-   * @return
-   */
   @PostMapping("/clientes/crear")
   public ResponseEntity<ServiceResult<Object>> insertarClientesController(
-      @RequestBody ClienteDto clienteDto) {
+      @RequestBody ClienteDto clienteDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando insercion de clientes | Controller]");
+    
+    String tenantId = obtenerTenantId(request);
+    clienteDto.setTenantId(tenantId);
     
     ServiceResult<Object> resultado = this.clientesService.guardarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Actualizar Clientes | Controller
-   *
-   * @return
-   */
   @PostMapping("/clientes/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarClientesController(
-      @RequestBody ClienteDto clienteDto) {
+      @RequestBody ClienteDto clienteDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando actualizar cliente | Controller]");
+    
+    String tenantId = obtenerTenantId(request);
+    clienteDto.setTenantId(tenantId);
     
     ServiceResult<Object> resultado = this.clientesService.actualizarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
     return ResponseEntity.ok(resultado);
-    
   }
   
-  /**
-   * Buscar Clientes | Controller
-   *
-   * @return
-   */
   @PostMapping("/clientes/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarClientesController(
-      @RequestBody ClienteDto clienteDto) {
+      @RequestBody ClienteDto clienteDto,
+      HttpServletRequest request) {
     
     log.info("[Iniciando eliminar clientes | Controller]");
+    
+    String tenantId = obtenerTenantId(request);
+    clienteDto.setTenantId(tenantId);
     
     ServiceResult<Object> resultado = this.clientesService.eliminarClienteService(clienteDto);
     
     if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      
       ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      
-      return ResponseEntity
-          .status(error.getHttpStatus())
-          .body(resultado);
+      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
     }
     return ResponseEntity.ok(resultado);
-    
   }
-  
 }
