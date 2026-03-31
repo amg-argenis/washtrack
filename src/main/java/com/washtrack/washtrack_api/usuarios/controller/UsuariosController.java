@@ -34,9 +34,11 @@ public class UsuariosController {
   
   @PostMapping("/usuarios/login")
   public ResponseEntity<ServiceResult<Object>> loginUsuariosController(
-      @Validated @RequestBody LoginUsuarioRequest loginUsuarioRequest) {
-    
+      @RequestBody LoginUsuarioRequest loginUsuarioRequest) {
     log.info("[Iniciando login de usuario | Controller]");
+    log.info("[Controller | Request login completo: {}]", loginUsuarioRequest);
+    log.info("[Controller | Email: {} | Password: {}]", loginUsuarioRequest.getEmail(),
+        loginUsuarioRequest.getPassword());
     
     try {
       ServiceResult<Object> resultado = this.usuarioService.consultarUsuarioLogInService(loginUsuarioRequest);

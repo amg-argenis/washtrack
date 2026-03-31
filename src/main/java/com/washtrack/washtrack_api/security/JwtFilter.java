@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.security;
 
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +30,14 @@ public class JwtFilter extends OncePerRequestFilter {
       HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
     
+    log.info("[JwtFilter | Metodo: {} | URI: {}]", request.getMethod(), request.getRequestURI());
+    
     String authHeader = request.getHeader("Authorization");
     
     if ( authHeader != null && authHeader.startsWith("Bearer ") ) {
-      String token = authHeader.substring(7);
+      String token = authHeader.substring(ConstantesNumericas.SIETE);
+      
+      log.info("[JwtFilter | Authorization header: {}]", authHeader);
       
       try {
         if ( jwtUtil.validarToken(token) ) {
