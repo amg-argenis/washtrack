@@ -32,7 +32,7 @@ public class UsuariosController {
     this.usuarioService = usuarioService;
   }
   
-  @GetMapping("/usuarios/login")
+  @PostMapping("/usuarios/login")
   public ResponseEntity<ServiceResult<Object>> loginUsuariosController(
       @Validated @RequestBody LoginUsuarioRequest loginUsuarioRequest) {
     
