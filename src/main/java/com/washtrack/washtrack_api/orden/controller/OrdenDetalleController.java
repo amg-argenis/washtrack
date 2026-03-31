@@ -29,6 +29,7 @@ public class OrdenDetalleController {
   }
   
   private String obtenerTenantId(HttpServletRequest request) {
+    log.info("[Obteniendo tenantid | Controller]");
     return (String) request.getAttribute("tenantId");
   }
   
