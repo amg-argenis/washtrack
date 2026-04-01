@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.usuarios.repository;
 
-import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
+import com.washtrack.washtrack_api.usuarios.response.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
 

@@ -1,7 +1,7 @@
 package com.washtrack.washtrack_api.orden.service;
 
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 
 public interface IOrdenDetalleService {
   

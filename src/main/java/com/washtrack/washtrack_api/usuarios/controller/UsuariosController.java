@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.usuarios.controller;
 
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;

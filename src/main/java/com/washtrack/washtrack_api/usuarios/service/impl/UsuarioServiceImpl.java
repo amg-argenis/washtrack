@@ -1,7 +1,7 @@
 package com.washtrack.washtrack_api.usuarios.service.impl;
 
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import com.washtrack.washtrack_api.security.JwtUtil;
 import com.washtrack.washtrack_api.usuarios.dto.BuscarUsuarioRequest;
@@ -10,7 +10,7 @@ import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioEliminarReactivarDto;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
-import com.washtrack.washtrack_api.usuarios.dto.UsuarioResponseRepository;
+import com.washtrack.washtrack_api.usuarios.response.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
 import com.washtrack.washtrack_api.usuarios.repository.IUsuarioRepository;

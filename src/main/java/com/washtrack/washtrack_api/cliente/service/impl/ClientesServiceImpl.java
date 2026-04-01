@@ -10,7 +10,7 @@ import com.washtrack.washtrack_api.cliente.service.IClientesService;
 import com.washtrack.washtrack_api.cliente.util.MapearObjetosCliente;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.usuarios.dto;
+package com.washtrack.washtrack_api.usuarios.response;
 
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.washtrack.washtrack_api.cliente.service;
 
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 
 public interface IClientesService {
   

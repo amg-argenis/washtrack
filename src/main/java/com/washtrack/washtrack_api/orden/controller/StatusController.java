@@ -1,7 +1,7 @@
 package com.washtrack.washtrack_api.orden.controller;
 
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

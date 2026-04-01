@@ -3,7 +3,7 @@ package com.washtrack.washtrack_api.cliente.controller;
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
 import com.washtrack.washtrack_api.cliente.service.IClientesService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

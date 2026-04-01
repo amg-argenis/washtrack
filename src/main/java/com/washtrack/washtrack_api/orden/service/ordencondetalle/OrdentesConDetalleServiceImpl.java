@@ -6,7 +6,7 @@ import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenServicioMasDetallesDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.respository.IOrdenConDetalleRepository;
 import com.washtrack.washtrack_api.orden.service.IOrdentesConDetalleService;
 import com.washtrack.washtrack_api.orden.util.MapearObjetos;

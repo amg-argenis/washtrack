@@ -5,7 +5,7 @@ import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenServicioMasDetallesDto;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
-import com.washtrack.washtrack_api.orden.response.ServiceResult;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
