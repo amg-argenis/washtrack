@@ -40,6 +40,9 @@ public final class ConstantesBaseDatos {
   public static final String SP_ACTUALIZAR_USUARIO = "SP_ACTUALIZAR_USUARIO";
   public static final String SP_BUSCAR_USUARIO_EMAIL = "SP_BUSCAR_USUARIO_EMAIL";
   
+  // ENTREGAS
+  public static final String SP_INSERTAR_ENTREGA = "SP_INSERTAR_ENTREGA";
+  
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";
   public static final String PAMENSAJEBD = "pa_mensaje";

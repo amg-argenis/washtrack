@@ -1,4 +1,4 @@
-package com.washtrack.washtrack_api.entregas.entity;
+package com.washtrack.washtrack_api.entregas.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EntregasEntity {
+public class EntregasDto {
   private String idEntrega;
   private String tenantId;
   private String ordenId;
