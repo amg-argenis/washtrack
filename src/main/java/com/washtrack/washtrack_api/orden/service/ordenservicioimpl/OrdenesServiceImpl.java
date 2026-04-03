@@ -191,6 +191,8 @@ public class OrdenesServiceImpl implements IOrdenesService {
   public ServiceResult<Object> buscarOrdenService(BuscarOrdenRequest ordenRequest) {
     log.info("[Inicia buscar orden de servicio | Service]");
     
+    log.info("[Request: Id orden: {} | Folio: {}]", ordenRequest.getIdOrden(), ordenRequest.getFolio());
+    
     ServiceResult<Object> serviceResult = null;
     
     try {
@@ -334,6 +336,8 @@ public class OrdenesServiceImpl implements IOrdenesService {
   public ServiceResult<Object> actualizarOrdenService(ActualizarOrdenServicioRequest ordenDto) {
     log.info("[Inicia actualizar orden de servicio | Service]");
     
+    log.info("[Request | Orden: {}]", ordenDto.getIdOrden());
+    
     ServiceResult<Object> serviceResult;
     
     try {
@@ -408,6 +412,8 @@ public class OrdenesServiceImpl implements IOrdenesService {
   @Override
   public ServiceResult<Object> eliminarOrdenService(EliminarOrdenServicioRequest ordenDto) {
     log.info("[Inicia eliminar orden de servicio | Service]");
+    
+    log.info("[Request | Orden: {}]", ordenDto.getIdOrden());
     
     ServiceResult<Object> serviceResult = null;
     

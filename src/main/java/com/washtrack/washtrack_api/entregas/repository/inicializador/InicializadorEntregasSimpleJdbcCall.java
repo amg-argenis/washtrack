@@ -57,8 +57,8 @@ public class InicializadorEntregasSimpleJdbcCall {
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ENTREGA)
         .declareParameters(
             // IN
+            new SqlParameter("pa_identrega", Types.VARCHAR),
             new SqlParameter("pa_tenantid", Types.VARCHAR),
-            new SqlParameter("pa_ordenid", Types.VARCHAR),
             // OUT
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
@@ -74,10 +74,10 @@ public class InicializadorEntregasSimpleJdbcCall {
     return this.insertarEntregaSimpleJdbcCall.execute(params);
   }
   
-  public Map<String, Object> buscarEntregaJdbcMethod(String tenantId, String ordenId) {
+  public Map<String, Object> buscarEntregaJdbcMethod(String idEntrega, String tenantId) {
     Map<String, Object> params = new HashMap<>();
+    params.put("pa_identrega", idEntrega);
     params.put("pa_tenantid", tenantId);
-    params.put("pa_ordenid", ordenId);
     
     return this.buscarEntregaSimpleJdbcCall.execute(params);
   }

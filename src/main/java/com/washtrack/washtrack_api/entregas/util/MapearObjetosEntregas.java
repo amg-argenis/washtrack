@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.entregas.util;
 
+import com.washtrack.washtrack_api.entregas.dto.EntregaInsertRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
 import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,8 @@ public class MapearObjetosEntregas {
   
   // MAPEAR OBJETOS ***************************************************************************************************
   
-  public EntregasEntity entregasEntityFromDto(EntregasDto entregasDto) {
+  public EntregasEntity entregasEntityFromDto(EntregaInsertRequest entregasDto) {
     return EntregasEntity.builder()
-        .idEntrega(entregasDto.getIdEntrega())
-        .tenantId(entregasDto.getTenantId())
         .ordenId(entregasDto.getOrdenId())
         .fechaEntrega(entregasDto.getFechaEntrega())
         .totalEntregado(entregasDto.getTotalEntregado())

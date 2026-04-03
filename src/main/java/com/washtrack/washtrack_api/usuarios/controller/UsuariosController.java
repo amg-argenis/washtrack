@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.usuarios.controller;
 
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioRequest;
 import com.washtrack.washtrack_api.usuarios.dto.UsuarioActualizarDto;
@@ -8,10 +9,10 @@ import com.washtrack.washtrack_api.usuarios.dto.UsuarioInsertDto;
 import com.washtrack.washtrack_api.usuarios.service.IUsuarioService;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Validated
 @CrossOrigin
 @RequestMapping("${base.path}")
 @RestController
@@ -40,25 +40,33 @@ public class UsuariosController {
     log.info("[Controller | Email: {} | Password: {}]", loginUsuarioRequest.getEmail(),
         loginUsuarioRequest.getPassword());
     
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
     try {
-      ServiceResult<Object> resultado = this.usuarioService.consultarUsuarioLogInService(loginUsuarioRequest);
+      resultado = this.usuarioService.consultarUsuarioLogInService(loginUsuarioRequest);
       
       if ( resultado == null ) {
-        log.info("[Hubo un problema al logearse con el usuario solicitado | Controller]");
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        resultado = new ServiceResult<>(false,
+            "Error interno, el usuario no puede logearse al sistema",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
       }
-      
-      if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
         ApiErrorCode error = (ApiErrorCode) resultado.getData();
-        return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
       }
       
-      return ResponseEntity.ok(resultado);
     }
     catch ( Exception e ) {
       log.error("[Error critico al hacer login | Controller | Detalles: {}]", e.getMessage(), e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    return response;
   }
   
   @GetMapping("/usuarios/busquedas/listar-tenantid")
@@ -67,136 +75,220 @@ public class UsuariosController {
     
     log.info("[Iniciando listar usuarios por tenant Id | Controller]");
     
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
     try {
       String tenantId = obtenerTenantId(request);
-      ServiceResult<Object> resultado =
-          this.usuarioService.listarUsuariosPorTenantIdService(tenantId);
+      resultado = this.usuarioService.listarUsuariosPorTenantIdService(tenantId);
       
       if ( resultado == null ) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo listar usuarios por tenant Id",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
       }
-      if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
         ApiErrorCode error = (ApiErrorCode) resultado.getData();
-        return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
       }
-      return ResponseEntity.ok(resultado);
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
     catch ( Exception e ) {
       log.error("[Error critico al listar usuarios por tenantId | Controller | Detalles: {}]", e.getMessage(), e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    return response;
   }
   
   @PostMapping("/usuarios/insertar")
   public ResponseEntity<ServiceResult<Object>> insertarUsuariosController(
-      @Validated @RequestBody UsuarioInsertDto usuario,
+      @Valid @RequestBody UsuarioInsertDto usuario,
       HttpServletRequest request) {
     
     log.info("[Iniciando insertar usuarios | Controller]");
     
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
     try {
       String tenantId = obtenerTenantId(request);
       usuario.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado = this.usuarioService.insertarUsuarioService(usuario);
+      resultado = this.usuarioService.insertarUsuarioService(usuario);
       
       if ( resultado == null ) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo insertar el usuario",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
       }
-      if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
         ApiErrorCode error = (ApiErrorCode) resultado.getData();
-        return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
       }
-      return ResponseEntity.ok(resultado);
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
     catch ( Exception e ) {
       log.error("[Error critico al insertar usuario | Controller | Detalles: {}]", e.getMessage(), e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    return response;
   }
   
   @PostMapping("/usuarios/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarUsuariosController(
-      @Validated @RequestBody UsuarioEliminarReactivarDto usuario,
+      @Valid @RequestBody UsuarioEliminarReactivarDto usuario,
       HttpServletRequest request) {
     
     log.info("[Iniciando eliminar usuarios | Controller]");
     
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
     try {
+      if ( usuario.getIdUsuario().length() > ConstantesNumericas.TREINTAYSEIS ) {
+        ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+        
+        resultado =
+            new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
+                ConstantesNumericas.CERO, null);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+      }
+      
       String tenantId = obtenerTenantId(request);
       usuario.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado = this.usuarioService.eliminarUsuarioService(usuario);
+      resultado = this.usuarioService.eliminarUsuarioService(usuario);
       
       if ( resultado == null ) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo eliminar el usuario",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
       }
-      if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
         ApiErrorCode error = (ApiErrorCode) resultado.getData();
-        return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
       }
-      return ResponseEntity.ok(resultado);
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
     catch ( Exception e ) {
       log.error("[Error critico al eliminar usuario | Controller | Detalles: {}]", e.getMessage(), e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    return response;
   }
   
   @PostMapping("/usuarios/reactivar")
   public ResponseEntity<ServiceResult<Object>> reactivarUsuariosController(
-      @Validated @RequestBody UsuarioEliminarReactivarDto usuario,
+      @Valid @RequestBody UsuarioEliminarReactivarDto usuario,
       HttpServletRequest request) {
     
     log.info("[Iniciando reactivar usuarios | Controller]");
     
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
     try {
+      
+      if ( usuario.getIdUsuario().length() > ConstantesNumericas.TREINTAYSEIS ) {
+        ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+        
+        resultado =
+            new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
+                ConstantesNumericas.CERO, null);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+      }
+      
       String tenantId = obtenerTenantId(request);
       usuario.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado = this.usuarioService.reactivarUsuarioService(usuario);
+      resultado = this.usuarioService.reactivarUsuarioService(usuario);
       
       if ( resultado == null ) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo reactivar el usuario",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
       }
-      if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
         ApiErrorCode error = (ApiErrorCode) resultado.getData();
-        return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
       }
-      return ResponseEntity.ok(resultado);
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
     catch ( Exception e ) {
       log.error("[Error critico al reactivar usuario | Controller | Detalles: {}]", e.getMessage(), e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    return response;
   }
   
   @PostMapping("/usuarios/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarUsuariosController(
-      @Validated @RequestBody UsuarioActualizarDto usuario,
+      @Valid @RequestBody UsuarioActualizarDto usuario,
       HttpServletRequest request) {
     
     log.info("[Iniciando actualizar usuarios | Controller]");
     
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
     try {
+      // Validacion de longitud
+      if ( usuario.getIdUsuario().length() > ConstantesNumericas.TREINTAYSEIS ) {
+        resultado = new ServiceResult<>(false,
+            "Solicitud mal formada, limite de caracteres superado para el Id",
+            ConstantesNumericas.CERO, null);
+        return ResponseEntity.status(ApiErrorCode.DATOS_INVALIDOS.getHttpStatus()).body(resultado);
+      }
+      
       String tenantId = obtenerTenantId(request);
       usuario.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado = this.usuarioService.actualizarUsuarioService(usuario);
+      resultado = this.usuarioService.actualizarUsuarioService(usuario);
       
       if ( resultado == null ) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo actualizar el usuario",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
       }
-      if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
         ApiErrorCode error = (ApiErrorCode) resultado.getData();
-        return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
       }
-      return ResponseEntity.ok(resultado);
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
     catch ( Exception e ) {
       log.error("[Error critico al actualizar usuario | Controller | Detalles: {}]", e.getMessage(), e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
     }
+    
+    return response;
   }
   
   // Recuperar tenantId por token

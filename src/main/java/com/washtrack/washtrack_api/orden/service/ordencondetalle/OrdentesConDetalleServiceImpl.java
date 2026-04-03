@@ -34,6 +34,8 @@ public class OrdentesConDetalleServiceImpl implements IOrdentesConDetalleService
   public ServiceResult<Object> obtenerOrdenServicioMasDetallesDto(BuscarOrdenRequest ordenRequest) {
     log.info("[Inicia buscar orden de servicio con detalle | Service]");
     
+    log.info("[Request | Id orden: {} | Folio: {}]", ordenRequest.getIdOrden(), ordenRequest.getFolio());
+    
     ServiceResult<Object> serviceResult = null;
     
     try {

@@ -14,5 +14,6 @@ public final class ConstantesNumericas {
   public static final int DOS = 2;
   public static final int TRES = 3;
   public static final int SIETE = 7;
+  public static final int TREINTAYSEIS = 36;
   
 }

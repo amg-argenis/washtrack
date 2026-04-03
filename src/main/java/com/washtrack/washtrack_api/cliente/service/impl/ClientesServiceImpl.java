@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.cliente.service.impl;
 
+import com.washtrack.washtrack_api.cliente.dto.EliminarClienteRequest;
 import com.washtrack.washtrack_api.util.response.MapearRespuestasConsultasUtil;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
@@ -301,17 +302,14 @@ public class ClientesServiceImpl implements IClientesService {
   }
   
   @Override
-  public ServiceResult<Object> eliminarClienteService(ClienteDto clienteDto) {
+  public ServiceResult<Object> eliminarClienteService(EliminarClienteRequest clienteDto) {
     log.info("[Inicia eliminar cliente | Service]");
     
     ServiceResult<Object> serviceResult;
     
     try {
-      // Mapear Request → Entity (solo criterios de busqueda)
-      ClientesEntity criterioBusqueda = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
-      
       // Llamada al Repository
-      Integer resultado = this.clientesRepository.eliminarClienteRepository(criterioBusqueda);
+      Integer resultado = this.clientesRepository.eliminarClienteRepository(clienteDto);
       
       if ( resultado != null && resultado.intValue() == ConstantesNumericas.CERO ) {
         log.info("[Cliente eliminado correctamente de la BD | Service]");

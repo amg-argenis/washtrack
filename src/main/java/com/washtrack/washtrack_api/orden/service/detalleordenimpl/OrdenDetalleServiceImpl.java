@@ -210,7 +210,11 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   @Override
   public ServiceResult<Object> eliminarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
     log.info("[Inicia eliminar detalle orden <Service>]");
+    
+    log.info("[Request | Detalle orden: {}]", ordenDetalleDto.getIdDetalleOrden());
+    
     ServiceResult<Object> serviceResult;
+    
     try {
       // Mapear a OrdenesEntity
       DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);

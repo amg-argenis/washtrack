@@ -4,6 +4,7 @@ import com.washtrack.washtrack_api.orden.dto.orden.ActualizarOrdenServicioReques
 import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.EliminarOrdenServicioRequest;
 import com.washtrack.washtrack_api.orden.dto.orden.InsertarOrdenRequest;
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
 import com.washtrack.washtrack_api.orden.service.IOrdenesService;
@@ -90,7 +91,15 @@ public class OrdenController {
       HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
-    log.info("[Request: Id orden: {} | Folio: {}]", orden.getIdOrden(), orden.getFolio());
+    
+    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
+      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+      
+      ServiceResult<Object> resultado =
+          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
+              ConstantesNumericas.CERO, null);
+      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+    }
     
     String tenantId = obtenerTenantId(request);
     orden.setTenantId(tenantId);
@@ -110,7 +119,15 @@ public class OrdenController {
       HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de la orden servicio con ordenes detalle | Controller]");
-    log.info("[Request | Id orden: {} | Folio: {}]", orden.getIdOrden(), orden.getFolio());
+    
+    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
+      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+      
+      ServiceResult<Object> resultado =
+          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
+              ConstantesNumericas.CERO, null);
+      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+    }
     
     String tenantId = obtenerTenantId(request);
     orden.setTenantId(tenantId);
@@ -150,7 +167,15 @@ public class OrdenController {
       HttpServletRequest request) {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
-    log.info("[Request | Orden: {}]", orden.getIdOrden());
+    
+    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
+      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+      
+      ServiceResult<Object> resultado =
+          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
+              ConstantesNumericas.CERO, null);
+      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+    }
     
     String tenantId = obtenerTenantId(request);
     orden.setTenantId(tenantId);
@@ -170,7 +195,15 @@ public class OrdenController {
       HttpServletRequest request) {
     
     log.info("[Inicia eliminar orden de servicio | Controller]");
-    log.info("[Request | Orden: {}]", orden.getIdOrden());
+    
+    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
+      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+      
+      ServiceResult<Object> resultado =
+          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
+              ConstantesNumericas.CERO, null);
+      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+    }
     
     String tenantId = obtenerTenantId(request);
     orden.setTenantId(tenantId);

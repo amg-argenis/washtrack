@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.cliente.respository.impl;
 
+import com.washtrack.washtrack_api.cliente.dto.EliminarClienteRequest;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.respository.IClientesRepository;
 import com.washtrack.washtrack_api.cliente.respository.inicializador.InicializadorClientesSimpleJdbcCall;
@@ -203,14 +204,14 @@ public class ClientesRepositoryImpl implements IClientesRepository {
   }
   
   @Override
-  public Integer eliminarClienteRepository(ClientesEntity cliente) {
+  public Integer eliminarClienteRepository(EliminarClienteRequest clienteDto) {
     log.info("[Inicia eliminar cliente | Repository]");
     
     Integer codigobd;
     
     try {
       Map<String, Object> resultado = this.inicializadorClientesSimpleJdbcCall.eliminarClientesCallJdbcMethod(
-          cliente.getIdCliente(), cliente.getTenantId());
+          clienteDto.getIdCliente(), clienteDto.getTenantId());
       
       codigobd =
           (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);

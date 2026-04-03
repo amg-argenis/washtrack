@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.cliente.respository;
 
+import com.washtrack.washtrack_api.cliente.dto.EliminarClienteRequest;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 
 import java.util.List;
@@ -14,6 +15,6 @@ public interface IClientesRepository {
   
   ClientesEntity actualizarClienteRepository(ClientesEntity cliente);
   
-  Integer eliminarClienteRepository(ClientesEntity cliente);
+  Integer eliminarClienteRepository(EliminarClienteRequest clienteDto);
   
 }

@@ -32,7 +32,52 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
   
   @Override
   public EntregasResponseRepository buscarEntregaRepository(String idEntrega, String tenantId) {
-    return null;
+    log.info("[Inicia buscar entrega | Repository]");
+    
+    EntregasResponseRepository loginResponse = new EntregasResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorEntregasSimpleJdbcCall.buscarEntregaJdbcMethod(idEntrega, tenantId);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      loginResponse.setEntregasEntity(null);
+      loginResponse.setCodigobd(codigobd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP buscar entrega fallo, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<EntregasEntity> usuarioEntity = (List<EntregasEntity>) respuesta.get("entregarecuperada");
+        loginResponse.setEntregasEntity(usuarioEntity.get(ConstantesNumericas.CERO));
+        loginResponse.setCodigobd(codigobd);
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Entrega no encontrada en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al buscar la entrega en BD | Repository"
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al buscar la entrega en BD | Repository "
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza buscar entrega | Repository]");
+    }
+    
+    return loginResponse;
   }
   
   @Override

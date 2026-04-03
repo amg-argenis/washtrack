@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.entregas.service.impl;
 
+import com.washtrack.washtrack_api.entregas.dto.EntregaInsertRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
 import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
 import com.washtrack.washtrack_api.entregas.repository.IEntregasRepository;
@@ -9,8 +10,6 @@ import com.washtrack.washtrack_api.entregas.util.MapearObjetosEntregas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
-import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
-import com.washtrack.washtrack_api.usuarios.response.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
@@ -42,11 +41,89 @@ public class EntregaServiceImpl implements IEntregaService {
   
   @Override
   public ServiceResult<Object> buscarEntregaService(String idEntrega, String tenantId) {
-    return null;
+    log.info("[Inicia buscar entrega | Service]");
+    
+    log.info("[Buscar entrega request: (Id entrega: {}| Tenant Id: {}) | Service]", idEntrega, tenantId);
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      EntregasResponseRepository respuesta = this.entregasRepository.buscarEntregaRepository(idEntrega, tenantId);
+      
+      if ( respuesta == null ) {
+        log.info("[Entrega no encontrada en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        // Mapear Entity → DTO (respuesta)
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, respuesta.getEntregasEntity()
+        );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un error en la BD al buscar la entrega solicitada | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[No existe la entrega solicitada en la BD | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al buscar la entrega "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al buscar la entrega | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza buscar la entrega | Service]");
+    }
+    
+    return serviceResult;
   }
   
   @Override
-  public ServiceResult<Object> insertarEntregaService(EntregasDto entregasDto) {
+  public ServiceResult<Object> insertarEntregaService(EntregaInsertRequest entregasDto) {
     log.info("[Inicia insertar entrega | Service]");
     
     ServiceResult<Object> serviceResult = null;

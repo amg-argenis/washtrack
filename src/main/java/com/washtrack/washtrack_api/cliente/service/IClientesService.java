@@ -1,6 +1,7 @@
 package com.washtrack.washtrack_api.cliente.service;
 
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
+import com.washtrack.washtrack_api.cliente.dto.EliminarClienteRequest;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
 
 public interface IClientesService {
@@ -13,6 +14,6 @@ public interface IClientesService {
   
   ServiceResult<Object> actualizarClienteService(ClienteDto clienteDto);
   
-  ServiceResult<Object> eliminarClienteService(ClienteDto clienteDto);
+  ServiceResult<Object> eliminarClienteService(EliminarClienteRequest clienteDto);
   
 }
