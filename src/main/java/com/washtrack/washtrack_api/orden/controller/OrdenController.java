@@ -139,25 +139,39 @@ public class OrdenController {
     
     log.info("[Iniciando busqueda de la orden servicio | Controller]");
     
-    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
-      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      String tenantId = obtenerTenantId(request);
+      orden.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado =
-          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
-              ConstantesNumericas.CERO, null);
-      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+      resultado = this.ordenesService.buscarOrdenService(orden);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo obtener la orden solicitada",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al obtener la orden solicitada | Controller | Detalles: {}]", e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
     }
     
-    String tenantId = obtenerTenantId(request);
-    orden.setTenantId(tenantId);
-    
-    ServiceResult<Object> resultado = this.ordenesService.buscarOrdenService(orden);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
-    }
-    return ResponseEntity.ok(resultado);
+    return response;
   }
   
   @PostMapping("/ordenes/orden-detalle")
@@ -165,27 +179,42 @@ public class OrdenController {
       @Valid @RequestBody BuscarOrdenRequest orden,
       HttpServletRequest request) {
     
-    log.info("[Iniciando busqueda de la orden servicio con ordenes detalle | Controller]");
+    log.info("[Iniciando busqueda de la orden servicio con ordenes detalles | Controller]");
     
-    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
-      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      String tenantId = obtenerTenantId(request);
+      orden.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado =
-          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
-              ConstantesNumericas.CERO, null);
-      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+      resultado = this.ordentesConDetalleService.obtenerOrdenServicioMasDetallesDto(orden);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo obtener la orden servicio con ordenes detalles",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al obtener la orden servicio con ordenes detalles | Controller | Detalles: {}]",
+          e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
     }
     
-    String tenantId = obtenerTenantId(request);
-    orden.setTenantId(tenantId);
-    
-    ServiceResult<Object> resultado = this.ordentesConDetalleService.obtenerOrdenServicioMasDetallesDto(orden);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
-    }
-    return ResponseEntity.ok(resultado);
+    return response;
   }
   
   @PostMapping("/ordenes/crear")
@@ -194,18 +223,41 @@ public class OrdenController {
       HttpServletRequest request) {
     
     log.info("[Iniciando insercion de orden servicio | Controller]");
-    log.info("[Request | Orden: {}]", orden);
     
-    String tenantId = obtenerTenantId(request);
-    orden.setTenantId(tenantId);
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
     
-    ServiceResult<Object> resultado = this.ordenesService.guardarOrdenService(orden);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+    try {
+      String tenantId = obtenerTenantId(request);
+      orden.setTenantId(tenantId);
+      
+      resultado = this.ordenesService.guardarOrdenService(orden);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo insertar la orden servicio",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
-    return ResponseEntity.ok(resultado);
+    catch ( Exception e ) {
+      log.error("[Error critico al insertar la orden servicio | Controller | Detalles: {}]",
+          e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
+    }
+    
+    return response;
   }
   
   @PostMapping("/ordenes/actualizar")
@@ -215,25 +267,40 @@ public class OrdenController {
     
     log.info("[Iniciando actualizacion de orden servicio | Controller]");
     
-    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
-      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      String tenantId = obtenerTenantId(request);
+      orden.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado =
-          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
-              ConstantesNumericas.CERO, null);
-      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+      resultado = this.ordenesService.actualizarOrdenService(orden);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo actualizar la orden servicio",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al actualizar la orden servicio | Controller | Detalles: {}]",
+          e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
     }
     
-    String tenantId = obtenerTenantId(request);
-    orden.setTenantId(tenantId);
-    
-    ServiceResult<Object> resultado = this.ordenesService.actualizarOrdenService(orden);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
-    }
-    return ResponseEntity.ok(resultado);
+    return response;
   }
   
   @PostMapping("/ordenes/eliminar")
@@ -243,24 +310,40 @@ public class OrdenController {
     
     log.info("[Inicia eliminar orden de servicio | Controller]");
     
-    if ( orden.getIdOrden().length() > ConstantesNumericas.TREINTAYSEIS ) {
-      ApiErrorCode errorCode = ApiErrorCode.DATOS_INVALIDOS;
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      String tenantId = obtenerTenantId(request);
+      orden.setTenantId(tenantId);
       
-      ServiceResult<Object> resultado =
-          new ServiceResult<>(false, "Solicitud mal formada, limite de caracteres superado para el Id",
-              ConstantesNumericas.CERO, null);
-      return ResponseEntity.status(errorCode.getHttpStatus()).body(resultado);
+      resultado = this.ordenesService.eliminarOrdenService(orden);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo eliminar la orden servicio",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Error critico al eliminar la orden servicio | Controller | Detalles: {}]",
+          e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
     }
     
-    String tenantId = obtenerTenantId(request);
-    orden.setTenantId(tenantId);
-    
-    ServiceResult<Object> resultado = this.ordenesService.eliminarOrdenService(orden);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
-    }
-    return ResponseEntity.ok(resultado);
+    return response;
   }
+  
 }

@@ -260,7 +260,9 @@ public class OrdenesServiceImpl implements IOrdenesService {
   public ServiceResult<Object> guardarOrdenService(InsertarOrdenRequest ordenDto) {
     log.info("[Inicia guardar nueva orden de servicio | Service]");
     
-    ServiceResult<Object> serviceResult = null;
+    log.info("[Request | Orden: {}]", ordenDto);
+    
+    ServiceResult<Object> serviceResult;
     
     try {
       /**
