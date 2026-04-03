@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,7 +43,7 @@ public class OrdenController {
   }
   
   private String obtenerTenantId(HttpServletRequest request) {
-    log.info("[Obteniendo tenantid | Controller]");
+    log.info("[Recuperar tenantid | Controller]");
     return (String) request.getAttribute("tenantId");
   }
   
@@ -51,16 +52,38 @@ public class OrdenController {
     
     log.info("[Iniciando obtencion de ordenes servicio | Controller]");
     
-    String tenantId = obtenerTenantId(request);
-    log.info("[TenantId extraido del token: {}]", tenantId);
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
     
-    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesService(tenantId);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+    try {
+      String tenantId = obtenerTenantId(request);
+      
+      resultado = this.ordenesService.listaOrdenesService(tenantId);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo listar ordenes",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
-    return ResponseEntity.ok(resultado);
+    catch ( Exception e ) {
+      log.error("[Error critico al listar ordenes servicio | Controller | Detalles: {}]", e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
+    }
+    
+    return response;
   }
   
   @GetMapping("/ordenes/fechaingreso")
@@ -72,17 +95,41 @@ public class OrdenController {
       HttpServletRequest request) {
     
     log.info("[Iniciando obtencion de ordenes servicio por fecha de ingreso | Controller]");
+    
     log.info("[Request | Fecha: {}]", fechaIngreso);
     
-    String tenantId = obtenerTenantId(request);
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
     
-    ServiceResult<Object> resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso, tenantId);
-    
-    if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
-      ApiErrorCode error = (ApiErrorCode) resultado.getData();
-      return ResponseEntity.status(error.getHttpStatus()).body(resultado);
+    try {
+      String tenantId = obtenerTenantId(request);
+      
+      resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso, tenantId);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo listar ordenes por fecha",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
     }
-    return ResponseEntity.ok(resultado);
+    catch ( Exception e ) {
+      log.error("[Error critico al listar ordenes servicio por fecha | Controller | Detalles: {}]", e.getMessage(), e);
+      resultado = new ServiceResult<>(false,
+          "Error critico interno",
+          ConstantesNumericas.CERO, null);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultado);
+    }
+    
+    return response;
   }
   
   @PostMapping("/ordenes/buscar")

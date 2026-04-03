@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ClienteBuscarEliminarRequest {
   
   @NotBlank(message = "Id cliente requerido")
-  @Size(max = 36, message = "El numero de caracteres es mayor al permitido para el Id")
+  @Size(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id")
   private String idCliente;
   private String tenantId;
 }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class EntregaRequest {
   
   @NotBlank(message = "Debe proporcionar el Id de la entrega a buscar")
-  @Size(max = 36, message = "El numero de caracteres es mayor al permitido para el Id")
+  @Size(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id")
   String idEntrega;
   String ordenId;
 }
