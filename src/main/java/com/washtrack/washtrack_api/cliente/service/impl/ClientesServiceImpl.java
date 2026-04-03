@@ -1,6 +1,6 @@
 package com.washtrack.washtrack_api.cliente.service.impl;
 
-import com.washtrack.washtrack_api.cliente.dto.EliminarClienteRequest;
+import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
 import com.washtrack.washtrack_api.util.response.MapearRespuestasConsultasUtil;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
@@ -105,17 +105,15 @@ public class ClientesServiceImpl implements IClientesService {
   }
   
   @Override
-  public ServiceResult<Object> buscarClienteService(ClienteDto clienteDto) {
+  public ServiceResult<Object> buscarClienteService(ClienteBuscarEliminarRequest clienteBuscarEliminarRequest) {
     log.info("[Inicia buscar cliente | Service]");
     
     ServiceResult<Object> serviceResult;
     
     try {
-      // Mapear Request → Entity (solo criterios de busqueda)
-      ClientesEntity criterioBusqueda = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
-      
       // Llamada al Repository
-      ClientesEntity resultado = this.clientesRepository.buscarClienteRepository(criterioBusqueda);
+      ClientesEntity resultado =
+          this.clientesRepository.buscarClienteRepository(clienteBuscarEliminarRequest.getIdCliente(), clienteBuscarEliminarRequest.getTenantId());
       
       if ( resultado == null ) {
         log.info("[Cliente no encontrado | Service]");
@@ -302,7 +300,7 @@ public class ClientesServiceImpl implements IClientesService {
   }
   
   @Override
-  public ServiceResult<Object> eliminarClienteService(EliminarClienteRequest clienteDto) {
+  public ServiceResult<Object> eliminarClienteService(ClienteBuscarEliminarRequest clienteDto) {
     log.info("[Inicia eliminar cliente | Service]");
     
     ServiceResult<Object> serviceResult;

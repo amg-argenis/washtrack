@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EliminarClienteRequest {
+public class ClienteBuscarEliminarRequest {
   
   @NotBlank(message = "Id cliente requerido")
   @Size(max = 36, message = "El numero de caracteres es mayor al permitido para el Id")

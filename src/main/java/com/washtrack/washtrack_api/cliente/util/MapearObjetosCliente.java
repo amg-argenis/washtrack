@@ -1,6 +1,7 @@
 package com.washtrack.washtrack_api.cliente.util;
 
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
+import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +50,14 @@ public class MapearObjetosCliente {
         .creditoHabilitado(clienteDto.isCreditoHabilitado())
         .limiteCredito(clienteDto.getLimiteCredito())
         .activo(clienteDto.isActivo())
+        .build();
+  }
+  
+  public ClientesEntity mapearClienteDtoToEntity(ClienteBuscarEliminarRequest clienteBuscarEliminarRequest) {
+    
+    return ClientesEntity.builder()
+        .idCliente(clienteBuscarEliminarRequest.getIdCliente())
+        .tenantId(clienteBuscarEliminarRequest.getTenantId())
         .build();
   }
   

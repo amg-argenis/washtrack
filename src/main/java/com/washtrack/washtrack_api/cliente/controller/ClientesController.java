@@ -1,7 +1,7 @@
 package com.washtrack.washtrack_api.cliente.controller;
 
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
-import com.washtrack.washtrack_api.cliente.dto.EliminarClienteRequest;
+import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
 import com.washtrack.washtrack_api.cliente.service.IClientesService;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
@@ -77,7 +77,7 @@ public class ClientesController {
   
   @PostMapping("/clientes/buscar")
   public ResponseEntity<ServiceResult<Object>> buscarClientesController(
-      @Valid @RequestBody ClienteDto clienteDto,
+      @Valid @RequestBody ClienteBuscarEliminarRequest clienteBuscarEliminarRequest,
       HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de clientes | Controller]");
@@ -87,9 +87,9 @@ public class ClientesController {
     
     try {
       String tenantId = obtenerTenantId(request);
-      clienteDto.setTenantId(tenantId);
+      clienteBuscarEliminarRequest.setTenantId(tenantId);
       
-      resultado = this.clientesService.buscarClienteService(clienteDto);
+      resultado = this.clientesService.buscarClienteService(clienteBuscarEliminarRequest);
       
       if ( resultado == null ) {
         resultado = new ServiceResult<>(false,
@@ -194,7 +194,7 @@ public class ClientesController {
   
   @PostMapping("/clientes/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarClientesController(
-      @Valid @RequestBody EliminarClienteRequest clienteDto,
+      @Valid @RequestBody ClienteBuscarEliminarRequest clienteDto,
       HttpServletRequest request) {
     
     log.info("[Iniciando eliminar clientes | Controller]");
