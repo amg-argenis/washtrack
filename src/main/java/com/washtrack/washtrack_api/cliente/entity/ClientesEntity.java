@@ -10,15 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientesEntity {
-  
   private String idCliente;
   private String tenantId;
   private String nombre;
   private String contacto;
   private String telefono;
   private String email;
-  private boolean creditoHabilitado;
+  private Boolean creditoHabilitado;
   private Double limiteCredito;
-  private boolean activo;
-  
+  private Boolean activo;
 }

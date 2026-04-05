@@ -1,7 +1,8 @@
 package com.washtrack.washtrack_api.cliente.util;
 
+import com.washtrack.washtrack_api.cliente.dto.ActualizarClienteDto;
 import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
-import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
+import com.washtrack.washtrack_api.cliente.dto.InsertarClienteDto;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +12,8 @@ import java.util.Map;
 @Component
 public class MapearObjetosCliente {
   
-  /**
-   * Mapeo de objetos para envio y recepcion al Front
-   *
-   * @param clientesEntity
-   * @return
-   */
+  // MAPERS
+  
   public ClienteDto mapearClienteToDto(ClientesEntity clientesEntity) {
     
     return ClienteDto.builder()
@@ -26,40 +23,42 @@ public class MapearObjetosCliente {
         .contacto(clientesEntity.getContacto())
         .telefono(clientesEntity.getTelefono())
         .email(clientesEntity.getEmail())
-        .creditoHabilitado(clientesEntity.isCreditoHabilitado())
+        .creditoHabilitado(clientesEntity.getCreditoHabilitado())
         .limiteCredito(clientesEntity.getLimiteCredito())
-        .activo(clientesEntity.isActivo())
+        .activo(clientesEntity.getActivo())
         .build();
   }
   
-  /**
-   * Mapeo de objetos para uso interno en el BK
-   *
-   * @param clienteDto
-   * @return
-   */
-  public ClientesEntity mapearClienteDtoToEntity(ClienteDto clienteDto) {
+  public ClientesEntity mapearClienteDtoToEntity(InsertarClienteDto actualizarClienteDto) {
     
     return ClientesEntity.builder()
-        .idCliente(clienteDto.getIdCliente())
-        .tenantId(clienteDto.getTenantId())
-        .nombre(clienteDto.getNombre())
-        .contacto(clienteDto.getContacto())
-        .telefono(clienteDto.getTelefono())
-        .email(clienteDto.getEmail())
-        .creditoHabilitado(clienteDto.isCreditoHabilitado())
-        .limiteCredito(clienteDto.getLimiteCredito())
-        .activo(clienteDto.isActivo())
+        .idCliente(actualizarClienteDto.getIdCliente())
+        .tenantId(actualizarClienteDto.getTenantId())
+        .nombre(actualizarClienteDto.getNombre())
+        .contacto(actualizarClienteDto.getContacto())
+        .telefono(actualizarClienteDto.getTelefono())
+        .email(actualizarClienteDto.getEmail())
+        .creditoHabilitado(actualizarClienteDto.getCreditoHabilitado())
+        .limiteCredito(actualizarClienteDto.getLimiteCredito())
         .build();
   }
   
-  public ClientesEntity mapearClienteDtoToEntity(ClienteBuscarEliminarRequest clienteBuscarEliminarRequest) {
+  public ClientesEntity mapearClienteDtoToEntity(ActualizarClienteDto actualizarClienteDto) {
     
     return ClientesEntity.builder()
-        .idCliente(clienteBuscarEliminarRequest.getIdCliente())
-        .tenantId(clienteBuscarEliminarRequest.getTenantId())
+        .idCliente(actualizarClienteDto.getIdCliente())
+        .tenantId(actualizarClienteDto.getTenantId())
+        .nombre(actualizarClienteDto.getNombre())
+        .contacto(actualizarClienteDto.getContacto())
+        .telefono(actualizarClienteDto.getTelefono())
+        .email(actualizarClienteDto.getEmail())
+        .creditoHabilitado(actualizarClienteDto.getCreditoHabilitado())
+        .limiteCredito(actualizarClienteDto.getLimiteCredito())
+        .activo(actualizarClienteDto.getActivo())
         .build();
   }
+  
+  // PAREMETER SETTER
   
   public Map<String, Object> parametrizarObjetoClienteEntity(ClientesEntity clientesEntity) {
     Map<String, Object> params = new HashMap<>();
@@ -69,7 +68,7 @@ public class MapearObjetosCliente {
     params.put("pa_contacto", clientesEntity.getContacto());
     params.put("pa_telefono", clientesEntity.getTelefono());
     params.put("pa_email", clientesEntity.getEmail());
-    params.put("pa_creditohabilitado", clientesEntity.isCreditoHabilitado());
+    params.put("pa_creditohabilitado", clientesEntity.getCreditoHabilitado());
     params.put("pa_limitecredito", clientesEntity.getLimiteCredito());
     
     return params;

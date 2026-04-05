@@ -1,10 +1,12 @@
 package com.washtrack.washtrack_api.cliente.service.impl;
 
+import com.washtrack.washtrack_api.cliente.dto.ActualizarClienteDto;
 import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
+import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
 import com.washtrack.washtrack_api.util.response.MapearRespuestasConsultasUtil;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
-import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
+import com.washtrack.washtrack_api.cliente.dto.InsertarClienteDto;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
 import com.washtrack.washtrack_api.cliente.respository.IClientesRepository;
 import com.washtrack.washtrack_api.cliente.service.IClientesService;
@@ -113,7 +115,8 @@ public class ClientesServiceImpl implements IClientesService {
     try {
       // Llamada al Repository
       ClientesEntity resultado =
-          this.clientesRepository.buscarClienteRepository(clienteBuscarEliminarRequest.getIdCliente(), clienteBuscarEliminarRequest.getTenantId());
+          this.clientesRepository.buscarClienteRepository(clienteBuscarEliminarRequest.getIdCliente(),
+              clienteBuscarEliminarRequest.getTenantId());
       
       if ( resultado == null ) {
         log.info("[Cliente no encontrado | Service]");
@@ -165,22 +168,22 @@ public class ClientesServiceImpl implements IClientesService {
   }
   
   @Override
-  public ServiceResult<Object> guardarClienteService(ClienteDto clienteDto) {
+  public ServiceResult<Object> insertarClienteService(InsertarClienteDto insertarClienteDto) {
     log.info("[Inicia insertar el nuevo cliente | Service]");
     
     ServiceResult<Object> serviceResult;
     
     try {
       UUID uuid = UUID.randomUUID();
-      clienteDto.setIdCliente(uuid.toString());
+      insertarClienteDto.setIdCliente(uuid.toString());
       
       // Mapear a Entity
-      ClientesEntity ordenEntity = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
+      ClientesEntity clientesEntity = this.mapearObjetosCliente.mapearClienteDtoToEntity(insertarClienteDto);
       
-      ClientesEntity ordenesEntity = this.clientesRepository.insertarClienteRepository(ordenEntity);
+      ClientesEntity respRepository = this.clientesRepository.insertarClienteRepository(clientesEntity);
       
-      if ( ordenesEntity != null ) {
-        ClienteDto ordenRespDto = this.mapearObjetosCliente.mapearClienteToDto(ordenesEntity);
+      if ( respRepository != null ) {
+        ClienteDto ordenRespDto = this.mapearObjetosCliente.mapearClienteToDto(respRepository);
         serviceResult =
             this.mapearRespuestasConsultasUtilCliente.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
@@ -231,16 +234,16 @@ public class ClientesServiceImpl implements IClientesService {
   }
   
   @Override
-  public ServiceResult<Object> actualizarClienteService(ClienteDto clienteDto) {
+  public ServiceResult<Object> actualizarClienteService(ActualizarClienteDto actualizarClienteDto) {
     log.info("[Inicia actualizar cliente | Service]");
     
     ServiceResult<Object> serviceResult;
     
     try {
       // Mapear a OrdenesEntity
-      ClientesEntity ordenEntity = this.mapearObjetosCliente.mapearClienteDtoToEntity(clienteDto);
+      ClientesEntity clientesEntity = this.mapearObjetosCliente.mapearClienteDtoToEntity(actualizarClienteDto);
       
-      ClientesEntity respRepository = this.clientesRepository.actualizarClienteRepository(ordenEntity);
+      ClientesEntity respRepository = this.clientesRepository.actualizarClienteRepository(clientesEntity);
       
       if ( respRepository != null ) {
         serviceResult =

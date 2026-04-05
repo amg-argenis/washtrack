@@ -1,6 +1,7 @@
 package com.washtrack.washtrack_api.cliente.controller;
 
-import com.washtrack.washtrack_api.cliente.dto.ClienteDto;
+import com.washtrack.washtrack_api.cliente.dto.ActualizarClienteDto;
+import com.washtrack.washtrack_api.cliente.dto.InsertarClienteDto;
 import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
 import com.washtrack.washtrack_api.cliente.service.IClientesService;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
@@ -67,7 +68,7 @@ public class ClientesController {
       
     }
     catch ( Exception e ) {
-      log.error("[Error critico al listar clientes | Controller | Detalles: {}]", e.getMessage(), e);
+      log.error("[Exception | Error critico al listar clientes | Controller | Detalles: {}]", e.getMessage(), e);
       response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
@@ -107,7 +108,7 @@ public class ClientesController {
       
     }
     catch ( Exception e ) {
-      log.error("[Error critico al buscar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
+      log.error("[Exception | Error critico al buscar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
       response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
@@ -116,7 +117,7 @@ public class ClientesController {
   
   @PostMapping("/clientes/crear")
   public ResponseEntity<ServiceResult<Object>> insertarClientesController(
-      @Valid @RequestBody ClienteDto clienteDto,
+      @Valid @RequestBody InsertarClienteDto insertarClienteDto,
       HttpServletRequest request) {
     
     log.info("[Iniciando insercion de nuevo cliente | Controller]");
@@ -126,9 +127,9 @@ public class ClientesController {
     
     try {
       String tenantId = obtenerTenantId(request);
-      clienteDto.setTenantId(tenantId);
+      insertarClienteDto.setTenantId(tenantId);
       
-      resultado = this.clientesService.guardarClienteService(clienteDto);
+      resultado = this.clientesService.insertarClienteService(insertarClienteDto);
       
       if ( resultado == null ) {
         resultado = new ServiceResult<>(false,
@@ -146,7 +147,7 @@ public class ClientesController {
       
     }
     catch ( Exception e ) {
-      log.error("[Error critico al insertar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
+      log.error("[Exception | Error critico al insertar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
       response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
@@ -155,7 +156,7 @@ public class ClientesController {
   
   @PostMapping("/clientes/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarClientesController(
-      @Valid @RequestBody ClienteDto clienteDto,
+      @Valid @RequestBody ActualizarClienteDto actualizarClienteDto,
       HttpServletRequest request) {
     
     log.info("[Iniciando actualizar cliente | Controller]");
@@ -165,9 +166,9 @@ public class ClientesController {
     
     try {
       String tenantId = obtenerTenantId(request);
-      clienteDto.setTenantId(tenantId);
+      actualizarClienteDto.setTenantId(tenantId);
       
-      resultado = this.clientesService.guardarClienteService(clienteDto);
+      resultado = this.clientesService.actualizarClienteService(actualizarClienteDto);
       
       if ( resultado == null ) {
         resultado = new ServiceResult<>(false,
@@ -185,7 +186,7 @@ public class ClientesController {
       
     }
     catch ( Exception e ) {
-      log.error("[Error critico al actualizar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
+      log.error("[Exception | Error critico al actualizar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
       response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     

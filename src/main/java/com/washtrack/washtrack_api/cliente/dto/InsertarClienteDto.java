@@ -1,0 +1,41 @@
+package com.washtrack.washtrack_api.cliente.dto;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class InsertarClienteDto {
+  // Campo no requerido para insert
+  private String idCliente;
+  
+  // Campo recuperado con JWT
+  private String tenantId;
+  
+  @NotBlank(message = "Campo nombre cliente requerido")
+  private String nombre;
+  
+  @NotBlank(message = "Campo contacto cliente requerido")
+  private String contacto;
+  
+  @NotBlank(message = "Campo telefono cliente requerido")
+  private String telefono;
+  
+  @NotBlank(message = "Campo email cliente requerido")
+  private String email;
+  
+  @NotNull(message = "Campo credito cliente requerido")
+  private Boolean creditoHabilitado;
+  
+  @NotNull(message = "Campo limite de credito requerido")
+  @DecimalMin(value = "0.0", message = "El limite de credito debe ser mayor o igual a 0")
+  private Double limiteCredito;
+  
+}
