@@ -1,7 +1,8 @@
 package com.washtrack.washtrack_api.orden.util;
 
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.EliminarBuscarDetalleOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.InsertDetalleOrden;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.ActualizarOrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,21 +14,27 @@ import java.util.Map;
 @Component
 public class MapearObjetosDetalleOrden {
   
-  /**
-   * Mapear objeto para buscar orden detalle en la BD
-   *
-   * @param ordenDetalleDto
-   * @return
-   */
-  public DetalleOrdenEntity mapearDtoToentityDetalleOrden(OrdenDetalleDto ordenDetalleDto) {
+  public DetalleOrdenEntity mapearInsertDetalleOrden(InsertDetalleOrden insertDetalleOrden) {
     return DetalleOrdenEntity.builder()
-        .idDetalleOrden(ordenDetalleDto.getIdDetalleOrden())
-        .ordenId(ordenDetalleDto.getOrdenId())
-        .procesoId(ordenDetalleDto.getProcesoId())
-        .tipoPrenda(ordenDetalleDto.getTipoPrenda())
-        .cantidad(ordenDetalleDto.getCantidad())
-        .colorReferencia(ordenDetalleDto.getColorReferencia())
-        .tenantId(ordenDetalleDto.getTenantId())
+        .idDetalleOrden(insertDetalleOrden.getIdDetalleOrden())
+        .ordenId(insertDetalleOrden.getOrdenId())
+        .procesoId(insertDetalleOrden.getProcesoId())
+        .tipoPrenda(insertDetalleOrden.getTipoPrenda())
+        .cantidad(insertDetalleOrden.getCantidad())
+        .colorReferencia(insertDetalleOrden.getColorReferencia())
+        .tenantId(insertDetalleOrden.getTenantId())
+        .build();
+  }
+  
+  public DetalleOrdenEntity mapearDtoToentityDetalleOrden(ActualizarOrdenDetalleDto actualizarOrdenDetalleDto) {
+    return DetalleOrdenEntity.builder()
+        .idDetalleOrden(actualizarOrdenDetalleDto.getIdDetalleOrden())
+        .ordenId(actualizarOrdenDetalleDto.getOrdenId())
+        .procesoId(actualizarOrdenDetalleDto.getProcesoId())
+        .tipoPrenda(actualizarOrdenDetalleDto.getTipoPrenda())
+        .cantidad(actualizarOrdenDetalleDto.getCantidad())
+        .colorReferencia(actualizarOrdenDetalleDto.getColorReferencia())
+        .tenantId(actualizarOrdenDetalleDto.getTenantId())
         .build();
   }
   
@@ -51,10 +58,10 @@ public class MapearObjetosDetalleOrden {
    * @param ordenEntity
    * @return
    */
-  public OrdenDetalleDto mapearEntityToDtoOrdenDetalle(DetalleOrdenEntity ordenEntity) {
+  public ActualizarOrdenDetalleDto mapearEntityToDtoOrdenDetalle(DetalleOrdenEntity ordenEntity) {
     log.info("[Mapeando a DTO objeto orden detalle...]");
     
-    return OrdenDetalleDto.builder()
+    return ActualizarOrdenDetalleDto.builder()
         .idDetalleOrden(ordenEntity.getIdDetalleOrden())
         .ordenId(ordenEntity.getOrdenId())
         .procesoId(ordenEntity.getProcesoId())

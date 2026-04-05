@@ -3,7 +3,7 @@ package com.washtrack.washtrack_api.orden.util;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.orden.OrdenServicioMasDetallesDto;
-import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.ActualizarOrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +53,8 @@ public class MapearRespuestasConsultas {
   public OrdenServicioMasDetallesDto mapearToOrdenServicioMasDetallesEntity(
       OrdenServicioMasDetallesEntity masDetalles) {
     
-    List<OrdenDetalleDto> detalles = masDetalles.getOrdenesDetalleDto().stream()
-        .map(d -> OrdenDetalleDto.builder()
+    List<ActualizarOrdenDetalleDto> detalles = masDetalles.getOrdenesDetalleDto().stream()
+        .map(d -> ActualizarOrdenDetalleDto.builder()
             .idDetalleOrden(d.getIdDetalleOrden())
             .ordenId(d.getOrdenId())
             .procesoId(d.getProcesoId())

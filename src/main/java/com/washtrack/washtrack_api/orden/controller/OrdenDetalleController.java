@@ -1,7 +1,8 @@
 package com.washtrack.washtrack_api.orden.controller;
 
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.EliminarBuscarDetalleOrdenRequest;
-import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.InsertDetalleOrden;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.ActualizarOrdenDetalleDto;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
@@ -38,7 +39,7 @@ public class OrdenDetalleController {
   
   @PostMapping("/ordenes/detalles/buscar")
   public ResponseEntity<ServiceResult<Object>> buscarOrdenDetalle(
-      @Valid @RequestBody OrdenDetalleDto ordenDetalleDto,
+      @Valid @RequestBody EliminarBuscarDetalleOrdenRequest ordenDetalleDto,
       HttpServletRequest request) {
     
     log.info("[Iniciando busqueda de detalle orden | Controller]");
@@ -81,7 +82,7 @@ public class OrdenDetalleController {
   
   @PostMapping("/ordenes/detalles/guardar")
   public ResponseEntity<ServiceResult<Object>> guardarDetalleOrden(
-      @Valid @RequestBody OrdenDetalleDto ordenDetalleDto,
+      @Valid @RequestBody InsertDetalleOrden insertDetalleOrden,
       HttpServletRequest request) {
     
     log.info("[Iniciando insercion de detalle orden | Controller]");
@@ -91,9 +92,9 @@ public class OrdenDetalleController {
     
     try {
       String tenantId = obtenerTenantId(request);
-      ordenDetalleDto.setTenantId(tenantId);
+      insertDetalleOrden.setTenantId(tenantId);
       
-      resultado = this.ordenDetalleService.guardarOrdenDetalleService(ordenDetalleDto);
+      resultado = this.ordenDetalleService.guardarOrdenDetalleService(insertDetalleOrden);
       
       if ( resultado == null ) {
         resultado = new ServiceResult<>(false,
@@ -124,7 +125,7 @@ public class OrdenDetalleController {
   
   @PostMapping("/ordenes/detalles/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarDetalleOrden(
-      @Valid @RequestBody OrdenDetalleDto ordenDetalleDto,
+      @Valid @RequestBody ActualizarOrdenDetalleDto actualizarOrdenDetalleDto,
       HttpServletRequest request) {
     
     log.info("[Iniciando actualizar detalle orden | Controller]");
@@ -134,9 +135,9 @@ public class OrdenDetalleController {
     
     try {
       String tenantId = obtenerTenantId(request);
-      ordenDetalleDto.setTenantId(tenantId);
+      actualizarOrdenDetalleDto.setTenantId(tenantId);
       
-      resultado = this.ordenDetalleService.actualizarOrdenDetalleService(ordenDetalleDto);
+      resultado = this.ordenDetalleService.actualizarOrdenDetalleService(actualizarOrdenDetalleDto);
       
       if ( resultado == null ) {
         resultado = new ServiceResult<>(false,

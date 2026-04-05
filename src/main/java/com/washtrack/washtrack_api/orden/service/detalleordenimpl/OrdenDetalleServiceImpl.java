@@ -1,9 +1,10 @@
 package com.washtrack.washtrack_api.orden.service.detalleordenimpl;
 
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.EliminarBuscarDetalleOrdenRequest;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.InsertDetalleOrden;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
-import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.ActualizarOrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
@@ -33,7 +34,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<Object> buscarOrdenDetalleService(OrdenDetalleDto detalleDto) {
+  public ServiceResult<Object> buscarOrdenDetalleService(EliminarBuscarDetalleOrdenRequest detalleDto) {
     log.info("[Iniciando buscar detalle orden <Service>]");
     
     ServiceResult<Object> serviceResult;
@@ -55,12 +56,12 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
       }
       else {
         // Mapear Entity → DTO (respuesta)
-        OrdenDetalleDto ordenDetalleDtoResp = this.mapearObjetosDetalleOrden.mapearEntityToDtoOrdenDetalle(resultado);
+        ActualizarOrdenDetalleDto actualizarOrdenDetalleDtoResp = this.mapearObjetosDetalleOrden.mapearEntityToDtoOrdenDetalle(resultado);
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
                 ConstantesOrdenes.OPERACION_EXITOSA,
                 ConstantesNumericas.UNO,
-                ordenDetalleDtoResp
+                actualizarOrdenDetalleDtoResp
             );
       }
     }
@@ -92,7 +93,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<Object> guardarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
+  public ServiceResult<Object> guardarOrdenDetalleService(InsertDetalleOrden insertDetalleOrden) {
     log.info("[Inicia guardar detalle orden <Service>]");
     ServiceResult<Object> serviceResult;
     try {
@@ -102,11 +103,11 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
        * Obtener el UUID -- OK
        */
       UUID uuid = UUID.randomUUID();
-      ordenDetalleDto.setIdDetalleOrden(uuid.toString());
-      log.info("[Insert detalle orden | UUID generado: '{}']", ordenDetalleDto.getIdDetalleOrden());
+      insertDetalleOrden.setIdDetalleOrden(uuid.toString());
+      log.info("[Insert detalle orden | UUID generado: '{}']", insertDetalleOrden.getIdDetalleOrden());
       
       // Mapear a OrdenesEntity
-      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
+      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearInsertDetalleOrden(insertDetalleOrden);
       
       DetalleOrdenEntity resp = this.detalleRepository.insertarDetalleOrdenRepository(ordenEntity);
       if ( resp != null ) {
@@ -151,12 +152,13 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<Object> actualizarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
+  public ServiceResult<Object> actualizarOrdenDetalleService(ActualizarOrdenDetalleDto actualizarOrdenDetalleDto) {
     log.info("[Inicia actualizar detalle orden <Service>]");
     ServiceResult<Object> serviceResult;
     try {
       // Mapear a OrdenesEntity
-      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
+      DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(
+          actualizarOrdenDetalleDto);
       
       Integer respRepository = this.detalleRepository.actualizarDetalleOrdenRepository(ordenEntity);
       if ( respRepository != null && respRepository.intValue() == ConstantesNumericas.CERO ) {
