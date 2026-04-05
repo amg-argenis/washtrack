@@ -13,7 +13,7 @@ public interface IUsuarioService {
   
   ServiceResult<Object> buscarUsuarioPorIdService(String idUsuario);
   
-  ServiceResult<Object> buscarUsuarioPorEmailService(BuscarUsuarioRequest buscarUsuarioRequest);
+  ServiceResult<Object> buscarUsuarioPorEmailService(String email, String tenantId);
   
   ServiceResult<Object> insertarUsuarioService(UsuarioInsertDto usuarioInsertDto);
   

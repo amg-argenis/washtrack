@@ -217,19 +217,17 @@ public class UsuarioServiceImpl implements IUsuarioService {
   }
   
   @Override
-  public ServiceResult<Object> buscarUsuarioPorEmailService(BuscarUsuarioRequest buscarUsuarioRequest) {
+  public ServiceResult<Object> buscarUsuarioPorEmailService(String email, String tenantId) {
     log.info("[Inicia buscar usuario por email | Service]");
     
-    log.info("[Usuario a buscar por email: (Email: {} | Tenant Id: {}) | Service]", buscarUsuarioRequest.getEmail(),
-        buscarUsuarioRequest.getTenantId());
+    log.info("[Usuario a buscar por email: (Email: {} | Tenant Id: {}) | Service]", email, tenantId);
     
     ServiceResult<Object> serviceResult = null;
     
     try {
       // Llamada al Repository
       UsuarioResponseRepository resultado =
-          this.usuarioRepository.buscarUsuarioPorEmailRepository(buscarUsuarioRequest.getEmail(),
-              buscarUsuarioRequest.getTenantId());
+          this.usuarioRepository.buscarUsuarioPorEmailRepository(email, tenantId);
       
       if ( resultado != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.info("[Hubo un problema en la BD al buscar el usuario por email | Service]");

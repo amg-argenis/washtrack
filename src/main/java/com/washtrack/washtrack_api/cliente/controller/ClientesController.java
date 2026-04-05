@@ -225,7 +225,7 @@ public class ClientesController {
       
     }
     catch ( Exception e ) {
-      log.error("[Error critico al eliminar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
+      log.error("[Exception | Error critico al eliminar el cliente | Controller | Detalles: {}]", e.getMessage(), e);
       response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
