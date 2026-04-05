@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.service.detalleordenimpl;
 
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.EliminarBuscarDetalleOrdenRequest;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
@@ -208,7 +209,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
   }
   
   @Override
-  public ServiceResult<Object> eliminarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto) {
+  public ServiceResult<Object> eliminarOrdenDetalleService(EliminarBuscarDetalleOrdenRequest ordenDetalleDto) {
     log.info("[Inicia eliminar detalle orden <Service>]");
     
     log.info("[Request | Detalle orden: {}]", ordenDetalleDto.getIdDetalleOrden());
@@ -216,7 +217,7 @@ public class OrdenDetalleServiceImpl implements IOrdenDetalleService {
     ServiceResult<Object> serviceResult;
     
     try {
-      // Mapear a OrdenesEntity
+      // Mapear a OrdenesEntity (method overload)
       DetalleOrdenEntity ordenEntity = this.mapearObjetosDetalleOrden.mapearDtoToentityDetalleOrden(ordenDetalleDto);
       
       Integer respRepository = this.detalleRepository.eliminarDetalleOrdenRepository(ordenEntity);

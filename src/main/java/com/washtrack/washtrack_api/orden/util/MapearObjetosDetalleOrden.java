@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.util;
 
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.EliminarBuscarDetalleOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.orden.entity.DetalleOrdenEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,6 @@ public class MapearObjetosDetalleOrden {
    * @return
    */
   public DetalleOrdenEntity mapearDtoToentityDetalleOrden(OrdenDetalleDto ordenDetalleDto) {
-    log.info("[Mapeando a Entity objeto orden detalle...]");
     return DetalleOrdenEntity.builder()
         .idDetalleOrden(ordenDetalleDto.getIdDetalleOrden())
         .ordenId(ordenDetalleDto.getOrdenId())
@@ -27,6 +27,20 @@ public class MapearObjetosDetalleOrden {
         .tipoPrenda(ordenDetalleDto.getTipoPrenda())
         .cantidad(ordenDetalleDto.getCantidad())
         .colorReferencia(ordenDetalleDto.getColorReferencia())
+        .tenantId(ordenDetalleDto.getTenantId())
+        .build();
+  }
+  
+  /**
+   * Mapear objeto para buscar y eliminar detalle orden en la BD
+   *
+   * @param ordenDetalleDto
+   * @return
+   */
+  public DetalleOrdenEntity mapearDtoToentityDetalleOrden(EliminarBuscarDetalleOrdenRequest ordenDetalleDto) {
+    return DetalleOrdenEntity.builder()
+        .idDetalleOrden(ordenDetalleDto.getIdDetalleOrden())
+        .ordenId(ordenDetalleDto.getOrdenId())
         .tenantId(ordenDetalleDto.getTenantId())
         .build();
   }
@@ -60,6 +74,16 @@ public class MapearObjetosDetalleOrden {
     paramMap.put("pa_tipoprenda", detalleOrden.getTipoPrenda());
     paramMap.put("pa_cantidad", detalleOrden.getCantidad());
     paramMap.put("pa_colorreferencia", detalleOrden.getColorReferencia());
+    paramMap.put("pa_tenantid", detalleOrden.getTenantId());
+    
+    return paramMap;
+  }
+  
+  public Map<String, Object> parametrizarDetalleOrdenBuscarEliminar(DetalleOrdenEntity detalleOrden) {
+    Map<String, Object> paramMap = new HashMap<>();
+    
+    paramMap.put("pa_idordendetalle", detalleOrden.getIdDetalleOrden());
+    paramMap.put("pa_ordenid", detalleOrden.getOrdenId());
     paramMap.put("pa_tenantid", detalleOrden.getTenantId());
     
     return paramMap;

@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.service;
 
+import com.washtrack.washtrack_api.orden.dto.ordendetalle.EliminarBuscarDetalleOrdenRequest;
 import com.washtrack.washtrack_api.orden.dto.ordendetalle.OrdenDetalleDto;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
 
@@ -11,6 +12,6 @@ public interface IOrdenDetalleService {
   
   ServiceResult<Object> actualizarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
   
-  ServiceResult<Object> eliminarOrdenDetalleService(OrdenDetalleDto ordenDetalleDto);
+  ServiceResult<Object> eliminarOrdenDetalleService(EliminarBuscarDetalleOrdenRequest ordenDetalleDto);
   
 }

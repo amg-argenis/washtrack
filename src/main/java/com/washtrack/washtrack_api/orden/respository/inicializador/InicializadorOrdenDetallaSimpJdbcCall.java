@@ -150,7 +150,7 @@ public class InicializadorOrdenDetallaSimpJdbcCall {
    * @return
    */
   public Map<String, Object> eliminarDetalleOrden(DetalleOrdenEntity ordenDetalle) {
-    Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenes(ordenDetalle);
+    Map<String, Object> paramMap = this.mapearObjetosDetalleOrden.parametrizarDetalleOrdenBuscarEliminar(ordenDetalle);
     return this.eliminarOrdenDetalleCall.execute(paramMap);
   }
   
