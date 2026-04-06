@@ -12,6 +12,7 @@ import com.washtrack.washtrack_api.orden.service.IOrdentesConDetalleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -89,6 +90,10 @@ public class OrdenController {
   @GetMapping("/ordenes/fechaingreso")
   public ResponseEntity<ServiceResult<Object>> obtenerOrdenesPorFechaIngresoController(
       @RequestParam
+      @Pattern(
+          regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+          message = "El formato de fecha debe ser yyyy-MM-dd"
+      )
       @NotNull(message = "La fecha de ingreso es obligatoria")
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate fechaIngreso,

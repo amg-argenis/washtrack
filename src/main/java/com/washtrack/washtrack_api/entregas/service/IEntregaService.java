@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.entregas.service;
 
+import com.washtrack.washtrack_api.entregas.dto.EntregaActualizarRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregaInsertRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
@@ -12,5 +13,5 @@ public interface IEntregaService {
   
   ServiceResult<Object> insertarEntregaService(EntregaInsertRequest entregasDto);
   
-  ServiceResult<Object> actualizarEntregaService(EntregasDto entregasDto);
+  ServiceResult<Object> actualizarEntregaService(EntregaActualizarRequest entregasDto);
 }

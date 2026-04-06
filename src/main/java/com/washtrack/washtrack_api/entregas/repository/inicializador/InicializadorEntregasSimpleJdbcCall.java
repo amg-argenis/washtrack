@@ -22,6 +22,7 @@ import java.util.Map;
 public class InicializadorEntregasSimpleJdbcCall {
   
   private SimpleJdbcCall insertarEntregaSimpleJdbcCall;
+  private SimpleJdbcCall actualizarEntregaSimpleJdbcCall;
   private SimpleJdbcCall buscarEntregaSimpleJdbcCall;
   
   private final JdbcTemplate jdbcTemplate;
@@ -52,6 +53,25 @@ public class InicializadorEntregasSimpleJdbcCall {
         )
         .returningResultSet("entregarecuperada", new EntregaRowMapper());
     
+    this.actualizarEntregaSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_ENTREGA)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_identrega", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            new SqlParameter("pa_ordenid", Types.VARCHAR),
+            new SqlParameter("pa_fechaentrega", Types.VARCHAR),
+            new SqlParameter("pa_totalentregado", Types.INTEGER),
+            new SqlParameter("pa_conformidad", Types.TINYINT),
+            new SqlParameter("pa_observaciones", Types.VARCHAR),
+            new SqlParameter("pa_estado", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("entregaactualizada", new EntregaRowMapper());
+    
     this.buscarEntregaSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_ENTREGA)
@@ -72,6 +92,12 @@ public class InicializadorEntregasSimpleJdbcCall {
     Map<String, Object> params = this.mapearObjetosEntregas.insertarEntregaParams(entregasEntity);
     
     return this.insertarEntregaSimpleJdbcCall.execute(params);
+  }
+  
+  public Map<String, Object> actualizarEntregaJdbcMethod(EntregasEntity entregasEntity) {
+    Map<String, Object> params = this.mapearObjetosEntregas.actualizarEntregaParams(entregasEntity);
+    
+    return this.actualizarEntregaSimpleJdbcCall.execute(params);
   }
   
   public Map<String, Object> buscarEntregaJdbcMethod(String idEntrega, String tenantId) {

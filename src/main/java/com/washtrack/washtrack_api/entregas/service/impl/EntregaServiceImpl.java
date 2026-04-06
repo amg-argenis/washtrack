@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.entregas.service.impl;
 
+import com.washtrack.washtrack_api.entregas.dto.EntregaActualizarRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregaInsertRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
 import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
@@ -207,7 +208,83 @@ public class EntregaServiceImpl implements IEntregaService {
   }
   
   @Override
-  public ServiceResult<Object> actualizarEntregaService(EntregasDto entregasDto) {
-    return null;
+  public ServiceResult<Object> actualizarEntregaService(EntregaActualizarRequest entregasDto) {
+    log.info("[Inicia actualizar entrega | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Mapear DTO → Entity (request)
+      EntregasEntity entregasEntity = this.mapearObjetosEntregas.entregasEntityFromDto(entregasDto);
+      
+      log.info("[Entrega a actualizar: ({}) | Service]", entregasEntity);
+      
+      // Llamada al Repository
+      EntregasResponseRepository resultado =
+          this.entregasRepository.actualizarEntregaRepository(entregasEntity);
+      
+      // Mapear Entity → DTO (response)
+      if ( resultado.getEntregasEntity() != null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        EntregasDto entrgaResponse =
+            this.mapearObjetosEntregas.entregasDtoFromEntity(resultado.getEntregasEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, entrgaResponse
+        );
+      }
+      
+      if ( resultado.getEntregasEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Entrega no actualizada en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_INSERT,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getEntregasEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[La entrega a actualizar no existe en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.ERROR_INSERT,
+            ApiErrorCode.CONFLICTO_INTEGRIDAD
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al actualizar la entrega "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al actualizar la entrega | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza actualizar entrega | Service]");
+    }
+    
+    return serviceResult;
   }
 }

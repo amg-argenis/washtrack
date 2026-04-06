@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class EntregasDto {
   private String idEntrega;
-  private String tenantId;
   private String ordenId;
   private String fechaEntrega;
   private int totalEntregado;

@@ -42,6 +42,7 @@ public final class ConstantesBaseDatos {
   
   // ENTREGAS
   public static final String SP_INSERTAR_ENTREGA = "SP_INSERTAR_ENTREGA";
+  public static final String SP_ACTUALIZAR_ENTREGA = "SP_ACTUALIZAR_ENTREGA";
   public static final String SP_BUSCAR_ENTREGA = "SP_BUSCAR_ENTREGA";
   
   // OUT BD

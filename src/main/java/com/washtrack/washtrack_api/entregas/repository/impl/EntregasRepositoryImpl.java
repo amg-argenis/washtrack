@@ -134,6 +134,54 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
   
   @Override
   public EntregasResponseRepository actualizarEntregaRepository(EntregasEntity entregasEntity) {
-    return null;
+    log.info("[Inicia actualizar entrega | Repository]");
+    
+    EntregasResponseRepository responseRepository = new EntregasResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorEntregasSimpleJdbcCall.actualizarEntregaJdbcMethod(entregasEntity);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setEntregasEntity(null);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<EntregasEntity> entregasEntities = (List<EntregasEntity>) respuesta.get("entregaactualizada");
+        EntregasEntity entregaEntity = entregasEntities.get(ConstantesNumericas.CERO);
+        responseRepository.setEntregasEntity(entregaEntity);
+        responseRepository.setCodigobd(codigobd);
+        log.info("[Entrega actualizada correctamente en la BD]");
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para actualizar entrega devolvio -1, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[La entrega a actualizar no existe en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al actualizar la entrega en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al actualizar la entrega en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza actualizar entrega | Repository]");
+    }
+    
+    return responseRepository;
   }
+  
 }

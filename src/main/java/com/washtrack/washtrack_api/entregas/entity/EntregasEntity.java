@@ -15,7 +15,7 @@ public class EntregasEntity {
   private String ordenId;
   private String fechaEntrega;
   private int totalEntregado;
-  private boolean conformidadCliente;
+  private Boolean conformidadCliente;
   private String observaciones;
   private String estado;
   private String fechaCreacion;

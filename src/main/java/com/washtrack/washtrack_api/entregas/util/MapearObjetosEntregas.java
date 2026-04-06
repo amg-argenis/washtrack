@@ -1,9 +1,9 @@
 package com.washtrack.washtrack_api.entregas.util;
 
+import com.washtrack.washtrack_api.entregas.dto.EntregaActualizarRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregaInsertRequest;
 import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
 import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -21,8 +21,22 @@ public class MapearObjetosEntregas {
     params.put("pa_ordenid", entregasEntity.getOrdenId());
     params.put("pa_fechaentrega", entregasEntity.getFechaEntrega());
     params.put("pa_totalentregado", entregasEntity.getTotalEntregado());
-    params.put("pa_conformidad", entregasEntity.isConformidadCliente());
+    params.put("pa_conformidad", entregasEntity.getConformidadCliente());
     params.put("pa_observaciones", entregasEntity.getObservaciones());
+    
+    return params;
+  }
+  
+  public Map<String, Object> actualizarEntregaParams(EntregasEntity entregasEntity) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_identrega", entregasEntity.getIdEntrega());
+    params.put("pa_tenantid", entregasEntity.getTenantId());
+    params.put("pa_ordenid", entregasEntity.getOrdenId());
+    params.put("pa_fechaentrega", entregasEntity.getFechaEntrega());
+    params.put("pa_totalentregado", entregasEntity.getTotalEntregado());
+    params.put("pa_conformidad", entregasEntity.getConformidadCliente());
+    params.put("pa_observaciones", entregasEntity.getObservaciones());
+    params.put("pa_estado", entregasEntity.getEstado());
     
     return params;
   }
@@ -32,12 +46,24 @@ public class MapearObjetosEntregas {
   public EntregasEntity entregasEntityFromDto(EntregaInsertRequest entregasDto) {
     return EntregasEntity.builder()
         .ordenId(entregasDto.getOrdenId())
-        .fechaEntrega(entregasDto.getFechaEntrega())
+        .fechaEntrega(String.valueOf(entregasDto.getFechaEntrega()))
         .totalEntregado(entregasDto.getTotalEntregado())
-        .conformidadCliente(entregasDto.isConformidadCliente())
+        .conformidadCliente(entregasDto.getConformidadCliente())
+        .observaciones(entregasDto.getObservaciones())
+        .fechaEntrega(String.valueOf(entregasDto.getFechaEntrega()))
+        .build();
+  }
+  
+  public EntregasEntity entregasEntityFromDto(EntregaActualizarRequest entregasDto) {
+    return EntregasEntity.builder()
+        .idEntrega(entregasDto.getIdEntrega())
+        .tenantId(entregasDto.getTenantId())
+        .ordenId(entregasDto.getOrdenId())
+        .fechaEntrega(String.valueOf(entregasDto.getFechaEntrega()))
+        .totalEntregado(entregasDto.getTotalEntregado())
+        .conformidadCliente(entregasDto.getConformidadCliente())
         .observaciones(entregasDto.getObservaciones())
         .estado(entregasDto.getEstado())
-        .fechaEntrega(entregasDto.getFechaEntrega())
         .build();
   }
   
@@ -47,7 +73,7 @@ public class MapearObjetosEntregas {
         .ordenId(entregasEntity.getOrdenId())
         .fechaEntrega(entregasEntity.getFechaEntrega())
         .totalEntregado(entregasEntity.getTotalEntregado())
-        .conformidadCliente(entregasEntity.isConformidadCliente())
+        .conformidadCliente(entregasEntity.getConformidadCliente())
         .observaciones(entregasEntity.getObservaciones())
         .estado(entregasEntity.getEstado())
         .fechaCreacion(entregasEntity.getFechaCreacion())
