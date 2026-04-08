@@ -4,8 +4,6 @@ import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
 import com.washtrack.washtrack_api.entregas.repository.IEntregasRepository;
 import com.washtrack.washtrack_api.entregas.repository.inicializador.InicializadorEntregasSimpleJdbcCall;
 import com.washtrack.washtrack_api.entregas.response.EntregasResponseRepository;
-import com.washtrack.washtrack_api.usuarios.entity.UsuarioEntity;
-import com.washtrack.washtrack_api.usuarios.response.UsuarioResponseRepository;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +32,7 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
   public EntregasResponseRepository buscarEntregaRepository(String idEntrega, String tenantId) {
     log.info("[Inicia buscar entrega | Repository]");
     
-    EntregasResponseRepository loginResponse = new EntregasResponseRepository();
+    EntregasResponseRepository responseRepository = new EntregasResponseRepository();
     
     try {
       Map<String, Object> respuesta =
@@ -45,8 +43,8 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
-      loginResponse.setEntregasEntity(null);
-      loginResponse.setCodigobd(codigobd);
+      responseRepository.setEntregasEntity(null);
+      responseRepository.setCodigobd(codigobd);
       
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP buscar entrega fallo, se asume error]");
@@ -54,8 +52,8 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
         List<EntregasEntity> usuarioEntity = (List<EntregasEntity>) respuesta.get("entregarecuperada");
-        loginResponse.setEntregasEntity(usuarioEntity.get(ConstantesNumericas.CERO));
-        loginResponse.setCodigobd(codigobd);
+        responseRepository.setEntregasEntity(usuarioEntity.get(ConstantesNumericas.CERO));
+        responseRepository.setCodigobd(codigobd);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
@@ -77,7 +75,55 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       log.info("[Finaliza buscar entrega | Repository]");
     }
     
-    return loginResponse;
+    return responseRepository;
+  }
+  
+  @Override
+  public EntregasResponseRepository eliminarEntregaRepository(String idEntrega, String tenantId) {
+    log.info("[Inicia eliminar entrega | Repository]");
+    
+    EntregasResponseRepository responseRepository = new EntregasResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorEntregasSimpleJdbcCall.eliminarEntregaJdbcMethod(idEntrega, tenantId);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setEntregasEntity(null);
+      responseRepository.setCodigobd(codigobd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP eliminar entrega fallo, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        log.info("[Entrega eliminada correctamente de la BD | Repository]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Entrega no encontrada en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al eliminar la entrega en BD | Repository"
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al eliminar la entrega en BD | Repository "
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza eliminar entrega | Repository]");
+    }
+    
+    return responseRepository;
   }
   
   @Override

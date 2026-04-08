@@ -77,6 +77,48 @@ public class EntregaController {
     
   }
   
+  @PostMapping("/entregas/eliminar/entregaRequest")
+  public ResponseEntity<ServiceResult<Object>> eliminarEntregaController(
+      @RequestParam
+      @NotNull(message = "Debe proporcionar el Id de la entrega")
+      @Length(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id")
+      String entregaRequest,
+      HttpServletRequest request) {
+    
+    log.info("[Iniciando eliminar entrega | Controller]");
+    
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      String tenantId = obtenerTenantId(request);
+      
+      resultado = this.entregaService.eliminarEntregaService(entregaRequest, tenantId);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo eliminar la entrega solicitada",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al eliminar entrega | Controller | Detalles: {}]", e.getMessage(), e);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    return response;
+    
+  }
+  
   @PostMapping("/entregas/insertar")
   public ResponseEntity<ServiceResult<Object>> insertarEntregaController(
       @Valid @RequestBody EntregaInsertRequest entregasDto,

@@ -44,6 +44,7 @@ public final class ConstantesBaseDatos {
   public static final String SP_INSERTAR_ENTREGA = "SP_INSERTAR_ENTREGA";
   public static final String SP_ACTUALIZAR_ENTREGA = "SP_ACTUALIZAR_ENTREGA";
   public static final String SP_BUSCAR_ENTREGA = "SP_BUSCAR_ENTREGA";
+  public static final String SP_ELIMINAR_ENTREGA = "SP_ELIMINAR_ENTREGA";
   
   // OUT BD
   public static final String CODIGOBD = "pa_codigobd";

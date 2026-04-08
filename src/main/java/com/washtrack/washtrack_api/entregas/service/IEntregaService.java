@@ -11,6 +11,8 @@ public interface IEntregaService {
   
   ServiceResult<Object> buscarEntregaService(String idEntrega, String tenantId);
   
+  ServiceResult<Object> eliminarEntregaService(String idEntrega, String tenantId);
+  
   ServiceResult<Object> insertarEntregaService(EntregaInsertRequest entregasDto);
   
   ServiceResult<Object> actualizarEntregaService(EntregaActualizarRequest entregasDto);

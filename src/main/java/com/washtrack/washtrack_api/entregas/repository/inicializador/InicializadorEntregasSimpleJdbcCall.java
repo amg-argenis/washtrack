@@ -24,6 +24,7 @@ public class InicializadorEntregasSimpleJdbcCall {
   private SimpleJdbcCall insertarEntregaSimpleJdbcCall;
   private SimpleJdbcCall actualizarEntregaSimpleJdbcCall;
   private SimpleJdbcCall buscarEntregaSimpleJdbcCall;
+  private SimpleJdbcCall eliminarEntregaSimpleJdbcCall;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetosEntregas mapearObjetosEntregas;
@@ -84,6 +85,18 @@ public class InicializadorEntregasSimpleJdbcCall {
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
         .returningResultSet("entregarecuperada", new EntregaRowMapper());
+    
+    this.eliminarEntregaSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_ENTREGA)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_identrega", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        );
   }
   
   // EJECUCIONES ******************************************************************************************************
@@ -106,6 +119,14 @@ public class InicializadorEntregasSimpleJdbcCall {
     params.put("pa_tenantid", tenantId);
     
     return this.buscarEntregaSimpleJdbcCall.execute(params);
+  }
+  
+  public Map<String, Object> eliminarEntregaJdbcMethod(String idEntrega, String tenantId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_identrega", idEntrega);
+    params.put("pa_tenantid", tenantId);
+    
+    return this.eliminarEntregaSimpleJdbcCall.execute(params);
   }
   
 }

@@ -124,6 +124,89 @@ public class EntregaServiceImpl implements IEntregaService {
   }
   
   @Override
+  public ServiceResult<Object> eliminarEntregaService(String idEntrega, String tenantId) {
+    log.info("[Inicia eliminar entrega | Service]");
+    
+    log.info("[Eliminar entrega request: (Id entrega: {}| Tenant Id: {}) | Service]", idEntrega, tenantId);
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      EntregasResponseRepository respuesta = this.entregasRepository.eliminarEntregaRepository(idEntrega, tenantId);
+      
+      if ( respuesta == null ) {
+        log.info("[Entrega no encontrada en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        // Mapear Entity → DTO (respuesta)
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, null
+        );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un error en la BD al eliminar la entrega solicitada | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[No existe la entrega solicitada en la BD | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al eliminar la entrega "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al eliminar la entrega | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza eliminar la entrega | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
   public ServiceResult<Object> insertarEntregaService(EntregaInsertRequest entregasDto) {
     log.info("[Inicia insertar entrega | Service]");
     

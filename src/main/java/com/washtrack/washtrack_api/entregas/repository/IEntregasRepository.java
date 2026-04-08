@@ -9,6 +9,8 @@ public interface IEntregasRepository {
   
   EntregasResponseRepository buscarEntregaRepository(String idEntrega, String tenantId);
   
+  EntregasResponseRepository eliminarEntregaRepository(String idEntrega, String tenantId);
+  
   EntregasResponseRepository insertarEntregaRepository(EntregasEntity entregasEntity);
   
   EntregasResponseRepository actualizarEntregaRepository(EntregasEntity entregasEntity);
