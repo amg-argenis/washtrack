@@ -21,6 +21,7 @@ import java.util.Map;
 @Component
 public class InicializadorEntregasSimpleJdbcCall {
   
+  private SimpleJdbcCall listarEntregasSimpleJdbcCall;
   private SimpleJdbcCall insertarEntregaSimpleJdbcCall;
   private SimpleJdbcCall actualizarEntregaSimpleJdbcCall;
   private SimpleJdbcCall buscarEntregaSimpleJdbcCall;
@@ -36,6 +37,18 @@ public class InicializadorEntregasSimpleJdbcCall {
   
   @PostConstruct
   public void init() {
+    this.listarEntregasSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_LISTAR_ENTREGAS)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("listadoentregas", new EntregaRowMapper());
+    
     this.insertarEntregaSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_INSERTAR_ENTREGA)
@@ -100,6 +113,13 @@ public class InicializadorEntregasSimpleJdbcCall {
   }
   
   // EJECUCIONES ******************************************************************************************************
+  
+  public Map<String, Object> listarEntregaJdbcMethod(String tenantId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("pa_tenantid", tenantId);
+    
+    return this.listarEntregasSimpleJdbcCall.execute(params);
+  }
   
   public Map<String, Object> insertarEntregaJdbcMethod(EntregasEntity entregasEntity) {
     Map<String, Object> params = this.mapearObjetosEntregas.insertarEntregaParams(entregasEntity);

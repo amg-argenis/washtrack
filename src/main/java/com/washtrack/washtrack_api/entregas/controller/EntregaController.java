@@ -35,7 +35,44 @@ public class EntregaController {
     this.entregaService = entregaService;
   }
   
-  @GetMapping("/entregas/buscar/entregaRequest")
+  @GetMapping("/entregas/busquedas/listar")
+  public ResponseEntity<ServiceResult<Object>> buscarEntregaController(HttpServletRequest request) {
+    
+    log.info("[Iniciando listar entregas | Controller]");
+    
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      String tenantId = obtenerTenantId(request);
+      
+      resultado = this.entregaService.listarEntregasService(tenantId);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo listar entregas",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al listar entregas | Controller | Detalles: {}]", e.getMessage(), e);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    return response;
+    
+  }
+  
+  @GetMapping("/entregas/busquedas/entregaRequest")
   public ResponseEntity<ServiceResult<Object>> buscarEntregaController(
       @RequestParam
       @NotNull(message = "Debe proporcionar el Id de la entrega")

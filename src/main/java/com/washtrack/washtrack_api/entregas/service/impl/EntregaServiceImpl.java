@@ -37,7 +37,85 @@ public class EntregaServiceImpl implements IEntregaService {
   
   @Override
   public ServiceResult<Object> listarEntregasService(String tenantId) {
-    return null;
+    log.info("[Inicia listar entregas | Service]");
+    
+    log.info("[Listar entregas request: (Tenant Id: {}) | Service]", tenantId);
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      EntregasResponseRepository respuesta = this.entregasRepository.listarEntregasRepository(tenantId);
+      
+      if ( respuesta == null ) {
+        log.info("[Entregas no encontradas en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesOrdenes.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        // Mapear Entity → DTO (respuesta)
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, respuesta.getEntregasEntity()
+        );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un error en la BD al listar entregas | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[No existen entregas solicitadas en la BD | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesOrdenes.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al listar entregas "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar entregas | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesOrdenes.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza listar entregas | Service]");
+    }
+    
+    return serviceResult;
   }
   
   @Override

@@ -25,7 +25,52 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
   
   @Override
   public EntregasResponseRepository listarEntregasRepository(String tenantId) {
-    return null;
+    log.info("[Inicia listar entregas | Repository]");
+    
+    EntregasResponseRepository responseRepository = new EntregasResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorEntregasSimpleJdbcCall.listarEntregaJdbcMethod(tenantId);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setEntregasEntity(null);
+      responseRepository.setCodigobd(codigobd);
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP listar entregas fallo, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<EntregasEntity> entityList = (List<EntregasEntity>) respuesta.get("listadoentregas");
+        responseRepository.setEntregasEntity(entityList.get(ConstantesNumericas.CERO));
+        responseRepository.setCodigobd(codigobd);
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Entregas no encontradas en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al listar entregas en BD | Repository"
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al listar entregas en BD | Repository "
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza listar entregas | Repository]");
+    }
+    
+    return responseRepository;
   }
   
   @Override
@@ -51,8 +96,8 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<EntregasEntity> usuarioEntity = (List<EntregasEntity>) respuesta.get("entregarecuperada");
-        responseRepository.setEntregasEntity(usuarioEntity.get(ConstantesNumericas.CERO));
+        List<EntregasEntity> entityList = (List<EntregasEntity>) respuesta.get("entregarecuperada");
+        responseRepository.setEntregasEntity(entityList.get(ConstantesNumericas.CERO));
         responseRepository.setCodigobd(codigobd);
       }
       

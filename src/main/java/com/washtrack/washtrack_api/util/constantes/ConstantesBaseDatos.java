@@ -41,6 +41,7 @@ public final class ConstantesBaseDatos {
   public static final String SP_BUSCAR_USUARIO_EMAIL = "SP_BUSCAR_USUARIO_EMAIL";
   
   // ENTREGAS
+  public static final String SP_LISTAR_ENTREGAS = "SP_LISTAR_ENTREGAS";
   public static final String SP_INSERTAR_ENTREGA = "SP_INSERTAR_ENTREGA";
   public static final String SP_ACTUALIZAR_ENTREGA = "SP_ACTUALIZAR_ENTREGA";
   public static final String SP_BUSCAR_ENTREGA = "SP_BUSCAR_ENTREGA";
