@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.respository.inicializador;
 
+import com.washtrack.washtrack_api.orden.rowmapper.OrdenesMapper;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.orden.entity.OrdenServicioMasDetallesEntity;
 import com.washtrack.washtrack_api.orden.rowmapper.OrdenConDetalleMapper;
@@ -44,6 +45,7 @@ public class InicializadorOrdenConDetalleSjdbcCall {
             new SqlOutParameter(ConstantesBaseDatos.CODIGOBD, Types.INTEGER),
             new SqlOutParameter(ConstantesBaseDatos.PAMENSAJEBD, Types.VARCHAR)
         )
+        // codigobd = 0 cuando hay detalle ordenv
         .returningResultSet("detalleconorden", new OrdenConDetalleMapper());
   }
   
@@ -57,7 +59,7 @@ public class InicializadorOrdenConDetalleSjdbcCall {
    */
   public Map<String, Object> buscarOrdenConDetallesCallJdbc(OrdenServicioMasDetallesEntity detalleOrden) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
+    params.put("pa_tenantid", detalleOrden.getTenantId());
     params.put("pa_idorden", detalleOrden.getIdOrden());
     params.put("pa_folio", detalleOrden.getFolio());
     

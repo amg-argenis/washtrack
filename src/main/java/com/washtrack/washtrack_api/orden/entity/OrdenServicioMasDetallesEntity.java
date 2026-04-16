@@ -21,7 +21,7 @@ public class OrdenServicioMasDetallesEntity {
   private int totalPrendas;
   private String observaciones;
   private String createdAt;
-  private String tenantId; // este es temporal
+  private String tenantId;
   private String fechaEntrega;
   private List<DetalleOrdenEntity> ordenesDetalleDto;
   

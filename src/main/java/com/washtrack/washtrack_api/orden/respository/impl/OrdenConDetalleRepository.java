@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.respository.impl;
 
+import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.dto.orden.BuscarOrdenRequest;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
     OrdenServicioMasDetallesEntity build = OrdenServicioMasDetallesEntity.builder()
         .idOrden(ordenRequest.getIdOrden())
         .folio(ordenRequest.getFolio())
+        .tenantId(ordenRequest.getTenantId())
         .build();
     
     OrdenServicioMasDetallesEntity entidadFinal = null;
@@ -38,13 +41,15 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
       Map<String, Object> resultado =
           this.inicializadorOrdenConDetalleSjdbcCall.buscarOrdenConDetallesCallJdbc(build);
       
+      // Add this log
+      log.info("[Resultado completo del SP: {}]", resultado.keySet());
+      
       Integer codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
-        
         List<OrdenServicioMasDetallesEntity> lista =
             (List<OrdenServicioMasDetallesEntity>) resultado.get("detalleconorden");
         
@@ -73,7 +78,9 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
               .ordenesDetalleDto(todosLosDetalles)
               .build();
         }
+        
       }
+      
     }
     catch ( DataAccessException e ) {
       log.error("[DataAccessException | Error al buscar orden de servicio en BD]", e);

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrdenConDetalleMapper implements RowMapper<OrdenServicioMasDetallesEntity> {
@@ -13,16 +14,19 @@ public class OrdenConDetalleMapper implements RowMapper<OrdenServicioMasDetalles
   @Override
   public OrdenServicioMasDetallesEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     
-    DetalleOrdenEntity detalle = DetalleOrdenEntity.builder()
-        .idDetalleOrden(rs.getString("idDetalleOrden"))
-        .ordenId(rs.getString("ordenId"))
-        .procesoId(rs.getString("procesoId"))
-        .tipoPrenda(rs.getString("tipoPrenda"))
-        .cantidad(rs.getInt("cantidad"))
-        .colorReferencia(rs.getString("colorReferencia"))
-        // alias del SP
-        .tenantId(rs.getString("tenantIdDetalle"))
-        .build();
+    // Handle null details from LEFT JOIN
+    DetalleOrdenEntity detalle = null;
+    if ( rs.getString("idDetalleOrden") != null ) {
+      detalle = DetalleOrdenEntity.builder()
+          .idDetalleOrden(rs.getString("idDetalleOrden"))
+          .ordenId(rs.getString("ordenIdDetalle")) // alias del SP
+          .procesoId(rs.getString("procesoId"))
+          .tipoPrenda(rs.getString("tipoPrenda"))
+          .cantidad(rs.getInt("cantidad"))
+          .colorReferencia(rs.getString("colorReferencia"))
+          .tenantId(rs.getString("tenantIdDetalle"))
+          .build();
+    }
     
     return OrdenServicioMasDetallesEntity.builder()
         .idOrden(rs.getString("idOrden"))
@@ -35,7 +39,8 @@ public class OrdenConDetalleMapper implements RowMapper<OrdenServicioMasDetalles
         .createdAt(rs.getString("createdAt"))
         .tenantId(rs.getString("tenantId"))
         .fechaEntrega(rs.getString("fechaEntrega"))
-        .ordenesDetalleDto(List.of(detalle))
+        .ordenesDetalleDto(detalle != null ? List.of(detalle) : new ArrayList<>())
         .build();
   }
+  
 }

@@ -21,22 +21,25 @@ public class OrdentesConDetalleServiceImpl implements IOrdentesConDetalleService
   
   private final IOrdenConDetalleRepository iOrdenConDetalleRepository;
   private final MapearRespuestasConsultas mapearRespuestasConsultas;
-  private final MapearObjetos mapearObjetos;
   
   public OrdentesConDetalleServiceImpl(IOrdenConDetalleRepository iOrdenConDetalleRepository,
-      MapearRespuestasConsultas mapearRespuestasConsultas, MapearObjetos mapearObjetos) {
+      MapearRespuestasConsultas mapearRespuestasConsultas) {
     this.iOrdenConDetalleRepository = iOrdenConDetalleRepository;
     this.mapearRespuestasConsultas = mapearRespuestasConsultas;
-    this.mapearObjetos = mapearObjetos;
   }
   
   @Override
   public ServiceResult<Object> obtenerOrdenServicioMasDetallesDto(BuscarOrdenRequest ordenRequest) {
     log.info("[Inicia buscar orden de servicio con detalle | Service]");
     
-    log.info("[Request | Id orden: {} | Folio: {}]", ordenRequest.getIdOrden(), ordenRequest.getFolio());
+    log.info("[Request | Id orden: {} | Folio: {} | Tenant Id: {}]", ordenRequest.getIdOrden(), ordenRequest.getFolio(),
+        ordenRequest.getTenantId());
+    log.info("[TRIM check | idOrden length: {} | folio length: {} | tenantId length: {}]",
+        ordenRequest.getIdOrden().length(),
+        ordenRequest.getFolio().length(),
+        ordenRequest.getTenantId().length());
     
-    ServiceResult<Object> serviceResult = null;
+    ServiceResult<Object> serviceResult;
     
     try {
       OrdenServicioMasDetallesEntity resultado =
