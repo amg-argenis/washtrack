@@ -90,10 +90,6 @@ public class OrdenController {
   @GetMapping("/ordenes/fechaingreso")
   public ResponseEntity<ServiceResult<Object>> obtenerOrdenesPorFechaIngresoController(
       @RequestParam
-      @Pattern(
-          regexp = "^\\d{4}-\\d{2}-\\d{2}$",
-          message = "El formato de fecha debe ser yyyy-MM-dd"
-      )
       @NotNull(message = "La fecha de ingreso es obligatoria")
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate fechaIngreso,

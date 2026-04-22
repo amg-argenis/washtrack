@@ -31,6 +31,7 @@ public class OrdenConDetalleMapper implements RowMapper<OrdenServicioMasDetalles
     return OrdenServicioMasDetallesEntity.builder()
         .idOrden(rs.getString("idOrden"))
         .clienteId(rs.getString("clienteId"))
+        .nombreCliente(rs.getString("nombreCliente")) // alias del SP
         .folio(rs.getString("folio"))
         .fechaIngreso(rs.getString("fechaIngreso"))
         .estado(rs.getString("estado"))

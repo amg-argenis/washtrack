@@ -67,6 +67,7 @@ public class OrdenConDetalleRepository implements IOrdenConDetalleRepository {
           entidadFinal = OrdenServicioMasDetallesEntity.builder()
               .idOrden(cabecera.getIdOrden())
               .clienteId(cabecera.getClienteId())
+              .nombreCliente(cabecera.getNombreCliente())
               .folio(cabecera.getFolio())
               .fechaIngreso(cabecera.getFechaIngreso())
               .estado(cabecera.getEstado())

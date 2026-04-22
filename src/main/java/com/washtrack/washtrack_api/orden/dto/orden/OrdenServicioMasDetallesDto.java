@@ -15,13 +15,14 @@ import java.util.List;
 public class OrdenServicioMasDetallesDto {
   private String idOrden;
   private String clienteId;
+  private String nombreCliente;
   private String folio;
   private String fechaIngreso;
   private String estado;
   private int totalPrendas;
   private String observaciones;
   private String createdAt;
-  private String tenantId; // este es temporal
+  private String tenantId;
   private String fechaEntrega;
   private List<ActualizarOrdenDetalleDto> ordenesDetalleDto;
   private int totalDetalle;

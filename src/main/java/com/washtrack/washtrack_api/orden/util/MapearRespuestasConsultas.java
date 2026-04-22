@@ -68,6 +68,7 @@ public class MapearRespuestasConsultas {
     return OrdenServicioMasDetallesDto.builder()
         .idOrden(masDetalles.getIdOrden())
         .clienteId(masDetalles.getClienteId())
+        .nombreCliente(masDetalles.getNombreCliente())
         .folio(masDetalles.getFolio())
         .fechaIngreso(masDetalles.getFechaIngreso())
         .estado(masDetalles.getEstado())

@@ -15,6 +15,7 @@ public class OrdenServicioMasDetallesEntity {
   
   private String idOrden;
   private String clienteId;
+  private String nombreCliente;
   private String folio;
   private String fechaIngreso;
   private String estado;
