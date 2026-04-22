@@ -17,6 +17,8 @@ public class ActualizarOrdenServicioRequest {
   @Length(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id cliente")
   private String clienteId;
   
+  private String nombreCliente;
+  
   @NotBlank(message = "Folio de la orden servicio es obligatorio, favor de verificar")
   @Length(min = 1, max = 14, message = "El numero de caracteres es invalido al permitido para el folio")
   private String folio;
