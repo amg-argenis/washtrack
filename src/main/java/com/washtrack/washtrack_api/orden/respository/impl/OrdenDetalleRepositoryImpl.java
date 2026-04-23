@@ -164,14 +164,12 @@ public class OrdenDetalleRepositoryImpl implements IOrdenDetalleRepository {
       codigobd = (Integer) resultado.get(ConstantesBaseDatos.CODIGOBD);
       String pamensaje = (String) resultado.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
-      
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
-        log.info("[Detalle orden eliminado correctamente | Detalle: {}]", pamensaje);
+        log.info("[Detalle orden eliminado correctamente. Codigo: {} | Mensaje: {} | Repository]", codigobd, pamensaje);
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.DOS ) {
-        log.info("[Detalle orden No eliminada | Detalle: {}]", pamensaje);
+        log.info("[Detalle orden NO eliminado. Codigo: {} | Mensaje: {} | Repository]", codigobd, pamensaje);
       }
       
     }
