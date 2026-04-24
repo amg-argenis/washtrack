@@ -13,6 +13,8 @@ public class EntregaRowMapper implements RowMapper<EntregasEntity> {
         .idEntrega(rs.getString("idEntrega"))
         .tenantId(rs.getString("tenantId"))
         .ordenId(rs.getString("ordenId"))
+        .folio(rs.getString("folio"))
+        .cliente(rs.getString("cliente"))
         .fechaEntrega(rs.getString("fechaEntrega"))
         .totalEntregado(rs.getInt("totalEntregado"))
         .conformidadCliente(rs.getBoolean("conformidadCliente"))

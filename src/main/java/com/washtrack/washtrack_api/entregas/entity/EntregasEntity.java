@@ -13,6 +13,8 @@ public class EntregasEntity {
   private String idEntrega;
   private String tenantId;
   private String ordenId;
+  private String folio;
+  private String cliente;
   private String fechaEntrega;
   private int totalEntregado;
   private Boolean conformidadCliente;
