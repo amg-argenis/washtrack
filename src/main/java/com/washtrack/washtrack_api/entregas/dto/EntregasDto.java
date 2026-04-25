@@ -18,4 +18,5 @@ public class EntregasDto {
   private String observaciones;
   private String estado;
   private String fechaCreacion;
+  private String tipo;
 }

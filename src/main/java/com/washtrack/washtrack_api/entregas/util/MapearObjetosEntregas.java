@@ -19,6 +19,7 @@ public class MapearObjetosEntregas {
     params.put("pa_identrega", entregasEntity.getIdEntrega());
     params.put("pa_tenantid", entregasEntity.getTenantId());
     params.put("pa_ordenid", entregasEntity.getOrdenId());
+    params.put("pa_tipo", entregasEntity.getTipo());
     params.put("pa_fechaentrega", entregasEntity.getFechaEntrega());
     params.put("pa_totalentregado", entregasEntity.getTotalEntregado());
     params.put("pa_conformidad", entregasEntity.getConformidadCliente());
@@ -32,6 +33,7 @@ public class MapearObjetosEntregas {
     params.put("pa_identrega", entregasEntity.getIdEntrega());
     params.put("pa_tenantid", entregasEntity.getTenantId());
     params.put("pa_ordenid", entregasEntity.getOrdenId());
+    params.put("pa_tipo", entregasEntity.getTipo());
     params.put("pa_fechaentrega", entregasEntity.getFechaEntrega());
     params.put("pa_totalentregado", entregasEntity.getTotalEntregado());
     params.put("pa_conformidad", entregasEntity.getConformidadCliente());
@@ -46,6 +48,7 @@ public class MapearObjetosEntregas {
   public EntregasEntity entregasEntityFromDto(EntregaInsertRequest entregasDto) {
     return EntregasEntity.builder()
         .ordenId(entregasDto.getOrdenId())
+        .tipo(entregasDto.getTipo())
         .fechaEntrega(String.valueOf(entregasDto.getFechaEntrega()))
         .totalEntregado(entregasDto.getTotalEntregado())
         .conformidadCliente(entregasDto.getConformidadCliente())
@@ -59,6 +62,7 @@ public class MapearObjetosEntregas {
         .idEntrega(entregasDto.getIdEntrega())
         .tenantId(entregasDto.getTenantId())
         .ordenId(entregasDto.getOrdenId())
+        .tipo(entregasDto.getTipo())
         .fechaEntrega(String.valueOf(entregasDto.getFechaEntrega()))
         .totalEntregado(entregasDto.getTotalEntregado())
         .conformidadCliente(entregasDto.getConformidadCliente())
@@ -77,6 +81,7 @@ public class MapearObjetosEntregas {
         .observaciones(entregasEntity.getObservaciones())
         .estado(entregasEntity.getEstado())
         .fechaCreacion(entregasEntity.getFechaCreacion())
+        .tipo(entregasEntity.getTipo())
         .build();
   }
   

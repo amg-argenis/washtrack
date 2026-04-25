@@ -21,6 +21,7 @@ public class EntregaRowMapper implements RowMapper<EntregasEntity> {
         .observaciones(rs.getString("observaciones"))
         .estado(rs.getString("estado"))
         .fechaCreacion(rs.getString("fechaCreacion"))
+        .tipo(rs.getString("tipo"))
         .build();
   }
 }

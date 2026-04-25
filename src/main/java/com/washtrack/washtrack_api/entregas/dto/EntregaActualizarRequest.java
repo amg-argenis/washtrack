@@ -48,4 +48,7 @@ public class EntregaActualizarRequest {
   )
   private String estado;
   
+  @NotBlank(message = "Campo requerido para la operacion, favor de verificar")
+  private String tipo;
+  
 }
