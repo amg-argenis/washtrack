@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,10 +25,10 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
   }
   
   @Override
-  public EntregasResponseRepository listarEntregasRepository(String tenantId) {
+  public List<EntregasEntity> listarEntregasRepository(String tenantId) {
     log.info("[Inicia listar entregas | Repository]");
     
-    EntregasResponseRepository responseRepository = new EntregasResponseRepository();
+    List<EntregasEntity> entregasEntityList = new ArrayList<>();
     
     try {
       Map<String, Object> respuesta =
@@ -38,21 +39,16 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
-      responseRepository.setEntregasEntity(null);
-      responseRepository.setCodigobd(codigobd);
-      
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP listar entregas fallo, se asume error]");
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<EntregasEntity> entityList = (List<EntregasEntity>) respuesta.get("listadoentregas");
-        responseRepository.setEntregasEntity(entityList.get(ConstantesNumericas.CERO));
-        responseRepository.setCodigobd(codigobd);
+        entregasEntityList = (List<EntregasEntity>) respuesta.get("listadoentregas");
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
-        log.warn("[Entregas no encontradas en la BD | Repository]");
+        log.warn("[Registros de entregas No encontradas en la BD | Repository]");
       }
       
     }
@@ -70,7 +66,7 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       log.info("[Finaliza listar entregas | Repository]");
     }
     
-    return responseRepository;
+    return entregasEntityList;
   }
   
   @Override

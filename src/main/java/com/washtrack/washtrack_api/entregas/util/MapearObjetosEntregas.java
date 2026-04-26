@@ -76,6 +76,8 @@ public class MapearObjetosEntregas {
     return EntregasDto.builder()
         .idEntrega(entregasEntity.getIdEntrega())
         .ordenId(entregasEntity.getOrdenId())
+        .folio(entregasEntity.getFolio())
+        .cliente(entregasEntity.getCliente())
         .fechaEntrega(entregasEntity.getFechaEntrega())
         .totalEntregado(entregasEntity.getTotalEntregado())
         .conformidadCliente(entregasEntity.getConformidadCliente())

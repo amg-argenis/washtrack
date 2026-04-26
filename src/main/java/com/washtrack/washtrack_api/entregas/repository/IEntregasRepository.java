@@ -3,9 +3,11 @@ package com.washtrack.washtrack_api.entregas.repository;
 import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
 import com.washtrack.washtrack_api.entregas.response.EntregasResponseRepository;
 
+import java.util.List;
+
 public interface IEntregasRepository {
   
-  EntregasResponseRepository listarEntregasRepository(String tenantId);
+  List<EntregasEntity> listarEntregasRepository(String tenantId);
   
   EntregasResponseRepository buscarEntregaRepository(String idEntrega, String tenantId);
   

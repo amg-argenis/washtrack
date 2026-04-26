@@ -10,7 +10,6 @@ import com.washtrack.washtrack_api.entregas.service.IEntregaService;
 import com.washtrack.washtrack_api.entregas.util.MapearObjetosEntregas;
 import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
-import com.washtrack.washtrack_api.usuarios.dto.LoginUsuarioResponse;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
@@ -18,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -45,42 +46,26 @@ public class EntregaServiceImpl implements IEntregaService {
     
     try {
       // Llamada al Repository
-      EntregasResponseRepository respuesta = this.entregasRepository.listarEntregasRepository(tenantId);
+      List<EntregasEntity> respuesta = this.entregasRepository.listarEntregasRepository(tenantId);
       
-      if ( respuesta == null ) {
+      if ( respuesta == null || respuesta.isEmpty() ) {
         log.info("[Entregas no encontradas en la BD | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
-      
-      if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
-        // Mapear Entity → DTO (respuesta)
-        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-            ConstantesOrdenes.OPERACION_EXITOSA,
-            ConstantesNumericas.UNO, respuesta.getEntregasEntity()
-        );
-      }
-      
-      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
-        log.info("[Hubo un error en la BD al listar entregas | Service]");
+      else {
+        List<EntregasDto> entregasDtosList = new ArrayList<>();
+        for (EntregasEntity entregaEntity : respuesta) {
+          entregasDtosList.add(this.mapearObjetosEntregas.entregasDtoFromEntity(entregaEntity));
+        }
         serviceResult =
-            this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_BD,
-                ApiErrorCode.ERROR_BASE_DATOS
-            );
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesOrdenes.OPERACION_EXITOSA,
+                respuesta.size(),
+                entregasDtosList);
       }
-      
-      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
-        log.info("[No existen entregas solicitadas en la BD | Service]");
-        serviceResult =
-            this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_BD,
-                ApiErrorCode.SIN_INFORMACION_EN_BD
-            );
-      }
-      
     }
     catch ( NullPointerException e ) {
       log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",

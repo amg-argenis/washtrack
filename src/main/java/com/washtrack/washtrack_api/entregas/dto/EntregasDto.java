@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class EntregasDto {
   private String idEntrega;
   private String ordenId;
+  private String folio;
+  private String cliente;
   private String fechaEntrega;
   private int totalEntregado;
   private boolean conformidadCliente;
