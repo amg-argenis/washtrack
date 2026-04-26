@@ -48,6 +48,7 @@ public class MapearObjetosEntregas {
   public EntregasEntity entregasEntityFromDto(EntregaInsertRequest entregasDto) {
     return EntregasEntity.builder()
         .ordenId(entregasDto.getOrdenId())
+        .tenantId(entregasDto.getTenantId())
         .tipo(entregasDto.getTipo())
         .fechaEntrega(String.valueOf(entregasDto.getFechaEntrega()))
         .totalEntregado(entregasDto.getTotalEntregado())

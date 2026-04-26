@@ -36,7 +36,7 @@ public class EntregaController {
   }
   
   @GetMapping("/entregas/busquedas/listar")
-  public ResponseEntity<ServiceResult<Object>> buscarEntregaController(HttpServletRequest request) {
+  public ResponseEntity<ServiceResult<Object>> buscarEntregaController(HttpServletRequest httpRequest) {
     
     log.info("[Iniciando listar entregas | Controller]");
     
@@ -44,7 +44,7 @@ public class EntregaController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
+      String tenantId = obtenerTenantId(httpRequest);
       
       resultado = this.entregaService.listarEntregasService(tenantId);
       
@@ -78,7 +78,7 @@ public class EntregaController {
       @NotNull(message = "Debe proporcionar el Id de la entrega")
       @Length(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id")
       String entregaRequest,
-      HttpServletRequest request) {
+      HttpServletRequest httpRequest) {
     
     log.info("[Iniciando buscar entrega | Controller]");
     
@@ -86,7 +86,7 @@ public class EntregaController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
+      String tenantId = obtenerTenantId(httpRequest);
       
       resultado = this.entregaService.buscarEntregaService(entregaRequest, tenantId);
       
@@ -120,7 +120,7 @@ public class EntregaController {
       @NotNull(message = "Debe proporcionar el Id de la entrega")
       @Length(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id")
       String entregaRequest,
-      HttpServletRequest request) {
+      HttpServletRequest httpRequest) {
     
     log.info("[Iniciando eliminar entrega | Controller]");
     
@@ -128,7 +128,7 @@ public class EntregaController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
+      String tenantId = obtenerTenantId(httpRequest);
       
       resultado = this.entregaService.eliminarEntregaService(entregaRequest, tenantId);
       
@@ -159,7 +159,7 @@ public class EntregaController {
   @PostMapping("/entregas/insertar")
   public ResponseEntity<ServiceResult<Object>> insertarEntregaController(
       @Valid @RequestBody EntregaInsertRequest entregasDto,
-      HttpServletRequest request) {
+      HttpServletRequest httpRequest) {
     
     log.info("[Iniciando insertar entrega | Controller]");
     
@@ -168,7 +168,7 @@ public class EntregaController {
     
     try {
       
-      String tenantId = obtenerTenantId(request);
+      String tenantId = obtenerTenantId(httpRequest);
       entregasDto.setTenantId(tenantId);
       
       resultado = this.entregaService.insertarEntregaService(entregasDto);
@@ -200,7 +200,7 @@ public class EntregaController {
   @PostMapping("/entregas/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarEntregaController(
       @Valid @RequestBody EntregaActualizarRequest entregasDto,
-      HttpServletRequest request) {
+      HttpServletRequest httpRequest) {
     
     log.info("[Iniciando insertar entrega | Controller]");
     
@@ -209,7 +209,7 @@ public class EntregaController {
     
     try {
       
-      String tenantId = obtenerTenantId(request);
+      String tenantId = obtenerTenantId(httpRequest);
       entregasDto.setTenantId(tenantId);
       
       resultado = this.entregaService.actualizarEntregaService(entregasDto);
@@ -239,8 +239,8 @@ public class EntregaController {
   }
   
   // Recuperar tenantId por token
-  private String obtenerTenantId(HttpServletRequest request) {
-    return (String) request.getAttribute("tenantId");
+  private String obtenerTenantId(HttpServletRequest httpRequest) {
+    return (String) httpRequest.getAttribute("tenantId");
   }
   
 }
