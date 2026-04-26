@@ -52,6 +52,7 @@ public class MapearObjetosUsuario {
         .email(usuarioEntity.getEmail())
         .rol(usuarioEntity.getRol())
         .activo(usuarioEntity.isActivo())
+        .nombreTenant(usuarioEntity.getNombreTenant())
         .token(usuarioEntity.getToken())
         .build();
   }

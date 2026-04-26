@@ -19,6 +19,7 @@ public class UsuarioRowMapper implements RowMapper<UsuarioEntity> {
         .rol(rs.getString("rol"))
         .activo(rs.getBoolean("activo"))
         .createdAt(String.valueOf(rs.getTimestamp("createdAt")))
+        .nombreTenant(rs.getString("nombreTenant"))
         .build();
   }
   

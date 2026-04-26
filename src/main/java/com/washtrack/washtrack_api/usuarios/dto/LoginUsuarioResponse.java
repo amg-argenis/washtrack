@@ -17,4 +17,5 @@ public class LoginUsuarioResponse {
   private String rol;
   private boolean activo;
   private String token;
+  private String nombreTenant;
 }

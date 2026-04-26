@@ -46,8 +46,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
   public ServiceResult<Object> consultarUsuarioLogInService(LoginUsuarioRequest loginUsuarioRequest) {
     log.info("[Inicia buscar usuario login | Service]");
     
-    log.info("[Login request: ({}|{}) | Service]", loginUsuarioRequest.getEmail(), loginUsuarioRequest.getPassword());
-    
     ServiceResult<Object> serviceResult = null;
     
     try {
