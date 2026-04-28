@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class DashboardEntity {
-  private String ordenesActivas;
-  private String clientesActivos;
-  private String entregasMes;
-  private String prendasEnProceso;
-  private String ordenesListas;
-  private String ordenesEntregadasMes;
+  private int ordenesActivas;
+  private int clientesActivos;
+  private int entregasMes;
+  private int prendasEnProceso;
+  private int ordenesListas;
+  private int ordenesEntregadasMes;
 }

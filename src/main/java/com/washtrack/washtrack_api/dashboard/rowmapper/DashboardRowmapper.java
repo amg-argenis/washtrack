@@ -10,12 +10,12 @@ public class DashboardRowmapper implements RowMapper<DashboardEntity> {
   @Override
   public DashboardEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     return DashboardEntity.builder()
-        .ordenesActivas(rs.getString("ordenesActivas"))
-        .clientesActivos(rs.getString("clientesActivos"))
-        .entregasMes(rs.getString("entregasMes"))
-        .prendasEnProceso(rs.getString("prendasEnProceso"))
-        .ordenesListas(rs.getString("ordenesListas"))
-        .ordenesEntregadasMes(rs.getString("ordenesEntregadasMes"))
+        .ordenesActivas(rs.getInt("ordenesActivas"))
+        .clientesActivos(rs.getInt("clientesActivos"))
+        .entregasMes(rs.getInt("entregasMes"))
+        .prendasEnProceso(rs.getInt("prendasEnProceso"))
+        .ordenesListas(rs.getInt("ordenesListas"))
+        .ordenesEntregadasMes(rs.getInt("ordenesEntregadasMes"))
         .build();
   }
 }
