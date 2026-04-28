@@ -8,8 +8,8 @@ import com.washtrack.washtrack_api.entregas.repository.IEntregasRepository;
 import com.washtrack.washtrack_api.entregas.response.EntregasResponseRepository;
 import com.washtrack.washtrack_api.entregas.service.IEntregaService;
 import com.washtrack.washtrack_api.entregas.util.MapearObjetosEntregas;
-import com.washtrack.washtrack_api.orden.constants.ConstantesOrdenes;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
+import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
@@ -51,7 +51,7 @@ public class EntregaServiceImpl implements IEntregaService {
       if ( respuesta == null || respuesta.isEmpty() ) {
         log.info("[Entregas no encontradas en la BD | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.SIN_REGISTROS,
+            ConstantesMensajesGenericos.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
@@ -62,7 +62,7 @@ public class EntregaServiceImpl implements IEntregaService {
         }
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-                ConstantesOrdenes.OPERACION_EXITOSA,
+                ConstantesMensajesGenericos.OPERACION_EXITOSA,
                 respuesta.size(),
                 entregasDtosList);
       }
@@ -72,7 +72,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -82,7 +82,7 @@ public class EntregaServiceImpl implements IEntregaService {
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
     }
@@ -92,7 +92,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -118,7 +118,7 @@ public class EntregaServiceImpl implements IEntregaService {
       if ( respuesta == null ) {
         log.info("[Entrega no encontrada en la BD | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.SIN_REGISTROS,
+            ConstantesMensajesGenericos.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
@@ -126,7 +126,7 @@ public class EntregaServiceImpl implements IEntregaService {
       if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
         // Mapear Entity → DTO (respuesta)
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
             ConstantesNumericas.UNO, respuesta.getEntregasEntity()
         );
       }
@@ -135,7 +135,7 @@ public class EntregaServiceImpl implements IEntregaService {
         log.info("[Hubo un error en la BD al buscar la entrega solicitada | Service]");
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_BD,
+                ConstantesMensajesGenericos.ERROR_BD,
                 ApiErrorCode.ERROR_BASE_DATOS
             );
       }
@@ -144,7 +144,7 @@ public class EntregaServiceImpl implements IEntregaService {
         log.info("[No existe la entrega solicitada en la BD | Service]");
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_BD,
+                ConstantesMensajesGenericos.ERROR_BD,
                 ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
@@ -155,7 +155,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -165,7 +165,7 @@ public class EntregaServiceImpl implements IEntregaService {
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
     }
@@ -175,7 +175,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -201,7 +201,7 @@ public class EntregaServiceImpl implements IEntregaService {
       if ( respuesta == null ) {
         log.info("[Entrega no encontrada en la BD | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.SIN_REGISTROS,
+            ConstantesMensajesGenericos.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
       }
@@ -209,7 +209,7 @@ public class EntregaServiceImpl implements IEntregaService {
       if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
         // Mapear Entity → DTO (respuesta)
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
             ConstantesNumericas.UNO, null
         );
       }
@@ -218,7 +218,7 @@ public class EntregaServiceImpl implements IEntregaService {
         log.info("[Hubo un error en la BD al eliminar la entrega solicitada | Service]");
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_BD,
+                ConstantesMensajesGenericos.ERROR_BD,
                 ApiErrorCode.ERROR_BASE_DATOS
             );
       }
@@ -227,7 +227,7 @@ public class EntregaServiceImpl implements IEntregaService {
         log.info("[No existe la entrega solicitada en la BD | Service]");
         serviceResult =
             this.mapearRespuestasConsultas.mapearserviceResultError(
-                ConstantesOrdenes.ERROR_BD,
+                ConstantesMensajesGenericos.ERROR_BD,
                 ApiErrorCode.SIN_INFORMACION_EN_BD
             );
       }
@@ -238,7 +238,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -248,7 +248,7 @@ public class EntregaServiceImpl implements IEntregaService {
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
     }
@@ -258,7 +258,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -294,7 +294,7 @@ public class EntregaServiceImpl implements IEntregaService {
         EntregasDto entrgaResponse =
             this.mapearObjetosEntregas.entregasDtoFromEntity(resultado.getEntregasEntity());
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
             ConstantesNumericas.UNO, entrgaResponse
         );
       }
@@ -303,7 +303,7 @@ public class EntregaServiceImpl implements IEntregaService {
           && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.info("[Entrega no insertada en la BD | Service]");
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.ERROR_INSERT,
+            ConstantesMensajesGenericos.ERROR_INSERT,
             ApiErrorCode.ERROR_BASE_DATOS
         );
       }
@@ -312,7 +312,7 @@ public class EntregaServiceImpl implements IEntregaService {
           && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
         log.info("[La entrega ya existe en la BD | Service]");
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.ERROR_INSERT,
+            ConstantesMensajesGenericos.ERROR_INSERT,
             ApiErrorCode.CONFLICTO_INTEGRIDAD
         );
       }
@@ -322,7 +322,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -332,7 +332,7 @@ public class EntregaServiceImpl implements IEntregaService {
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
     }
@@ -342,7 +342,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -375,7 +375,7 @@ public class EntregaServiceImpl implements IEntregaService {
         EntregasDto entrgaResponse =
             this.mapearObjetosEntregas.entregasDtoFromEntity(resultado.getEntregasEntity());
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
-            ConstantesOrdenes.OPERACION_EXITOSA,
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
             ConstantesNumericas.UNO, entrgaResponse
         );
       }
@@ -384,7 +384,7 @@ public class EntregaServiceImpl implements IEntregaService {
           && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.info("[Entrega no actualizada en la BD | Service]");
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.ERROR_INSERT,
+            ConstantesMensajesGenericos.ERROR_INSERT,
             ApiErrorCode.ERROR_BASE_DATOS
         );
       }
@@ -393,7 +393,7 @@ public class EntregaServiceImpl implements IEntregaService {
           && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
         log.info("[La entrega a actualizar no existe en la BD | Service]");
         serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
-            ConstantesOrdenes.ERROR_INSERT,
+            ConstantesMensajesGenericos.ERROR_INSERT,
             ApiErrorCode.CONFLICTO_INTEGRIDAD
         );
       }
@@ -403,7 +403,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
@@ -413,7 +413,7 @@ public class EntregaServiceImpl implements IEntregaService {
               + "| Service | Mas detalles: {}]", e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_BASE_DATOS
           );
     }
@@ -423,7 +423,7 @@ public class EntregaServiceImpl implements IEntregaService {
           e.getMessage(), e);
       serviceResult =
           this.mapearRespuestasConsultas.mapearserviceResultError(
-              ConstantesOrdenes.ERROR_BD,
+              ConstantesMensajesGenericos.ERROR_BD,
               ApiErrorCode.ERROR_INTERNO
           );
     }
