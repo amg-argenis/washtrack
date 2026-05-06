@@ -169,7 +169,7 @@ public class InicializadorSimpleJdbcCall {
    */
   public Map<String, Object> buscarOrdenCallJdbc(OrdenesEntity orden) {
     Map<String, Object> params = new HashMap<>();
-    params.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
+    params.put("pa_tenantid", orden.getTenantId());
     params.put("pa_idorden", orden.getIdOrden());
     params.put("pa_ordenfolio", orden.getFolio());
     

@@ -1,0 +1,8 @@
+package com.washtrack.washtrack_api.proceso.respository;
+
+import com.washtrack.washtrack_api.proceso.entity.ProcesosEntity;
+import com.washtrack.washtrack_api.proceso.response.ProcesosResponseRepository;
+
+public interface IProcesosRepository {
+  ProcesosResponseRepository insertarProcesoRepository(ProcesosEntity proceso);
+}

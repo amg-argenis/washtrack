@@ -1,0 +1,123 @@
+package com.washtrack.washtrack_api.proceso.service.impl;
+
+import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
+import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
+import com.washtrack.washtrack_api.entregas.repository.IEntregasRepository;
+import com.washtrack.washtrack_api.entregas.response.EntregasResponseRepository;
+import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
+import com.washtrack.washtrack_api.proceso.dto.ProcesosDto;
+import com.washtrack.washtrack_api.proceso.dto.ProcesosRequest;
+import com.washtrack.washtrack_api.proceso.entity.ProcesosEntity;
+import com.washtrack.washtrack_api.proceso.response.ProcesosResponseRepository;
+import com.washtrack.washtrack_api.proceso.respository.IProcesosRepository;
+import com.washtrack.washtrack_api.proceso.service.IProcesosService;
+import com.washtrack.washtrack_api.proceso.util.MapearObjetosProcesos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
+import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
+import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
+import com.washtrack.washtrack_api.util.response.ServiceResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Slf4j
+@Service
+public class ProcesosServiceImpl implements IProcesosService {
+  
+  private final IProcesosRepository procesosRepository;
+  private final MapearObjetosProcesos mapearObjetosProcesos;
+  private final MapearRespuestasConsultas mapearRespuestasConsultas;
+  
+  public ProcesosServiceImpl(IProcesosRepository procesosRepository, MapearObjetosProcesos mapearObjetosProcesos,
+      MapearRespuestasConsultas mapearRespuestasConsultas) {
+    this.procesosRepository = procesosRepository;
+    this.mapearObjetosProcesos = mapearObjetosProcesos;
+    this.mapearRespuestasConsultas = mapearRespuestasConsultas;
+  }
+  
+  @Override
+  public ServiceResult<Object> insertarEntregaService(ProcesosRequest procesosRequest) {
+    log.info("[Inicia insertar proceso de lavado | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Mapear DTO → Entity (request)
+      ProcesosEntity procesosEntity = this.mapearObjetosProcesos.mapearFromDtoToEntity(procesosRequest);
+      
+      // UUID par idEntrega
+      UUID uuid = UUID.randomUUID();
+      procesosEntity.setIdproceso(uuid.toString());
+      log.info("[Proceso de lavado a insertar: ({}) | Service]", procesosEntity);
+      
+      // Llamada al Repository
+      ProcesosResponseRepository resultado =
+          this.procesosRepository.insertarProcesoRepository(procesosEntity);
+      
+      // Mapear Entity → DTO (response)
+      if ( resultado.getProcesosEntity() != null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        ProcesosDto procesosDto =
+            this.mapearObjetosProcesos.mapearFromEntityToDto(resultado.getProcesosEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, procesosDto
+        );
+      }
+      
+      if ( resultado.getProcesosEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Proceso de lavado no insertado en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.ERROR_INSERT,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getProcesosEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[El proceso de lavado ya existe en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.ERROR_INSERT,
+            ApiErrorCode.CONFLICTO_INTEGRIDAD
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al insertar el proceso de lavado "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al insertar el proceso de lavado | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza insertar proceso de lavado | Service]");
+    }
+    
+    return serviceResult;
+  }
+}
