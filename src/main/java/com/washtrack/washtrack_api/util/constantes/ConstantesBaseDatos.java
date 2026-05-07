@@ -42,6 +42,7 @@ public final class ConstantesBaseDatos {
   
   // SP PROCESOS
   public static final String SP_INSERTAR_PROCESO = "SP_INSERTAR_PROCESO";
+  public static final String SP_BUSCAR_PROCESO = "SP_BUSCAR_PROCESO";
   
   // ENTREGAS
   public static final String SP_LISTAR_ENTREGAS = "SP_LISTAR_ENTREGAS";

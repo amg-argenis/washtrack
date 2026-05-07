@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
 import java.sql.Types;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -20,6 +21,10 @@ import java.util.Map;
 public class InicializadorProcesosLavado {
   
   private SimpleJdbcCall insertarProceso;
+  private SimpleJdbcCall buscarProceso;
+  private SimpleJdbcCall listarProcesos;
+  private SimpleJdbcCall actualizarProceso;
+  private SimpleJdbcCall eliminarProceso;
   
   private final JdbcTemplate jdbcTemplate;
   private final MapearObjetosProcesos mapearObjetosProcesos;
@@ -47,6 +52,19 @@ public class InicializadorProcesosLavado {
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
         .returningResultSet("procesoinsertado", new ProcesosRowmapper());
+    
+    this.buscarProceso = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_PROCESO)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_codigoproceso", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("procesorecuperado", new ProcesosRowmapper());
   }
   
   // EJECUCIONES EN BD *************************************************************************************************
@@ -55,6 +73,14 @@ public class InicializadorProcesosLavado {
     Map<String, Object> paramMap = this.mapearObjetosProcesos.parametrizarProcesosInsert(procesos);
     log.info("[Parametros del nuevo proceso a insertar | Detalle: {}]", paramMap);
     return this.insertarProceso.execute(paramMap);
+  }
+  
+  public Map<String, Object> buscarProcesoLavado(String codigoProceso, String tenantid) {
+    Map<String, Object> paramMap = new HashMap<String, Object>();
+    paramMap.put("pa_codigoproceso", codigoProceso);
+    paramMap.put("pa_tenantid", tenantid);
+    log.info("[Parametros del proceso de lavado a buscar | Detalle: {}]", paramMap);
+    return this.buscarProceso.execute(paramMap);
   }
   
 }

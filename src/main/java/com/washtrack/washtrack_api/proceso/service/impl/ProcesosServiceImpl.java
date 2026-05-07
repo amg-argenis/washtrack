@@ -120,4 +120,87 @@ public class ProcesosServiceImpl implements IProcesosService {
     
     return serviceResult;
   }
+  
+  @Override
+  public ServiceResult<Object> buscarProcesoService(String codigoProceso, String tenantid) {
+    log.info("[Inicia buscar proceso de lavado | Service]");
+    
+    log.info("[Buscar proceso de lavado request: (Id entrega: {}| Tenant Id: {}) | Service]", codigoProceso, tenantid);
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      ProcesosResponseRepository respuesta = this.procesosRepository.buscarProcesoRepository(codigoProceso, tenantid);
+      
+      if ( respuesta == null ) {
+        log.info("[Proceso no encontrado en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      
+      if ( respuesta.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        // Mapear Entity → DTO (respuesta)
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, respuesta.getProcesosEntity()
+        );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Hubo un error en la BD al buscar el proceso de lavado solicitado | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesMensajesGenericos.ERROR_BD,
+                ApiErrorCode.ERROR_BASE_DATOS
+            );
+      }
+      
+      if ( respuesta.getCodigobd() != null && respuesta.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[No existe el proceso de lavado solicitado en la BD | Service]");
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultError(
+                ConstantesMensajesGenericos.ERROR_BD,
+                ApiErrorCode.SIN_INFORMACION_EN_BD
+            );
+      }
+      
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al buscar el proceso de lavado "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al buscar el proceso de lavado | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza buscar proceso de lavado | Service]");
+    }
+    
+    return serviceResult;
+  }
 }
