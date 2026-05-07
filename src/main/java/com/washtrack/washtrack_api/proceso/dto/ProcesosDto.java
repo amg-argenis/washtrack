@@ -18,4 +18,5 @@ public class ProcesosDto {
   private String descripcion;
   private BigDecimal preciounitario;
   private boolean activo;
+  private String codigo;
 }

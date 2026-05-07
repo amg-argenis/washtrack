@@ -43,6 +43,7 @@ public class MapearObjetosProcesos {
         .descripcion(procesosEntity.getDescripcion())
         .preciounitario(procesosEntity.getPreciounitario())
         .activo(procesosEntity.isActivo())
+        .codigo(procesosEntity.getCodigo())
         .build();
   }
 }

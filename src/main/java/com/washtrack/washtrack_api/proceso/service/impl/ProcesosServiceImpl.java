@@ -38,7 +38,7 @@ public class ProcesosServiceImpl implements IProcesosService {
   }
   
   @Override
-  public ServiceResult<Object> insertarEntregaService(ProcesosRequest procesosRequest) {
+  public ServiceResult<Object> insertarProcesoService(ProcesosRequest procesosRequest) {
     log.info("[Inicia insertar proceso de lavado | Service]");
     
     ServiceResult<Object> serviceResult = null;
