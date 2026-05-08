@@ -5,6 +5,7 @@ import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
 import com.washtrack.washtrack_api.entregas.repository.IEntregasRepository;
 import com.washtrack.washtrack_api.entregas.response.EntregasResponseRepository;
 import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
+import com.washtrack.washtrack_api.proceso.dto.ProcesoUpdateRequest;
 import com.washtrack.washtrack_api.proceso.dto.ProcesosDto;
 import com.washtrack.washtrack_api.proceso.dto.ProcesosRequest;
 import com.washtrack.washtrack_api.proceso.entity.ProcesosEntity;
@@ -116,6 +117,90 @@ public class ProcesosServiceImpl implements IProcesosService {
     }
     finally {
       log.info("[Finaliza insertar proceso de lavado | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> actualizarProcesoService(ProcesoUpdateRequest procesosRequest) {
+    log.info("[Inicia actualizar proceso de lavado | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Mapear DTO → Entity (request)
+      ProcesosEntity procesosEntity = this.mapearObjetosProcesos.mapearFromDtoToEntity(procesosRequest);
+      
+      // UUID par idEntrega
+      UUID uuid = UUID.randomUUID();
+      procesosEntity.setIdproceso(uuid.toString());
+      log.info("[Proceso de lavado para actualizar: ({}) | Service]", procesosEntity);
+      
+      // Llamada al Repository
+      ProcesosResponseRepository resultado =
+          this.procesosRepository.actualizarProcesoRepository(procesosEntity);
+      
+      // Mapear Entity → DTO (response)
+      if ( resultado.getProcesosEntity() != null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        ProcesosDto procesosDto =
+            this.mapearObjetosProcesos.mapearFromEntityToDto(resultado.getProcesosEntity());
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, procesosDto
+        );
+      }
+      
+      if ( resultado.getProcesosEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Proceso de lavado no actualizado en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.ERROR_ACTUALIZAR,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getProcesosEntity() == null
+          && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[El proceso de lavado no existe en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.ERROR_ACTUALIZAR,
+            ApiErrorCode.CONFLICTO_INTEGRIDAD
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al actualizar el proceso de lavado "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al actualizar el proceso de lavado | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza actualizar proceso de lavado | Service]");
     }
     
     return serviceResult;

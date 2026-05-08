@@ -33,7 +33,7 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
     
     try {
       Map<String, Object> respuesta =
-          this.inicializadorProcesosLavado.insertarProcesoLavado(proceso);
+          this.inicializadorProcesosLavado.insertarProcesoLavadoExe(proceso);
       
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
@@ -78,6 +78,59 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
   }
   
   @Override
+  public ProcesosResponseRepository actualizarProcesoRepository(ProcesosEntity proceso) {
+    log.info("[Inicia actualizar proceso de lavado | Repository]");
+    
+    ProcesosResponseRepository responseRepository = new ProcesosResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorProcesosLavado.actualizarProcesoLavadoExe(proceso);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setProcesosEntity(null);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<ProcesosEntity> procesosEntityList = (List<ProcesosEntity>) respuesta.get("procesoactualizado");
+        ProcesosEntity procesosEntity = procesosEntityList.get(ConstantesNumericas.CERO);
+        responseRepository.setProcesosEntity(procesosEntity);
+        responseRepository.setCodigobd(codigobd);
+        log.info("[Proceso de lavado actualizado correctamente en la BD]");
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP para actualizar proceso de lavado devolvio -1, se asume error]");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[El proceso de lavado no existe en la BD | Repository]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error critico al actualizar el proceso de lavado en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al actualizar el proceso de lavado en BD | Repository | Detalles: {}]",
+          e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza actualizar proceso de lavado | Repository]");
+    }
+    
+    return responseRepository;
+  }
+  
+  @Override
   public ProcesosResponseRepository buscarProcesoRepository(String codigoProceso, String tenantid) {
     log.info("[Inicia buscar proceso de lavado | Repository]");
     
@@ -85,7 +138,7 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
     
     try {
       Map<String, Object> respuesta =
-          this.inicializadorProcesosLavado.buscarProcesoLavado(codigoProceso, tenantid);
+          this.inicializadorProcesosLavado.buscarProcesoLavadoExe(codigoProceso, tenantid);
       
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);

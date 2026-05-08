@@ -53,6 +53,23 @@ public class InicializadorProcesosLavado {
         )
         .returningResultSet("procesoinsertado", new ProcesosRowmapper());
     
+    this.actualizarProceso = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_PROCESO)
+        .declareParameters(
+            // IN
+            
+            new SqlParameter("pa_idproceso", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            new SqlParameter("pa_nombre", Types.VARCHAR),
+            new SqlParameter("pa_descripcion", Types.VARCHAR),
+            new SqlParameter("pa_preciounitario", Types.DECIMAL),
+            // OUT control
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("procesoactualizado", new ProcesosRowmapper());
+    
     this.buscarProceso = new SimpleJdbcCall(this.jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_BUSCAR_PROCESO)
@@ -69,13 +86,19 @@ public class InicializadorProcesosLavado {
   
   // EJECUCIONES EN BD *************************************************************************************************
   
-  public Map<String, Object> insertarProcesoLavado(ProcesosEntity procesos) {
+  public Map<String, Object> insertarProcesoLavadoExe(ProcesosEntity procesos) {
     Map<String, Object> paramMap = this.mapearObjetosProcesos.parametrizarProcesosInsert(procesos);
     log.info("[Parametros del nuevo proceso a insertar | Detalle: {}]", paramMap);
     return this.insertarProceso.execute(paramMap);
   }
   
-  public Map<String, Object> buscarProcesoLavado(String codigoProceso, String tenantid) {
+  public Map<String, Object> actualizarProcesoLavadoExe(ProcesosEntity procesos) {
+    Map<String, Object> paramMap = this.mapearObjetosProcesos.parametrizarProcesosUpdate(procesos);
+    log.info("[Parametros del nuevo proceso para actualizar | Detalle: {}]", paramMap);
+    return this.actualizarProceso.execute(paramMap);
+  }
+  
+  public Map<String, Object> buscarProcesoLavadoExe(String codigoProceso, String tenantid) {
     Map<String, Object> paramMap = new HashMap<String, Object>();
     paramMap.put("pa_codigoproceso", codigoProceso);
     paramMap.put("pa_tenantid", tenantid);
