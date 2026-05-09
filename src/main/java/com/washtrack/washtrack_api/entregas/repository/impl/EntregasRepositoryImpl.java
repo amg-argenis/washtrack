@@ -93,8 +93,9 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
         List<EntregasEntity> entityList = (List<EntregasEntity>) respuesta.get("entregarecuperada");
-        responseRepository.setEntregasEntity(entityList.get(ConstantesNumericas.CERO));
-        responseRepository.setCodigobd(codigobd);
+        if ( !entityList.isEmpty() ) {
+          responseRepository.setEntregasEntity(entityList.get(ConstantesNumericas.CERO));
+        }
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
