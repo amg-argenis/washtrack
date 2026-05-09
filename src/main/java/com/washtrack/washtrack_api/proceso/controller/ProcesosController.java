@@ -125,6 +125,50 @@ public class ProcesosController {
     
   }
   
+  @PostMapping("/procesos/eliminar/procesoRequest")
+  public ResponseEntity<ServiceResult<Object>> eliminarProcesoController(
+      @RequestParam
+      @NotNull(message = "Debe proporcionar el Id del proceso")
+      @Length(min = 10, max = 36, message = "El numero de caracteres es invalido al permitido para el Id")
+      String procesoRequest,
+      HttpServletRequest httpRequest) {
+    
+    log.info("[Iniciando actualizar el proceso de lavado | Controller]");
+    
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      
+      String tenantId = obtenerTenantId(httpRequest);
+      
+      resultado = this.procesosService.eliminarProcesoService(procesoRequest, tenantId);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo eliminar el proceso de lavado",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al eliminar el proceso de lavado | Controller | Detalles: {}]",
+          e.getMessage(), e);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    return response;
+    
+  }
+  
   @GetMapping("/procesos/busquedas/buscar")
   public ResponseEntity<ServiceResult<Object>> buscarProcesoController(
       @RequestParam

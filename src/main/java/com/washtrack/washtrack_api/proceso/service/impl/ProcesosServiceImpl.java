@@ -207,6 +207,81 @@ public class ProcesosServiceImpl implements IProcesosService {
   }
   
   @Override
+  public ServiceResult<Object> eliminarProcesoService(String idproceso, String tenantid) {
+    log.info("[Inicia eliminar proceso de lavado | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Mapear DTO → Entity (request)
+      
+      log.info("[Proceso de lavado para actualizar: (IdProceso: {}, Tenant Id: {}) | Service]", idproceso, tenantid);
+      
+      // Llamada al Repository
+      ProcesosResponseRepository resultado =
+          this.procesosRepository.eliminarProcesoRepository(idproceso, tenantid);
+      
+      // Mapear Entity → DTO (response)
+      if ( resultado.getCodigobd() != null && resultado.getCodigobd().intValue() == ConstantesNumericas.CERO ) {
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+            ConstantesMensajesGenericos.OPERACION_EXITOSA,
+            ConstantesNumericas.UNO, null
+        );
+      }
+      
+      if ( resultado.getCodigobd() != null && resultado.getCodigobd().intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.info("[Proceso de lavado no actualizado en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.ERROR_ELIMINAR,
+            ApiErrorCode.ERROR_BASE_DATOS
+        );
+      }
+      
+      if ( resultado.getCodigobd() != null && resultado.getCodigobd().intValue() == ConstantesNumericas.DOS ) {
+        log.info("[El proceso de lavado no existe en la BD | Service]");
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.ERROR_ELIMINAR,
+            ApiErrorCode.CONFLICTO_INTEGRIDAD
+        );
+      }
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al eliminar el proceso de lavado "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al eliminar el proceso de lavado | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza eliminar proceso de lavado | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
   public ServiceResult<Object> buscarProcesoService(String codigoProceso, String tenantid) {
     log.info("[Inicia buscar proceso de lavado | Service]");
     
