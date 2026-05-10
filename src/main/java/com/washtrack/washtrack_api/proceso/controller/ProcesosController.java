@@ -211,4 +211,43 @@ public class ProcesosController {
     
   }
   
+  @GetMapping("/procesos/listar")
+  public ResponseEntity<ServiceResult<Object>> listarProcesoController(HttpServletRequest httpRequest) {
+    
+    log.info("[Iniciando listar procesos de lavado | Controller]");
+    
+    ServiceResult<Object> resultado;
+    ResponseEntity<ServiceResult<Object>> response;
+    
+    try {
+      
+      String tenantId = obtenerTenantId(httpRequest);
+      
+      resultado = this.procesosService.listarProcesoService(tenantId);
+      
+      if ( resultado == null ) {
+        resultado = new ServiceResult<>(false,
+            "Error interno, no se pudo recuperar el proceso de lavado",
+            ConstantesNumericas.CERO, null);
+        response = ResponseEntity.status(ApiErrorCode.ERROR_INTERNO.getHttpStatus()).body(resultado);
+      }
+      else if ( !resultado.isSuccess() && resultado.getData() instanceof ApiErrorCode ) {
+        ApiErrorCode error = (ApiErrorCode) resultado.getData();
+        response = ResponseEntity.status(error.getHttpStatus()).body(resultado);
+      }
+      else {
+        response = ResponseEntity.ok(resultado);
+      }
+      
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al recuperar el proceso de lavado | Controller | Detalles: {}]",
+          e.getMessage(), e);
+      response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    return response;
+    
+  }
+  
 }

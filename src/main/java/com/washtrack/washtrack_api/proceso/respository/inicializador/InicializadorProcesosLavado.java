@@ -95,6 +95,18 @@ public class InicializadorProcesosLavado {
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
         .returningResultSet("procesorecuperado", new ProcesosRowmapper());
+    
+    this.listarProcesos = new SimpleJdbcCall(this.jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_LISTAR_PROCESOS)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("listaprocesos", new ProcesosRowmapper());
   }
   
   // EJECUCIONES EN BD *************************************************************************************************
@@ -125,6 +137,13 @@ public class InicializadorProcesosLavado {
     paramMap.put("pa_tenantid", tenantid);
     log.info("[Parametros del proceso de lavado a buscar | Detalle: {}]", paramMap);
     return this.buscarProceso.execute(paramMap);
+  }
+  
+  public Map<String, Object> listarProcesosLavadoExe(String tenantid) {
+    Map<String, Object> paramMap = new HashMap<String, Object>();
+    paramMap.put("pa_tenantid", tenantid);
+    log.info("[Parametros para obtener el listado de procesos de lavado | Detalle: {}]", paramMap);
+    return this.listarProcesos.execute(paramMap);
   }
   
 }

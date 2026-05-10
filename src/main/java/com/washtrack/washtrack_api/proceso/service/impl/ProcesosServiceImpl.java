@@ -16,11 +16,14 @@ import com.washtrack.washtrack_api.proceso.util.MapearObjetosProcesos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesMensajesGenericos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.util.exceptions.ApiErrorCode;
+import com.washtrack.washtrack_api.util.response.MapearRespuestasConsultasUtil;
 import com.washtrack.washtrack_api.util.response.ServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -29,10 +32,10 @@ public class ProcesosServiceImpl implements IProcesosService {
   
   private final IProcesosRepository procesosRepository;
   private final MapearObjetosProcesos mapearObjetosProcesos;
-  private final MapearRespuestasConsultas mapearRespuestasConsultas;
+  private final MapearRespuestasConsultasUtil mapearRespuestasConsultas;
   
   public ProcesosServiceImpl(IProcesosRepository procesosRepository, MapearObjetosProcesos mapearObjetosProcesos,
-      MapearRespuestasConsultas mapearRespuestasConsultas) {
+      MapearRespuestasConsultasUtil mapearRespuestasConsultas) {
     this.procesosRepository = procesosRepository;
     this.mapearObjetosProcesos = mapearObjetosProcesos;
     this.mapearRespuestasConsultas = mapearRespuestasConsultas;
@@ -359,6 +362,72 @@ public class ProcesosServiceImpl implements IProcesosService {
     }
     finally {
       log.info("[Finaliza buscar proceso de lavado | Service]");
+    }
+    
+    return serviceResult;
+  }
+  
+  @Override
+  public ServiceResult<Object> listarProcesoService(String tenantid) {
+    log.info("[Inicia listar los procesos de lavado | Service]");
+    
+    ServiceResult<Object> serviceResult = null;
+    
+    try {
+      // Llamada al Repository
+      ProcesosResponseRepository respuesta = this.procesosRepository.listarProcesosRepository(tenantid);
+      
+      if ( respuesta == null || respuesta.getEntityList().isEmpty() ) {
+        log.info("[Listado de procesos de lavado no encontrados en la BD | Service]");
+        return this.mapearRespuestasConsultas.mapearserviceResultError(
+            ConstantesMensajesGenericos.SIN_REGISTROS,
+            ApiErrorCode.SIN_INFORMACION_EN_BD
+        );
+      }
+      else {
+        List<ProcesosDto> procesosDtoList = new ArrayList<>();
+        for (ProcesosEntity procesosEntity : respuesta.getEntityList()) {
+          procesosDtoList.add(this.mapearObjetosProcesos.mapearFromEntityToDto(procesosEntity));
+        }
+        serviceResult =
+            this.mapearRespuestasConsultas.mapearserviceResultRespuestaOk(
+                ConstantesMensajesGenericos.OPERACION_EXITOSA,
+                respuesta.getEntityList().size(),
+                procesosDtoList);
+      }
+      
+    }
+    catch ( NullPointerException e ) {
+      log.error("[NullPointerException | Error critico, alguno de los datos es NULL | Service |  Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    catch ( DataAccessException e ) {
+      log.error(
+          "[DataAccessException | Error al listar los procesos de lavado "
+              + "| Service | Mas detalles: {}]", e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_BASE_DATOS
+          );
+    }
+    catch ( Exception e ) {
+      log.error(
+          "[Exception | Error critico al listar los procesos de lavado | Service | Mas detalles: {}]",
+          e.getMessage(), e);
+      serviceResult =
+          this.mapearRespuestasConsultas.mapearserviceResultError(
+              ConstantesMensajesGenericos.ERROR_BD,
+              ApiErrorCode.ERROR_INTERNO
+          );
+    }
+    finally {
+      log.info("[Finaliza listar los procesos de lavado | Service]");
     }
     
     return serviceResult;

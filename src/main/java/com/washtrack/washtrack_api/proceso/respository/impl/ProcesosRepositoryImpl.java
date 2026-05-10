@@ -228,4 +228,55 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
     
     return responseRepository;
   }
+  
+  @Override
+  public ProcesosResponseRepository listarProcesosRepository(String tenantid) {
+    log.info("[Inicia listar procesos de lavado | Repository]");
+    
+    ProcesosResponseRepository responseRepository = new ProcesosResponseRepository();
+    
+    try {
+      Map<String, Object> respuesta =
+          this.inicializadorProcesosLavado.listarProcesosLavadoExe(tenantid);
+      
+      Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
+      String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
+      
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      
+      responseRepository.setProcesosEntity(null);
+      responseRepository.setCodigobd(codigobd);
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<ProcesosEntity> entityList = (List<ProcesosEntity>) respuesta.get("listaprocesos");
+        if ( !entityList.isEmpty() ) {
+          responseRepository.setEntityList(entityList);
+        }
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Sin registros de procesos de labado en la BD | Repository]");
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP listar procesos de lavado fallo, se asume error]");
+      }
+      
+    }
+    catch ( DataAccessException e ) {
+      log.error("[DataAccessException | Error critico al listar los procesos de lavado en BD | Repository"
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    catch ( Exception e ) {
+      log.error("[Exception | Error critico al listar los procesos de lavado en BD | Repository "
+          + " | Detalles: {}]", e.getMessage(), e);
+      throw e;
+    }
+    finally {
+      log.info("[Finaliza listar procesos de lavado | Repository]");
+    }
+    
+    return responseRepository;
+  }
 }

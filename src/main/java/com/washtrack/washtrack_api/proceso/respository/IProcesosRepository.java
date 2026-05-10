@@ -8,4 +8,5 @@ public interface IProcesosRepository {
   ProcesosResponseRepository actualizarProcesoRepository(ProcesosEntity proceso);
   ProcesosResponseRepository eliminarProcesoRepository(String  idproceso, String tenantid);
   ProcesosResponseRepository buscarProcesoRepository(String codigoProceso, String tenantid);
+  ProcesosResponseRepository listarProcesosRepository(String tenantid);
 }

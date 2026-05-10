@@ -9,4 +9,5 @@ public interface IProcesosService {
   ServiceResult<Object> actualizarProcesoService(ProcesoUpdateRequest procesosRequest);
   ServiceResult<Object> eliminarProcesoService(String idproceso, String tenantid);
   ServiceResult<Object> buscarProcesoService(String codigoProceso, String tenantid);
+  ServiceResult<Object> listarProcesoService(String tenantid);
 }
