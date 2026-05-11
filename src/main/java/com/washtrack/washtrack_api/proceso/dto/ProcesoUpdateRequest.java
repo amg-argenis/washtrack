@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProcesoUpdateRequest {
+public class  ProcesoUpdateRequest {
   private String tenantid;
   @NotBlank(message = "Campo requerido para la operacion, favor de verificar")
   private String nombre;
