@@ -32,7 +32,7 @@ public class MapearObjetos {
   public Map<String, Object> parametrizarActualizarOrdenes(OrdenesEntity orden) {
     Map<String, Object> paramMap = new HashMap<>();
     
-    paramMap.put("pa_tenantid", "a051a168-fa2a-11f0-aab7-e66133dbb0de"); // hardcodeado por ahora
+    paramMap.put("pa_tenantid", orden.getTenantId());
     paramMap.put("pa_idorden", orden.getIdOrden());
     paramMap.put("pa_clienteid", orden.getClienteId());
     paramMap.put("pa_folio", orden.getFolio());

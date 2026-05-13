@@ -196,7 +196,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
-        // Mapear OUT campos insertados a tu entidad
+        // Mapear OUT campos insertados a la entidad
         ordenesEntity = new OrdenesEntity();
         ordenesEntity.setIdOrden((String) resultado.get("po_idorden"));
         ordenesEntity.setClienteId((String) resultado.get("po_clienteid"));
