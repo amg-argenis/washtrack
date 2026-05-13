@@ -192,7 +192,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP insertar orden servicio no devolvio pa_codigobd, se asume error]");
+        log.warn("[El SP insertar orden servicio devolvio pa_codigobd negativo, se asume error]");
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
