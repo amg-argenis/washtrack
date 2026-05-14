@@ -2,8 +2,10 @@ package com.washtrack.washtrack_api.cliente.respository.impl;
 
 import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
+import com.washtrack.washtrack_api.cliente.response.ResponseClientesRepository;
 import com.washtrack.washtrack_api.cliente.respository.IClientesRepository;
 import com.washtrack.washtrack_api.cliente.respository.inicializador.InicializadorClientesSimpleJdbcCall;
+import com.washtrack.washtrack_api.proceso.entity.ProcesosEntity;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +27,10 @@ public class ClientesRepositoryImpl implements IClientesRepository {
   }
   
   @Override
-  public List<ClientesEntity> listarClientesRepository(String tenantId) {
+  public ResponseClientesRepository listarClientesRepository(String tenantId) {
     log.info("[Inicia listar clientes | Repository]");
     
-    List<ClientesEntity> lista = new ArrayList<>();
+    ResponseClientesRepository responseRepository = new ResponseClientesRepository();
     Map<String, Object> resultado;
     try {
       // Ejecucion
@@ -40,11 +42,21 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("El SP para listar clientes no devolvio pa_codigobd, se asume error.");
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setClientes(null);
+      responseRepository.setEntityList(new ArrayList<>());
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP listar clientes fallo, se asume error]");
       }
-      else {
-        lista = (List<ClientesEntity>) resultado.get("listaclientes");
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        List<ClientesEntity> lista = (List<ClientesEntity>) resultado.get("listaclientes");
+        responseRepository.setEntityList(lista);
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Registros de clientes No encontrados en la BD | Repository]");
       }
     }
     catch ( DataAccessException e ) {
@@ -64,12 +76,14 @@ public class ClientesRepositoryImpl implements IClientesRepository {
     }
     
     // ResultSet
-    return lista;
+    return responseRepository;
   }
   
   @Override
-  public ClientesEntity buscarClienteRepository(String idCliente, String tenantId) {
+  public ResponseClientesRepository buscarClienteRepository(String idCliente, String tenantId) {
     log.info("[Inicia buscar cliente | Repository]");
+    
+    ResponseClientesRepository responseRepository = new ResponseClientesRepository();
     
     try {
       Map<String, Object> resultado =
@@ -82,6 +96,10 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setClientes(null);
+      responseRepository.setEntityList(new ArrayList<>());
+      
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP para buscar cliente no devolvio pa_codigobd, se asume error]");
       }
@@ -91,9 +109,14 @@ public class ClientesRepositoryImpl implements IClientesRepository {
             (List<ClientesEntity>) resultado.get("clienterecuperado");
         
         if ( lista != null && !lista.isEmpty() ) {
-          return lista.get(ConstantesNumericas.CERO);
+          responseRepository.setClientes(lista.get(ConstantesNumericas.CERO));
         }
       }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Registros de clientes No encontrados en la BD | Repository]");
+      }
+      
     }
     catch ( DataAccessException e ) {
       log.error("[DataAccessException | Error critico al buscar el cliente en BD | Repository]", e);
@@ -107,13 +130,14 @@ public class ClientesRepositoryImpl implements IClientesRepository {
     finally {
       log.info("[Finaliza buscar cliente | Repository]");
     }
-    return null;
+    return responseRepository;
   }
   
   @Override
-  public ClientesEntity insertarClienteRepository(ClientesEntity cliente) {
+  public ResponseClientesRepository insertarClienteRepository(ClientesEntity cliente) {
     log.info("[Inicia insertar nuevo cliente | Repository]");
-    ClientesEntity clientesEntity = null;
+    
+    ResponseClientesRepository responseRepository = new ResponseClientesRepository();
     
     try {
       // Ejecucion
@@ -126,14 +150,16 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setClientes(null);
+      responseRepository.setEntityList(new ArrayList<>());
+      
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
         List<ClientesEntity> entityList =
             (List<ClientesEntity>) resultado.get("clienterecuperado");
-        clientesEntity = entityList.get(ConstantesNumericas.CERO);
-      }
-      
-      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP para insertar cliente no devolvio pa_codigobd, se asume error]");
+        if ( entityList != null && !entityList.isEmpty() ) {
+          responseRepository.setClientes(entityList.get(ConstantesNumericas.CERO));
+        }
       }
       
       if ( codigobd != null && codigobd == ConstantesNumericas.UNONEGATIVO ) {
@@ -155,14 +181,14 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       log.info("[Finaliza insertar nuevo cliente | Repository]");
     }
     
-    return clientesEntity;
+    return responseRepository;
   }
   
   @Override
-  public ClientesEntity actualizarClienteRepository(ClientesEntity cliente) {
+  public ResponseClientesRepository actualizarClienteRepository(ClientesEntity cliente) {
     log.info("[Inicia actualizar cliente | Repository]");
     
-    ClientesEntity clientesEntity = null;
+    ResponseClientesRepository responseRepository = new ResponseClientesRepository();
     
     try {
       // Ejecucion
@@ -176,10 +202,16 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
+      responseRepository.setCodigobd(codigobd);
+      responseRepository.setClientes(null);
+      responseRepository.setEntityList(new ArrayList<>());
+      
       if ( codigobd != null && codigobd == ConstantesNumericas.CERO ) {
         List<ClientesEntity> entityList =
             (List<ClientesEntity>) resultado.get("clienterecuperado");
-        clientesEntity = entityList.getFirst();
+        if ( entityList != null && !entityList.isEmpty() ) {
+          responseRepository.setClientes(entityList.get(ConstantesNumericas.CERO));
+        }
       }
       
       if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
@@ -200,7 +232,7 @@ public class ClientesRepositoryImpl implements IClientesRepository {
       log.info("[Finaliza actualizar cliente | Repository]");
     }
     
-    return clientesEntity;
+    return responseRepository;
   }
   
   @Override

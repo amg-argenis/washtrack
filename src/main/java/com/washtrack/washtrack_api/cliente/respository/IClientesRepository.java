@@ -2,18 +2,19 @@ package com.washtrack.washtrack_api.cliente.respository;
 
 import com.washtrack.washtrack_api.cliente.dto.ClienteBuscarEliminarRequest;
 import com.washtrack.washtrack_api.cliente.entity.ClientesEntity;
+import com.washtrack.washtrack_api.cliente.response.ResponseClientesRepository;
 
 import java.util.List;
 
 public interface IClientesRepository {
   
-  List<ClientesEntity> listarClientesRepository(String tenantId);
+  ResponseClientesRepository listarClientesRepository(String tenantId);
   
-  ClientesEntity buscarClienteRepository(String idCliente, String tenantId);
+  ResponseClientesRepository buscarClienteRepository(String idCliente, String tenantId);
   
-  ClientesEntity insertarClienteRepository(ClientesEntity cliente);
+  ResponseClientesRepository insertarClienteRepository(ClientesEntity cliente);
   
-  ClientesEntity actualizarClienteRepository(ClientesEntity cliente);
+  ResponseClientesRepository actualizarClienteRepository(ClientesEntity cliente);
   
   Integer eliminarClienteRepository(ClienteBuscarEliminarRequest clienteDto);
   
