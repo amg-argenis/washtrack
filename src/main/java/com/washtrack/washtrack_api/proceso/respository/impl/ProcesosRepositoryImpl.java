@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -234,6 +235,7 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
     log.info("[Inicia listar procesos de lavado | Repository]");
     
     ProcesosResponseRepository responseRepository = new ProcesosResponseRepository();
+    List<ProcesosEntity> entityList;
     
     try {
       Map<String, Object> respuesta =
@@ -246,20 +248,19 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
       
       responseRepository.setProcesosEntity(null);
       responseRepository.setCodigobd(codigobd);
+      responseRepository.setEntityList(new ArrayList<>());
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP listar procesos fallo, se asume error]");
+      }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<ProcesosEntity> entityList = (List<ProcesosEntity>) respuesta.get("listaprocesos");
-        if ( !entityList.isEmpty() ) {
-          responseRepository.setEntityList(entityList);
-        }
+        entityList = (List<ProcesosEntity>) respuesta.get("listaprocesos");
+        responseRepository.setEntityList(entityList);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
-        log.warn("[Sin registros de procesos de labado en la BD | Repository]");
-      }
-      
-      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP listar procesos de lavado fallo, se asume error]");
+        log.warn("[Registros de procesos No encontrados en la BD | Repository]");
       }
       
     }

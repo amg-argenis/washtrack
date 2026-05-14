@@ -28,6 +28,7 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
   public List<EntregasEntity> listarEntregasRepository(String tenantId) {
     log.info("[Inicia listar entregas | Repository]");
     
+    EntregasResponseRepository responseRepository = new EntregasResponseRepository();
     List<EntregasEntity> entregasEntityList = new ArrayList<>();
     
     try {
@@ -39,12 +40,17 @@ public class EntregasRepositoryImpl implements IEntregasRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
+      responseRepository.setEntregasEntity(null);
+      responseRepository.setEntityList(new ArrayList<>());
+      responseRepository.setCodigobd(codigobd);
+      
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP listar entregas fallo, se asume error]");
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
         entregasEntityList = (List<EntregasEntity>) respuesta.get("listadoentregas");
+        responseRepository.setEntityList(entregasEntityList);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {

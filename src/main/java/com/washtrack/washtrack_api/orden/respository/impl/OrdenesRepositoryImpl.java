@@ -1,5 +1,6 @@
 package com.washtrack.washtrack_api.orden.respository.impl;
 
+import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
 import com.washtrack.washtrack_api.util.constantes.ConstantesNumericas;
 import com.washtrack.washtrack_api.orden.entity.OrdenesEntity;
@@ -33,7 +34,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
   public List<OrdenesEntity> listarOrdenesRepository(String tenantId) {
     log.info("[Inicia listar ordenes de servicio | Repository]");
     
-    List<OrdenesEntity> lista = new ArrayList<>();
+    List<OrdenesEntity> listaEntities = new ArrayList<>();
     Map<String, Object> resultado;
     try {
       // Ejecucion
@@ -45,11 +46,16 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, pamensaje);
       
-      if ( codigobd == null || codigobd == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("El SP listar ordenes de servicio no devolvio pa_codigobd, se asume error.");
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP listar ordenes fallo, se asume error]");
       }
-      else {
-        lista = (List<OrdenesEntity>) resultado.get("listaOrdenes");
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        listaEntities = (List<OrdenesEntity>) resultado.get("listaOrdenes");
+      }
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
+        log.warn("[Registros de ordenes No encontradas en la BD | Repository]");
       }
     }
     catch ( DataAccessException e ) {
@@ -69,7 +75,7 @@ public class OrdenesRepositoryImpl implements IOrdenesRepository {
     }
     
     // ResultSet
-    return lista;
+    return listaEntities;
   }
   
   /**

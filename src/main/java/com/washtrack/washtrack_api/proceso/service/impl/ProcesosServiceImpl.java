@@ -379,7 +379,7 @@ public class ProcesosServiceImpl implements IProcesosService {
       
       if ( respuesta == null || respuesta.getEntityList().isEmpty() ) {
         log.info("[Listado de procesos de lavado no encontrados en la BD | Service]");
-        return this.mapearRespuestasConsultas.mapearserviceResultError(
+        serviceResult = this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesMensajesGenericos.SIN_REGISTROS,
             ApiErrorCode.SIN_INFORMACION_EN_BD
         );
