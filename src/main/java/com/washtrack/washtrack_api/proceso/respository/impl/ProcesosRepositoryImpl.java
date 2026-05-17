@@ -37,17 +37,18 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {} | Repository]", codigobd, mensajebd);
       
       responseRepository.setCodigobd(codigobd);
       responseRepository.setProcesosEntity(null);
+      responseRepository.setEntityList(new ArrayList<>());
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<ProcesosEntity> procesosEntityList = (List<ProcesosEntity>) respuesta.get("procesoinsertado");
-        ProcesosEntity procesosEntity = procesosEntityList.get(ConstantesNumericas.CERO);
-        responseRepository.setProcesosEntity(procesosEntity);
-        responseRepository.setCodigobd(codigobd);
-        log.info("[Proceso de lavado insertado correctamente en la BD]");
+        responseRepository.setEntityList((List<ProcesosEntity>) respuesta.get("procesoinsertado"));
+        if ( !responseRepository.getEntityList().isEmpty() ) {
+          responseRepository.setProcesosEntity(responseRepository.getEntityList().get(ConstantesNumericas.CERO));
+          log.info("[Proceso de lavado insertado correctamente en la BD | Repository]");
+        }
       }
       
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
@@ -89,17 +90,18 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {} | Repository]", codigobd, mensajebd);
       
       responseRepository.setCodigobd(codigobd);
       responseRepository.setProcesosEntity(null);
+      responseRepository.setEntityList(new ArrayList<>());
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<ProcesosEntity> procesosEntityList = (List<ProcesosEntity>) respuesta.get("procesoactualizado");
-        ProcesosEntity procesosEntity = procesosEntityList.get(ConstantesNumericas.CERO);
-        responseRepository.setProcesosEntity(procesosEntity);
-        responseRepository.setCodigobd(codigobd);
-        log.info("[Proceso de lavado actualizado correctamente en la BD]");
+        responseRepository.setEntityList((List<ProcesosEntity>) respuesta.get("procesoactualizado"));
+        if ( !responseRepository.getEntityList().isEmpty() ) {
+          responseRepository.setProcesosEntity(responseRepository.getEntityList().get(ConstantesNumericas.CERO));
+          log.info("[Proceso de lavado actualizado correctamente en la BD | Repository]");
+        }
       }
       
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
@@ -142,14 +144,15 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
       
-      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
+      log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {} | Repository]", codigobd, mensajebd);
       
       responseRepository.setCodigobd(codigobd);
       responseRepository.setProcesosEntity(null);
+      responseRepository.setEntityList(new ArrayList<>());
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
         responseRepository.setCodigobd(codigobd);
-        log.info("[Proceso de lavado eliminado correctamente en la BD]");
+        log.info("[Proceso de lavado eliminado correctamente en la BD | Repository]");
       }
       
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
@@ -194,22 +197,24 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
-      responseRepository.setProcesosEntity(null);
       responseRepository.setCodigobd(codigobd);
+      responseRepository.setProcesosEntity(null);
+      responseRepository.setEntityList(new ArrayList<>());
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        List<ProcesosEntity> entityList = (List<ProcesosEntity>) respuesta.get("procesorecuperado");
-        if ( !entityList.isEmpty() ) {
-          responseRepository.setProcesosEntity(entityList.get(ConstantesNumericas.CERO));
+        responseRepository.setEntityList((List<ProcesosEntity>) respuesta.get("procesorecuperado"));
+        if ( !responseRepository.getEntityList().isEmpty() ) {
+          responseRepository.setProcesosEntity(responseRepository.getEntityList().get(ConstantesNumericas.CERO));
+          log.info("[Proceso de lavado recuperado correctamente de la BD | Repository]");
         }
+      }
+      
+      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
+        log.warn("[El SP buscar proceso fallo, se asume error | Repository]");
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
         log.warn("[Proceso de lavado no encontrada en la BD | Repository]");
-      }
-      
-      if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
-        log.warn("[El SP buscar proceso fallo, se asume error]");
       }
       
     }
@@ -246,17 +251,19 @@ public class ProcesosRepositoryImpl implements IProcesosRepository {
       
       log.info("[Repository | Respuesta BD, Codigo: {} | Mensaje: {}]", codigobd, mensajebd);
       
-      responseRepository.setProcesosEntity(null);
       responseRepository.setCodigobd(codigobd);
+      responseRepository.setProcesosEntity(null);
       responseRepository.setEntityList(new ArrayList<>());
+      
+      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        responseRepository.setEntityList((List<ProcesosEntity>) respuesta.get("listaprocesos"));
+        if ( !responseRepository.getEntityList().isEmpty() ) {
+          log.info("[Listado de procesos de lavado recuperado correctamente de la BD | Repository]");
+        }
+      }
       
       if ( codigobd == null || codigobd.intValue() == ConstantesNumericas.UNONEGATIVO ) {
         log.warn("[El SP listar procesos fallo, se asume error]");
-      }
-      
-      if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
-        entityList = (List<ProcesosEntity>) respuesta.get("listaprocesos");
-        responseRepository.setEntityList(entityList);
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.DOS ) {
