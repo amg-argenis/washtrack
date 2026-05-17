@@ -1,10 +1,5 @@
 package com.washtrack.washtrack_api.proceso.service.impl;
 
-import com.washtrack.washtrack_api.entregas.dto.EntregasDto;
-import com.washtrack.washtrack_api.entregas.entity.EntregasEntity;
-import com.washtrack.washtrack_api.entregas.repository.IEntregasRepository;
-import com.washtrack.washtrack_api.entregas.response.EntregasResponseRepository;
-import com.washtrack.washtrack_api.orden.util.MapearRespuestasConsultas;
 import com.washtrack.washtrack_api.proceso.dto.ProcesoUpdateRequest;
 import com.washtrack.washtrack_api.proceso.dto.ProcesosDto;
 import com.washtrack.washtrack_api.proceso.dto.ProcesosRequest;
