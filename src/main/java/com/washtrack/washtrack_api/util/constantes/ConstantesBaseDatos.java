@@ -54,6 +54,13 @@ public final class ConstantesBaseDatos {
   public static final String SP_BUSCAR_ENTREGA = "SP_BUSCAR_ENTREGA";
   public static final String SP_ELIMINAR_ENTREGA = "SP_ELIMINAR_ENTREGA";
   
+  // TENANT
+  public static final String SP_INSERTAR_TENANT = "SP_INSERTAR_TENANT";
+  public static final String SP_LISTAR_TENANTS = "SP_LISTAR_TENANTS";
+  public static final String SP_BUSCAR_TENANT = "SP_BUSCAR_TENANT";
+  public static final String SP_ACTUALIZAR_TENANT = "SP_ACTUALIZAR_TENANT";
+  public static final String SP_ELIMINAR_TENANT = "SP_ELIMINAR_TENANT";
+  
   // DASHBOARD
   public static final String SP_DASHBOARD = "SP_DASHBOARD";
   
