@@ -34,6 +34,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             // Endpoints publicos - no requieren token
             .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/usuarios/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/tenants/insertar").permitAll()
+            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/usuarios/insertar").permitAll()
             // Todo lo demas requiere autenticacion
             .anyRequest().authenticated()
         )
