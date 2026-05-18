@@ -33,12 +33,10 @@ public class SecurityConfig {
         )
         .authorizeHttpRequests(auth -> auth
             // Endpoints publicos - no requieren token
+            // Usuario Login
             .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/usuarios/login").permitAll()
-            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/usuarios/insertar").permitAll()
-            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/foradmin/tenants/insertar").permitAll()
-            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/foradmin/tenants/listar").permitAll()
-            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/foradmin/tenants/buscar").permitAll()
-            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/foradmin/tenants/eliminar").permitAll()
+            // Tenant
+            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/tenants/insertar").permitAll()
             // Todo lo demas requiere autenticacion
             .anyRequest().authenticated()
         )

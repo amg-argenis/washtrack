@@ -34,7 +34,7 @@ public class TenantController {
     this.tenantService = tenantService;
   }
   
-  @PostMapping("/foradmin/tenants/insertar")
+  @PostMapping("/tenants/insertar")
   public ResponseEntity<ServiceResult<Object>> insertarTenantController(
       @Valid @RequestBody TenantInsertRequest request) {
     
