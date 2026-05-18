@@ -35,6 +35,7 @@ public class SecurityConfig {
             // Endpoints publicos - no requieren token
             // Usuario Login
             .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/usuarios/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/usuarios/insertar").permitAll()
             // Tenant
             .requestMatchers(HttpMethod.POST, "/washtrack/api/v1/tenants/insertar").permitAll()
             // Todo lo demas requiere autenticacion
