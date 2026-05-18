@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class UsuarioInsertDto {
   
+  private String idusuario;
   private String tenantId;
-  
   @NotBlank(message = "El campo nombre es requerido, favor de verificar")
   private String nombre;
   @NotBlank(message = "El campo email es requerido, favor de verificar")

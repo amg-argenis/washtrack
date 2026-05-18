@@ -1,6 +1,7 @@
 package com.washtrack.washtrack_api.usuarios.repository.inicializador;
 
 import com.washtrack.washtrack_api.usuarios.entity.UsuarioInsertEntity;
+import com.washtrack.washtrack_api.usuarios.rowmapper.UsuarioLoginRowMapper;
 import com.washtrack.washtrack_api.usuarios.rowmapper.UsuarioRowMapper;
 import com.washtrack.washtrack_api.usuarios.util.MapearObjetosUsuario;
 import com.washtrack.washtrack_api.util.constantes.ConstantesBaseDatos;
@@ -78,7 +79,7 @@ public class InicializadorRepositoryUsuarios {
             new SqlOutParameter("pa_codigobd", Types.INTEGER),
             new SqlOutParameter("pa_mensaje", Types.VARCHAR)
         )
-        .returningResultSet("usuariologinrec", new UsuarioRowMapper());
+        .returningResultSet("usuariologinrec", new UsuarioLoginRowMapper());
     
     this.listarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)

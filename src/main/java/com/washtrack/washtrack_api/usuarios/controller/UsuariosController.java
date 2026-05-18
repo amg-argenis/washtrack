@@ -158,8 +158,10 @@ public class UsuariosController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      usuario.setTenantId(tenantId);
+      if ( usuario.getTenantId() == null ) {
+        String tenantId = obtenerTenantId(request);
+        usuario.setTenantId(tenantId);
+      }
       
       resultado = this.usuarioService.insertarUsuarioService(usuario);
       
