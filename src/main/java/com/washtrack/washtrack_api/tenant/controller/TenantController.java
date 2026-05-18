@@ -34,7 +34,7 @@ public class TenantController {
     this.tenantService = tenantService;
   }
   
-  @PostMapping("/tenants/insertar")
+  @PostMapping("/foradmin/tenants/insertar")
   public ResponseEntity<ServiceResult<Object>> insertarTenantController(
       @Valid @RequestBody TenantInsertRequest request) {
     
@@ -69,7 +69,7 @@ public class TenantController {
     return response;
   }
   
-  @PostMapping("/tenants/actualizar")
+  @PostMapping("/foradmin/tenants/actualizar")
   public ResponseEntity<ServiceResult<Object>> actualizarTenantController(
       @Valid @RequestBody TenantUpdateRequest request) {
     
@@ -104,7 +104,7 @@ public class TenantController {
     return response;
   }
   
-  @PostMapping("/tenants/eliminar")
+  @PostMapping("/foradmin/tenants/eliminar")
   public ResponseEntity<ServiceResult<Object>> eliminarTenantController(
       @RequestParam
       @NotNull(message = "Debe proporcionar el Id del tenant")
@@ -142,7 +142,7 @@ public class TenantController {
     return response;
   }
   
-  @GetMapping("/tenants/buscar")
+  @GetMapping("/foradmin/tenants/buscar")
   public ResponseEntity<ServiceResult<Object>> buscarTenantController(
       @RequestParam
       @NotNull(message = "Debe proporcionar el Id del tenant")
@@ -180,7 +180,7 @@ public class TenantController {
     return response;
   }
   
-  @GetMapping("/tenants/listar")
+  @GetMapping("/foradmin/tenants/listar")
   public ResponseEntity<ServiceResult<Object>> listarTenantsController() {
     
     log.info("[Iniciando listar tenants | Controller]");
