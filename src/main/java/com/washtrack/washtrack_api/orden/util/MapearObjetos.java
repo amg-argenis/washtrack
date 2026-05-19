@@ -113,6 +113,7 @@ public class MapearObjetos {
         .totalPrendas(orden.getTotalPrendas())
         .observaciones(orden.getObservaciones())
         .fechaEntrega(orden.getFechaEntrega())
+        .tenantId(orden.getTenantId())
         .build();
   }
   
@@ -127,6 +128,7 @@ public class MapearObjetos {
     return OrdenesEntity.builder()
         .idOrden(orden.getIdOrden())
         .folio(orden.getFolio())
+        .tenantId(orden.getTenantId())
         .build();
   }
   
@@ -141,6 +143,7 @@ public class MapearObjetos {
     return OrdenesEntity.builder()
         .idOrden(orden.getIdOrden())
         .folio(orden.getFolio())
+        .tenantId(orden.getTenantId())
         .build();
   }
   
@@ -161,7 +164,6 @@ public class MapearObjetos {
         .totalPrendas(orden.getTotalPrendas())
         .observaciones(orden.getObservaciones())
         .createdAt(orden.getCreatedAt())
-        // Este campo por ahora es temporal hacia el Front
         .tenantId(orden.getTenantId())
         .fechaEntrega(orden.getFechaEntrega())
         .build();
