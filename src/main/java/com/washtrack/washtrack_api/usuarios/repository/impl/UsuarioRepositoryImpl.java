@@ -48,8 +48,13 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
       }
       
       if ( codigobd != null && codigobd.intValue() == ConstantesNumericas.CERO ) {
+        log.info("[Usuario recuperado para login: {}]", respuesta.get("usuariologinrec"));
         List<UsuarioEntity> usuarioEntity = (List<UsuarioEntity>) respuesta.get("usuariologinrec");
-        loginResponse.setUsuarioEntity(usuarioEntity.get(ConstantesNumericas.CERO));
+        
+        if ( usuarioEntity != null || !usuarioEntity.isEmpty() ) {
+          loginResponse.setUsuarioEntity(usuarioEntity.get(ConstantesNumericas.CERO));
+        }
+        
         loginResponse.setCodigobd(codigobd);
       }
       

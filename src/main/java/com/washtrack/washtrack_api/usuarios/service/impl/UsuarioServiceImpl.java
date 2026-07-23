@@ -55,7 +55,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
           loginUsuarioRequest.getPassword()
       );
       
-      if ( respuesta == null ) {
+      if ( respuesta.getUsuarioEntity() == null ) {
         log.info("[Usuario para login no encontrado | Service]");
         return this.mapearRespuestasConsultas.mapearserviceResultError(
             ConstantesOrdenes.SIN_REGISTROS,
