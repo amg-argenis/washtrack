@@ -57,6 +57,7 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
+      
       String tenantId = obtenerTenantId(request);
       
       resultado = this.ordenesService.listaOrdenesService(tenantId);
@@ -103,6 +104,7 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
+      
       String tenantId = obtenerTenantId(request);
       
       resultado = this.ordenesService.listaOrdenesFechaIngresoService(fechaIngreso, tenantId);
@@ -144,8 +146,12 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      orden.setTenantId(tenantId);
+      
+      if ( orden.getTenantId() == null || orden.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        orden.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.ordenesService.buscarOrdenService(orden);
       
@@ -186,8 +192,12 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      orden.setTenantId(tenantId);
+      
+      if ( orden.getTenantId() == null || orden.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        orden.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.ordentesConDetalleService.obtenerOrdenServicioMasDetallesDto(orden);
       
@@ -229,8 +239,12 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      orden.setTenantId(tenantId);
+      
+      if ( orden.getTenantId() == null || orden.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        orden.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.ordenesService.guardarOrdenService(orden);
       
@@ -272,8 +286,12 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      orden.setTenantId(tenantId);
+      
+      if ( orden.getTenantId() == null || orden.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        orden.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.ordenesService.actualizarOrdenService(orden);
       
@@ -315,8 +333,12 @@ public class OrdenController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      orden.setTenantId(tenantId);
+      
+      if ( orden.getTenantId() == null || orden.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        orden.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.ordenesService.eliminarOrdenService(orden);
       
