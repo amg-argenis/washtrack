@@ -158,8 +158,9 @@ public class UsuariosController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      if ( usuario.getTenantId() == null ) {
+      if ( usuario.getTenantId() == null || usuario.getTenantId().isEmpty() ) {
         String tenantId = obtenerTenantId(request);
+        log.info("[El tenant obtenido es: {}]", tenantId);
         usuario.setTenantId(tenantId);
       }
       
@@ -199,8 +200,11 @@ public class UsuariosController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      usuario.setTenantId(tenantId);
+      if ( usuario.getTenantId() == null || usuario.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+        usuario.setTenantId(tenantId);
+      }
       
       resultado = this.usuarioService.eliminarUsuarioService(usuario);
       
@@ -238,8 +242,11 @@ public class UsuariosController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      usuario.setTenantId(tenantId);
+      if ( usuario.getTenantId() == null || usuario.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+        usuario.setTenantId(tenantId);
+      }
       
       resultado = this.usuarioService.reactivarUsuarioService(usuario);
       
@@ -277,8 +284,11 @@ public class UsuariosController {
     ResponseEntity<ServiceResult<Object>> response;
     
     try {
-      String tenantId = obtenerTenantId(request);
-      usuario.setTenantId(tenantId);
+      if ( usuario.getTenantId() == null || usuario.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(request);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+        usuario.setTenantId(tenantId);
+      }
       
       resultado = this.usuarioService.actualizarUsuarioService(usuario);
       
