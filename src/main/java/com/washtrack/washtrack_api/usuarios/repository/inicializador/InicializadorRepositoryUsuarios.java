@@ -29,6 +29,7 @@ public class InicializadorRepositoryUsuarios {
   private SimpleJdbcCall listarUsuarioPorTenantIdSimpleJdbcCall;
   private SimpleJdbcCall insertarUsuarioSimpleJdbcCall;
   private SimpleJdbcCall actualizarUsuarioSimpleJdbcCall;
+  private SimpleJdbcCall actualizarUsuarioNoPasswordSimpleJdbcCall;
   private SimpleJdbcCall eliminarUsuarioSimpleJdbcCall;
   private SimpleJdbcCall reactivarUsuarioSimpleJdbcCall;
   
@@ -137,6 +138,22 @@ public class InicializadorRepositoryUsuarios {
         )
         .returningResultSet("usuarioactualizado", new UsuarioRowMapper());
     
+    this.actualizarUsuarioNoPasswordSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+        .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
+        .withProcedureName(ConstantesBaseDatos.SP_ACTUALIZAR_USUARIO_NOPASSWORD)
+        .declareParameters(
+            // IN
+            new SqlParameter("pa_idusuario", Types.VARCHAR),
+            new SqlParameter("pa_nombre", Types.VARCHAR),
+            new SqlParameter("pa_email", Types.VARCHAR),
+            new SqlParameter("pa_rol", Types.VARCHAR),
+            new SqlParameter("pa_tenantid", Types.VARCHAR),
+            // OUT
+            new SqlOutParameter("pa_codigobd", Types.INTEGER),
+            new SqlOutParameter("pa_mensaje", Types.VARCHAR)
+        )
+        .returningResultSet("usuarioactualizado", new UsuarioRowMapper());
+    
     this.eliminarUsuarioSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
         .withCatalogName(ConstantesBaseDatos.WASHTRACKDB)
         .withProcedureName(ConstantesBaseDatos.SP_ELIMINAR_USUARIO)
@@ -220,11 +237,19 @@ public class InicializadorRepositoryUsuarios {
   }
   
   /**
-   * Actualizar datos usuario por Id Usuario | Login
+   * Actualizar datos usuario y password por Id Usuario | Login
    */
   public Map<String, Object> actualizarUsuarioJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
     Map<String, Object> params = this.mapearObjetosUsuario.actualizarUsuarioParameters(usuarioInsertEntity);
     return this.actualizarUsuarioSimpleJdbcCall.execute(params);
+  }
+  
+  /**
+   * Actualizar datos usuario pero no el password por Id Usuario | Login
+   */
+  public Map<String, Object> actualizarUsuarioNoPasswordJdbcMethod(UsuarioInsertEntity usuarioInsertEntity) {
+    Map<String, Object> params = this.mapearObjetosUsuario.actualizarUsuarioParameters(usuarioInsertEntity);
+    return this.actualizarUsuarioNoPasswordSimpleJdbcCall.execute(params);
   }
   
   /**

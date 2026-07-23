@@ -38,6 +38,7 @@ public final class ConstantesBaseDatos {
   public static final String SP_ELIMINAR_USUARIO = "SP_ELIMINAR_USUARIO";
   public static final String SP_REACTIVAR_USUARIO = "SP_REACTIVAR_USUARIO";
   public static final String SP_ACTUALIZAR_USUARIO = "SP_ACTUALIZAR_USUARIO";
+  public static final String SP_ACTUALIZAR_USUARIO_NOPASSWORD = "SP_ACTUALIZAR_USUARIO_NOPASSWORD";
   public static final String SP_BUSCAR_USUARIO_EMAIL = "SP_BUSCAR_USUARIO_EMAIL";
   
   // SP PROCESOS

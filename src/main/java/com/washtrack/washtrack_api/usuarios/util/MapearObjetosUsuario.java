@@ -73,7 +73,10 @@ public class MapearObjetosUsuario {
         .tenantId(usuarioActualizarDto.getTenantId())
         .nombre(usuarioActualizarDto.getNombre())
         .email(usuarioActualizarDto.getEmail())
-        .password(usuarioActualizarDto.getPassword())
+        .password(usuarioActualizarDto.getPassword() != null &&
+            !usuarioActualizarDto.getPassword().trim().isEmpty()
+            ? usuarioActualizarDto.getPassword()
+            : null)
         .rol(usuarioActualizarDto.getRol())
         .build();
   }

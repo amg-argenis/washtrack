@@ -434,8 +434,19 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
     UsuarioResponseRepository responseRepository = new UsuarioResponseRepository();
     
     try {
-      Map<String, Object> respuesta =
-          this.inicializadorRepositoryUsuarios.actualizarUsuarioJdbcMethod(usuario);
+      
+      Map<String, Object> respuesta;
+      
+      if ( usuario.getPassword() == null || usuario.getPassword().trim().isEmpty() ) {
+        // No viene el password en el request
+        log.info("[Actualizar usuario sin password | Repository]");
+        respuesta = this.inicializadorRepositoryUsuarios.actualizarUsuarioNoPasswordJdbcMethod(usuario);
+      }
+      else {
+        log.info("[Actualizar usuario y password | Repository]");
+        // Viene el nuevo password en el request para actualizar
+        respuesta = this.inicializadorRepositoryUsuarios.actualizarUsuarioJdbcMethod(usuario);
+      }
       
       Integer codigobd = (Integer) respuesta.get(ConstantesBaseDatos.CODIGOBD);
       String mensajebd = (String) respuesta.get(ConstantesBaseDatos.PAMENSAJEBD);
