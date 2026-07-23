@@ -168,8 +168,11 @@ public class EntregaController {
     
     try {
       
-      String tenantId = obtenerTenantId(httpRequest);
-      entregasDto.setTenantId(tenantId);
+      if ( entregasDto.getTenantId() == null || entregasDto.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(httpRequest);
+        entregasDto.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.entregaService.insertarEntregaService(entregasDto);
       
@@ -209,8 +212,11 @@ public class EntregaController {
     
     try {
       
-      String tenantId = obtenerTenantId(httpRequest);
-      entregasDto.setTenantId(tenantId);
+      if ( entregasDto.getTenantId() == null || entregasDto.getTenantId().isEmpty() ) {
+        String tenantId = obtenerTenantId(httpRequest);
+        entregasDto.setTenantId(tenantId);
+        log.info("[El tenant obtenido es: {}]", tenantId);
+      }
       
       resultado = this.entregaService.actualizarEntregaService(entregasDto);
       
